@@ -1,0 +1,74 @@
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    card_view:rippleColor="@color/colorPrimary"
+    android:requiresFadingEdge="horizontal"
+
+
+    android:padding="8dp"
+
+
+
+        android:checkable="true"
+        android:clickable="true"
+        android:focusable="true"
+        android:layout_margin="8dp"
+        android:theme="@style/Theme.MaterialComponents.Light"
+        android:background="?attr/selectableItemBackground">
+
+        <LinearLayout
+            android:id="@+id/linearcard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:textAppearance="?attr/textAppearanceHeadline3"
+                android:textSize="12sp" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/due"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAppearance="?attr/textAppearanceSubtitle1"
+                android:layout_weight="1"
+                android:textSize="12sp" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/description"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAppearance="?attr/textAppearanceBody1"
+                android:layout_weight="2"
+                android:textSize="12sp" />
+
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="8dp"
+                android:orientation="horizontal">
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:text="Edit"
+                    style="?attr/borderlessButtonStyle"
+                    />
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="open"
+                    style="?attr/borderlessButtonStyle"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>

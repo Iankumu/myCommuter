@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="MainActivityViewModel"
+            type="com.example.mycommuter.viewmodels.MainActivityViewModel" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:isScrollContainer="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/fad"
+            android:orientation="vertical"
+            tools:context=".MainActivity">
+
+
+            <ImageView
+
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/favicon"
+                android:contentDescription="@string/logo" />
+
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:fontFamily="@font/greatvibes_regular"
+                android:text="@string/login_title"
+                android:textColor="#fff"
+                android:textSize="45sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/trials_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="100dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/regUsernameEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="20dp"
+                    app:addTextChangedListener="@{MainActivityViewModel.getUsernameWatcher}"
+
+
+                    android:layout_marginRight="20dp"
+                    android:fontFamily="@font/lato_lightitalic"
+                    android:hint="@string/username"
+                    android:inputType="text"
+
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#fff"
+
+                    />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/regEmailEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="20dp"
+
+                    android:layout_marginRight="20dp"
+                    android:fontFamily="@font/lato_lightitalic"
+                    android:hint="@string/email_address"
+                    app:addTextChangedListener="@{MainActivityViewModel.getEmailTextWatcher}"
+                    android:inputType="textEmailAddress"
+
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#fff" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+
+                    android:id="@+id/regPasswordEdit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:fontFamily="@font/lato_lightitalic"
+                    android:hint="@string/password"
+                    android:importantForAutofill="no"
+
+                    app:addTextChangedListener="@{MainActivityViewModel.getPasswordWatcher}"
+                    android:inputType="textPassword"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#fff" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/confirmPassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    app:addTextChangedListener="@{MainActivityViewModel.getConfirmPasswordwatcher}"
+                    android:fontFamily="@font/lato_lightitalic"
+                    android:hint="@string/confirm_password"
+                    android:importantForAutofill="no"
+
+
+                    android:inputType="textPassword"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="#fff" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Button
+                android:id="@+id/signup_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="45dp"
+                android:layout_marginRight="20dp"
+                android:onClick="@{MainActivityViewModel::onSignupClick}"
+                android:background="@drawable/btn_bg"
+                android:fontFamily="@font/lato_lightitalic"
+
+                android:padding="10dp"
+                android:text="@string/sign_up"
+
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

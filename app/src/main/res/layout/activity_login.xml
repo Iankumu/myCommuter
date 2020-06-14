@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="LoginViewModel"
+            type="com.example.mycommuter.viewmodels.LoginActivityModelView" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:isScrollContainer="true">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/fad"
+
+            android:orientation="vertical"
+            tools:context=".LoginActivity">
+
+
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/favicon" />
+
+            <TextView
+
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="60dp"
+                android:fontFamily="@font/greatvibes_regular"
+                android:text="@string/login_title"
+                android:textColor="#fff"
+                android:textSize="45sp" />
+
+
+            <EditText
+                android:id="@+id/loginEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="60dp"
+                android:layout_marginRight="20dp"
+                app:addTextChangedListener="@{LoginViewModel.getEmailTextWatcher}"
+                android:fontFamily="@font/lato_lightitalic"
+                android:hint="@string/email_address"
+
+                android:inputType="textEmailAddress"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#fff"
+
+                android:theme="@style/MyEditTextTheme" />
+
+
+            <EditText
+                android:id="@+id/loginpass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="20dp"
+                android:fontFamily="@font/lato_lightitalic"
+                app:addTextChangedListener="@{LoginViewModel.getPasswordWatcher}"
+
+                android:hint="@string/password"
+                android:inputType="textPassword"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#fff"
+                android:theme="@style/MyEditTextTheme" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <Switch
+                    android:id="@+id/switch1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:checked="false"
+                    android:text="Remember me"
+                    android:theme="@style/Myswitch"
+
+
+                    />
+
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/loginbtn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="45dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/btn_bg"
+
+                android:fontFamily="@font/lato_lightitalic"
+
+                android:onClick="@{LoginViewModel::onLoginClick}"
+                android:padding="10dp"
+                android:text="Sign up"
+
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>
