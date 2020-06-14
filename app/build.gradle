@@ -6,13 +6,15 @@ android {
     dataBinding {
         enabled = true
     }
+
     defaultConfig {
         applicationId "com.example.mycommuter"
         minSdkVersion 22
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
-
+        renderscriptTargetApi 29
+        renderscriptSupportModeEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -46,6 +48,7 @@ dependencies {
     implementation "androidx.recyclerview:recyclerview-selection:1.1.0-rc01"
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'com.github.GrenderG:Toasty:1.4.2'
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
     implementation('com.braintreepayments.api:braintree:2.13.0') {
         exclude group: 'com.braintreepayments.api', module: 'visa-checkout'
     }

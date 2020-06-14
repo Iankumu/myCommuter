@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mycommuter.R;
 import com.example.mycommuter.model.Tasks;
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.List;
 
@@ -21,6 +22,8 @@ import java.util.List;
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> {
     private List<Tasks> tasks;
     Context context;
+    public boolean shimmer=true;
+    int item_shimmer=2;
 
     public TaskAdapter(Context context, List<Tasks> tasks) {
         this.context = context;
@@ -28,7 +31,8 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> 
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-
+        ShimmerFrameLayout shimmerFrameLayout;
+        
         public TextView title;
         public TextView description;
         public TextView due;
@@ -37,7 +41,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> 
 
         public MyViewHolder(View v) {
             super(v);
-            this.linearLayout = v.findViewById(R.id.linearcard);
+            this.shimmerFrameLayout = v.findViewById(R.id.shimmerframelay);
             this.title = (TextView) v.findViewById(R.id.title);
             this.description = (TextView) v.findViewById(R.id.description);
             this.due = (TextView) v.findViewById(R.id.due);
@@ -58,16 +62,26 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> 
 
     @Override
     public void onBindViewHolder(@NonNull TaskAdapter.MyViewHolder holder, int position) {
-        final Tasks current_task = tasks.get(position);
-        holder.title.setText(current_task.getTitle());
-        holder.description.setText(current_task.getDescritpion());
-        holder.due.setText(current_task.getDue());
+        if (shimmer){
+               holder.shimmerFrameLayout.startShimmer();
+        }
+        else {
 
+
+
+
+            holder.shimmerFrameLayout.stopShimmer();
+              holder.shimmerFrameLayout.setShimmer(null);
+            final Tasks current_task = tasks.get(position);
+            holder.title.setText(current_task.getTitle());
+            holder.description.setText(current_task.getDescritpion());
+            holder.due.setText(current_task.getDue());
+        }
     }
 
     @Override
     public int getItemCount() {
-        return tasks.size();
+        return shimmer?item_shimmer:tasks.size();
 
     }
 //public  class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder>{

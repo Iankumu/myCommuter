@@ -55,21 +55,11 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
 
-        android:src="@drawable/ic_create_24px"
+        android:src="@drawable/ic_add_a_photo_black_18dp"
         app:fabSize="normal"
         app:layout_anchor="@id/appbar_layout"
         app:layout_anchorGravity="top|end" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-
-        android:src="@drawable/ic_add_a_photo_black_18dp"
-        app:fabSize="normal"
-        app:hoveredFocusedTranslationZ="5dp"
-        app:layout_anchor="@id/appbar_layout"
-        app:layout_anchorGravity="top|start" />
 
     <androidx.core.widget.NestedScrollView
         android:id="@+id/nestedScrollView"
@@ -109,16 +99,7 @@
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="15sp" />
 
-            <Button
-                android:id="@+id/logoutbtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/btn_bg"
-                android:onClick="logout"
-                android:padding="10dp"
-                android:paddingHorizontal="25dp"
-                android:text="Logout button" />
+
         </LinearLayout>
 
 

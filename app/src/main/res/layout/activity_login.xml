@@ -16,10 +16,10 @@
         android:isScrollContainer="true">
 
         <LinearLayout
+            android:id="@+id/loginlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/fad"
-
+            android:background="@drawable/background"
             android:orientation="vertical"
             tools:context=".LoginActivity">
 
@@ -51,15 +51,15 @@
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="60dp"
                 android:layout_marginRight="20dp"
-                app:addTextChangedListener="@{LoginViewModel.getEmailTextWatcher}"
                 android:fontFamily="@font/lato_lightitalic"
                 android:hint="@string/email_address"
-
                 android:inputType="textEmailAddress"
+
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="#fff"
+                android:theme="@style/MyEditTextTheme"
 
-                android:theme="@style/MyEditTextTheme" />
+                app:addTextChangedListener="@{LoginViewModel.getEmailTextWatcher}" />
 
 
             <EditText
@@ -71,13 +71,13 @@
                 android:layout_marginTop="30dp"
                 android:layout_marginRight="20dp"
                 android:fontFamily="@font/lato_lightitalic"
-                app:addTextChangedListener="@{LoginViewModel.getPasswordWatcher}"
-
                 android:hint="@string/password"
+
                 android:inputType="textPassword"
                 android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="#fff"
-                android:theme="@style/MyEditTextTheme" />
+                android:theme="@style/MyEditTextTheme"
+                app:addTextChangedListener="@{LoginViewModel.getPasswordWatcher}" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -114,7 +114,7 @@
 
                 android:onClick="@{LoginViewModel::onLoginClick}"
                 android:padding="10dp"
-                android:text="Sign up"
+                android:text="Login In"
 
                 android:textAppearance="?android:attr/textAppearanceLarge" />
 

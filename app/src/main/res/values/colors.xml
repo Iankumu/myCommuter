@@ -5,5 +5,7 @@
     <color name="colorAccent">#ffffff</color>
     <color name="bottomNav">#28b485</color>
     <color name="item">#ffffff</color>
+    <color name="shimmer_color">#E4E2E2</color>
+
 </resources>
 
