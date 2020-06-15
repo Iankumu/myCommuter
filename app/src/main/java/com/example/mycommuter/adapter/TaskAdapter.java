@@ -2,6 +2,7 @@ package com.example.mycommuter.adapter;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,20 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.List;
 
+import static android.content.ContentValues.TAG;
+
 
 public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> {
     private List<Tasks> tasks;
     Context context;
     public boolean shimmer=true;
-    int item_shimmer=2;
+
+    public void setShimmer(boolean shimmer) {
+        this.shimmer = shimmer;
+        Log.e(TAG, "setShimmer: called" );
+    }
+
+    int item_shimmer=5;
 
     public TaskAdapter(Context context, List<Tasks> tasks) {
         this.context = context;
@@ -36,7 +45,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> 
         public TextView title;
         public TextView description;
         public TextView due;
-        public LinearLayout linearLayout;
+
 
 
         public MyViewHolder(View v) {
@@ -66,10 +75,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> 
                holder.shimmerFrameLayout.startShimmer();
         }
         else {
-
-
-
-
             holder.shimmerFrameLayout.stopShimmer();
               holder.shimmerFrameLayout.setShimmer(null);
             final Tasks current_task = tasks.get(position);

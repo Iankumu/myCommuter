@@ -10,7 +10,8 @@
 <androidx.appcompat.widget.ActionMenuView
     android:layout_width="match_parent"
     android:layout_height="?attr/actionBarSize"
-    app:menu="@menu/navigation_drawer"
+    app:menu="@menu/nav_menu"
+    android:id="@+id/actionmenu"
     android:layout_alignParentBottom="true"
     android:background="?attr/colorPrimary"
     android:elevation="4dp"/>

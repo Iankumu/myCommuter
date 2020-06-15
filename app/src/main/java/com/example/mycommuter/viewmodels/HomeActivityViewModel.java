@@ -25,15 +25,10 @@ public class HomeActivityViewModel extends AndroidViewModel {
     public HomeActivityViewModel(@NonNull Application application) {
         super(application);
         this.context = application.getApplicationContext();
-
-
-        tasksRepo = TasksRepo.getInstance(context);
-
-
     }
 
     public LiveData<List<Tasks>> getTasks() {
-
+        tasksRepo = TasksRepo.getInstance(context);
         return tasksRepo.getTasks();
     }
 

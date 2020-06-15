@@ -84,23 +84,23 @@ public class TasksRepo {
 
 
                 if (response.body() != null) {
-//                    Log.w("thius ", new Gson().toJson(response.body()));
+
                     String data = new Gson().toJson(response.body());
 
                     JsonArray jsonArray = new JsonParser().parse(data).getAsJsonArray();
                     for (JsonElement e : jsonArray) {
-//                        Log.d("MainActvity", String.valueOf(e));
+
                         JsonObject obj = new JsonParser().parse(String.valueOf(e)).getAsJsonObject();
                         try {
                             JSONObject jo2 = new JSONObject(obj.toString());
-//                           Log.w(TAG, "Response: " + jo2);
+
                             Tasks task = new Tasks();
                             task.setTitle(jo2.getString("title"));
                             task.setDescritpion(jo2.getString("descritpion"));
                             task.setDue(jo2.getString("created_at"));
 
                             arrayofTask.add(task);
-//                            Log.e("mainact",""+task.getTitle());
+
                         } catch (JSONException ex) {
                             ex.printStackTrace();
                         }
@@ -117,7 +117,7 @@ public class TasksRepo {
 
             @Override
             public void onFailure(Call<Tasks> call, Throwable t) {
-//                System.out.println("log in failed ");
+
 
                 Log.d(TAG, "login failed");
                 t.printStackTrace();
