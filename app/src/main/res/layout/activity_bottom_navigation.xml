@@ -9,11 +9,8 @@
     <FrameLayout
         android:id="@+id/frag_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottom_nav"/>
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_nav"
@@ -23,9 +20,8 @@
             android:background="?android:attr/windowBackground"
             app:backgroundTint="@color/item"
             app:itemIconTint="@color/bottomNav"
-
+            android:layout_alignParentBottom="true"
             app:itemTextColor="@color/bottomNav"
             app:menu="@menu/nav_menu" />
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </RelativeLayout>
