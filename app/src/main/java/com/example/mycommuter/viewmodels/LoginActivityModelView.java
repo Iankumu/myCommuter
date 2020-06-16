@@ -13,9 +13,11 @@ import com.example.mycommuter.LoginActivity;
 import com.example.mycommuter.RestApi.ApiClient;
 import com.example.mycommuter.RestApi.theCommuterApiendpoints;
 import com.example.mycommuter.interfaces.LoginResultCallback;
+import com.example.mycommuter.model.LocationModel;
 import com.example.mycommuter.model.LoginUser;
 import com.example.mycommuter.model.User;
 import com.example.mycommuter.repository.LoginRepo;
+import com.example.mycommuter.sharedPrefs.saveSharedPref;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,6 +29,7 @@ public class LoginActivityModelView extends ViewModel {
     private LoginResultCallback loginResultCallback;
     private LoginUser loginUser;
     private LoginRepo loginRepo;
+    LocationModel locationModel ;
 
     public LoginActivityModelView(LoginResultCallback loginResultCallback) {
         this.loginResultCallback = loginResultCallback;
@@ -73,7 +76,7 @@ public class LoginActivityModelView extends ViewModel {
     }
 
     public void onLoginClick(View view) {
-        System.out.println("email is " + loginUser.getPassword());
+        System.out.println("email is " + loginUser.getEmailAddress());
         int error = loginUser.isValidlogin();
         if (error == 0) {
             loginResultCallback.onError("Your must enter an EmailAddress");
@@ -111,8 +114,9 @@ public class LoginActivityModelView extends ViewModel {
 //                    LoginActivity.token = response.body().getAccess_token();
 
                     String token = response.body().getAccess_token();
-                    loginResultCallback.onSuccess("Login Successful",token);
+                    loginResultCallback.onSuccess("Login Successful",token, Email);
 
+//                    locationModel.setEmail(Email);
 
                 } else {
 

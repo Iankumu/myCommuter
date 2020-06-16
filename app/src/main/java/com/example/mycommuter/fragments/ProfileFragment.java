@@ -16,6 +16,7 @@ import com.example.mycommuter.BottomNavigationActivity;
 import com.example.mycommuter.EditProfile;
 import com.example.mycommuter.LoginActivity;
 import com.example.mycommuter.R;
+import com.example.mycommuter.model.LoginUser;
 import com.example.mycommuter.sharedPrefs.saveSharedPref;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.button.MaterialButton;
@@ -27,6 +28,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class ProfileFragment extends Fragment {
 Button button;
 FloatingActionButton floatingActionButton;
+
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -54,7 +56,7 @@ FloatingActionButton floatingActionButton;
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveSharedPref.setLoggedIn(getContext(), new Pair<>(false,""));
+                saveSharedPref.setLoggedIn(getContext(), new Pair<>(false,""),"");
                 Intent intent = new Intent(getContext(), LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);

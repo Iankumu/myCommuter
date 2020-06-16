@@ -37,6 +37,7 @@ import com.example.mycommuter.common.BlurBuilder;
 import com.example.mycommuter.databinding.ActivityLoginBinding;
 import com.example.mycommuter.factory.LoginViewHolderModelFactory;
 import com.example.mycommuter.interfaces.LoginResultCallback;
+import com.example.mycommuter.model.LocationModel;
 import com.example.mycommuter.model.LoginUser;
 import com.example.mycommuter.model.User;
 import com.example.mycommuter.sharedPrefs.saveSharedPref;
@@ -62,6 +63,7 @@ public class LoginActivity extends AppCompatActivity implements LoginResultCallb
     private Button loginBtn;
     private EditText emailEdit, passwordEdit;
     private Switch switch1;
+    LocationModel locationModel;
 
 
 
@@ -105,12 +107,17 @@ LinearLayout login;
     }
 
     @Override
-    public void onSuccess(String message,String token) {
-        saveSharedPref.setLoggedIn(getApplicationContext(), new Pair<>(true,token));
+    public void onSuccess(String message,String token,String email) {
+        Toast.makeText(this,email,Toast.LENGTH_SHORT).show();
         Toasty.success(this, message, Toast.LENGTH_SHORT).show();
+        Log.d("access_token",token);
+        saveSharedPref.setLoggedIn(this,new Pair<>(true,token),email);
+
+
         Intent intent = new Intent(getApplicationContext(), BottomNavigationActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
+
 
     }
 
