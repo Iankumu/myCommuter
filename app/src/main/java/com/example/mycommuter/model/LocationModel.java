@@ -1,51 +1,35 @@
 package com.example.mycommuter.model;
 
-
 public class LocationModel {
 
-    private String currentlatitude, currentlongitude, email,destinationLatitude,destinationLongitude;
+    private String latitude, longitude, user_id;
 
     public LocationModel() { }
 
-    public LocationModel(String currentlatitude, String currentlongitude, String destinationLatitude,String destinationLongitude, String email) {
-        this.currentlatitude = currentlatitude;
-        this.currentlongitude = currentlongitude;
-        this.destinationLatitude = destinationLatitude;
-        this.destinationLongitude = destinationLongitude;
-        this.email = email;
+    public LocationModel(String latitude, String longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public LocationModel(String latitude, String longitude, String user_id) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.user_id = user_id;
     }
 
     public String getLatitude() {
-        return currentlatitude;
+        return latitude;
     }
 
     public String getLongitude() {
-        return currentlongitude;
+        return longitude;
     }
 
-    public String getEmail() { return email; }
+    public String getUser_id() { return user_id; }
 
-    public void setLatitude(String latitude) { this.currentlatitude = latitude; }
+    public void setLatitude(String latitude) { this.latitude = latitude; }
 
-    public void setLongitude(String longitude) { this.currentlongitude = longitude; }
+    public void setLongitude(String longitude) { this.longitude = longitude; }
 
-    public void setEmail(String email) { this.email = email; }
-
-    public String getDestinationLatitude() {
-        return destinationLatitude;
-    }
-
-    public void setDestinationLatitude(String destinationLatitude) {
-        this.destinationLatitude = destinationLatitude;
-    }
-
-    public String getDestinationLongitude() {
-        return destinationLongitude;
-    }
-
-    public void setDestinationLongitude(String destinationLongitude) {
-        this.destinationLongitude = destinationLongitude;
-    }
-
-
+    public void setUser_id(String user_id) { this.user_id = user_id; }
 }
