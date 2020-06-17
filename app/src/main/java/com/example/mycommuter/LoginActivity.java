@@ -108,7 +108,7 @@ LinearLayout login;
 
     @Override
     public void onSuccess(String message,String token,String email) {
-        Toast.makeText(this,email,Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this,email,Toast.LENGTH_SHORT).show();
         Toasty.success(this, message, Toast.LENGTH_SHORT).show();
 //        Log.d("access_token",token);
         saveSharedPref.setLoggedIn(this,new Pair<>(true,token),email);

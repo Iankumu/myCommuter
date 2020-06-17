@@ -96,7 +96,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
     private static final String LOG_TAG_Code ="Hashcode";
 
-    public static String  URL = "http://65a21d50907d.ngrok.io/TheCommuterAPI/public/api/location";
+    public static String  URL = "http://c4bfbef46d27.ngrok.io/api/location";
 
     private MapFragmentLocationCallback callback = new MapFragmentLocationCallback(this);
 
@@ -298,14 +298,14 @@ public class MapFragment extends Fragment implements PermissionsListener {
                             locationModel.getLatitude() + "\t" +  locationModel.getLongitude(), Toast.LENGTH_SHORT).show();
 
 
-                    String userToken = prefs.getToken(getActivity().getApplicationContext());
+//                    String userToken = prefs.getToken(getActivity().getApplicationContext());
                     String email = saveSharedPref.getEmail(getContext());
                     Log.d("mapemail",email);
 
 //                    Toast.makeText(getActivity().getApplicationContext(), userToken, Toast.LENGTH_SHORT).show();
                     Toast.makeText(getActivity().getApplicationContext(), email, Toast.LENGTH_SHORT).show();
 
-//                    postRequest(locationModel.getLatitude(), locationModel.getLongitude());
+                    postRequest(locationModel.getLatitude(), locationModel.getLongitude());
                 } catch (NullPointerException e){
 
                 }
@@ -346,7 +346,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                     Map<String,String> params = new HashMap<String ,String>();
                     params.put("latitude", latitude);
                     params.put("longitude", longitude);
-                    params.put("email",email);
+                    params.put("email", email);
                     return params;
                 }
                 @Override
@@ -383,8 +383,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
             requestQueue.add(objectRequest);
 
         }
-        public  void putRequest()
-        {
+        public  void putRequest() {
 
 
         }
