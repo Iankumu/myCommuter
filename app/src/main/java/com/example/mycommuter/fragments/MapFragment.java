@@ -96,11 +96,12 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
     private static final String LOG_TAG_Code ="Hashcode";
 
-    public static String  URL = "http://c4bfbef46d27.ngrok.io/api/location";
+    public static String  URL = " http://953e23c78b3b.ngrok.io/api/location";
+    public static String Navigation_url = "http://953e23c78b3b.ngrok.io/api/navigation";
+    public static String Navigation_get_url = "http://953e23c78b3b.ngrok.io/api/navigations";
 
     private MapFragmentLocationCallback callback = new MapFragmentLocationCallback(this);
 
-    saveSharedPref prefs = new saveSharedPref();
 
     public MapFragment() { }
 
@@ -172,6 +173,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                                 Toast.makeText(getActivity().getApplicationContext(), "Destination:\t" +
                                                         destinationLatitude + "\t" + destinationLongitude, Toast.LENGTH_SHORT).show();
 
+                                               postDestinationRequest(destinationLatitude,destinationLongitude);
                                             } else {
                                                 selectLocationButton.setBackgroundColor(
                                                         ContextCompat.getColor(getActivity().getApplicationContext(), R.color.colorPrimary));
@@ -204,8 +206,78 @@ public class MapFragment extends Fragment implements PermissionsListener {
             }
         });
 
+
         return view;
     }
+
+    private void postDestinationRequest(String destinationLatitude, String destinationLongitude) {
+
+            String email = saveSharedPref.getEmail(getContext());
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+            StringRequest objectRequest = new StringRequest(
+                    Request.Method.POST,
+                    Navigation_url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+
+                        }
+                    }
+                    , new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                }
+            })
+            {
+                //Overriding methods to pass data to the server
+                @Override
+                protected Map<String,String> getParams(){
+                    //Creating a Map with key and value and send the data to the database
+                    Map<String,String> params = new HashMap<String ,String>();
+                    params.put("destinationLatitude", destinationLatitude);
+                    params.put("destinationLongitude", destinationLongitude);
+                    params.put("email",email);
+                    return params;
+                }
+                @Override
+                public Map<String,String>getHeaders() throws AuthFailureError {
+                    Map<String,String> params = new HashMap<String ,String>();
+                    params.put("Application-Type","application/x-www-form-urlencoded");
+                    return params;
+                }
+            };
+
+            requestQueue.add(objectRequest);
+
+
+        }
+
+    public void getRequest(){
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+
+        JsonObjectRequest objectRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                Navigation_get_url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(LOG_TAG_Code, response.toString());
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(LOG_TAG_Code, error.toString());
+            }
+
+        }
+        );
+        requestQueue.add(objectRequest);
+
+    }
+
+
 
     private void initDroppedMarker(@NonNull Style loadedMapStyle) {
         loadedMapStyle.addImage("dropped-icon-image", BitmapFactory.decodeResource(
@@ -294,18 +366,17 @@ public class MapFragment extends Fragment implements PermissionsListener {
                 locationModel.setLongitude(String.valueOf(longitude));
 
                 try {
-                    Toast.makeText(getActivity().getApplicationContext(),
-                            locationModel.getLatitude() + "\t" +  locationModel.getLongitude(), Toast.LENGTH_SHORT).show();
-
-
-//                    String userToken = prefs.getToken(getActivity().getApplicationContext());
-                    String email = saveSharedPref.getEmail(getContext());
-                    Log.d("mapemail",email);
-
-//                    Toast.makeText(getActivity().getApplicationContext(), userToken, Toast.LENGTH_SHORT).show();
-                    Toast.makeText(getActivity().getApplicationContext(), email, Toast.LENGTH_SHORT).show();
-
-                    postRequest(locationModel.getLatitude(), locationModel.getLongitude());
+//                    Toast.makeText(getActivity().getApplicationContext(),
+//                            locationModel.getLatitude() + "\t" +  locationModel.getLongitude(), Toast.LENGTH_SHORT).show();
+//
+//
+////                    String userToken = prefs.getToken(getActivity().getApplicationContext());
+//                    String email = saveSharedPref.getEmail(getContext());
+//                    Log.d("mapemail",email);
+//
+////                    Toast.makeText(getActivity().getApplicationContext(), userToken, Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(getActivity().getApplicationContext(), email, Toast.LENGTH_SHORT).show();
+                    postCurrentRequest(locationModel.getLatitude(), locationModel.getLongitude());
                 } catch (NullPointerException e){
 
                 }
@@ -316,12 +387,9 @@ public class MapFragment extends Fragment implements PermissionsListener {
             }
         }
 
-        public  void postRequest(final String latitude, final String longitude){
+        public  void postCurrentRequest(final String latitude, final String longitude){
 
-//        Log.d("Lat", latitude);
-//        Log.d("Longi", longitude);
             String email = saveSharedPref.getEmail(getContext());
-
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
             StringRequest objectRequest = new StringRequest(
                     Request.Method.POST,
@@ -360,36 +428,9 @@ public class MapFragment extends Fragment implements PermissionsListener {
             requestQueue.add(objectRequest);
 
         }
-        public void getRequest(){
-            RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
-
-            JsonObjectRequest objectRequest = new JsonObjectRequest(
-                    Request.Method.GET,
-                    URL,
-                    null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Log.d(LOG_TAG_Code, response.toString());
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e(LOG_TAG_Code, error.toString());
-                }
-
-            }
-            );
-            requestQueue.add(objectRequest);
-
-        }
-        public  void putRequest() {
 
 
-        }
-        public  void DeleteRequest(){
 
-        }
 
         /**
          * The LocationEngineCallback interface's method which fires when the device's location can not be captured
