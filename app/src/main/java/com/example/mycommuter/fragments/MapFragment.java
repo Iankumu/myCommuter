@@ -96,7 +96,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
     private static final String LOG_TAG_Code ="Hashcode";
 
-    public static String  URL = "http://65a21d50907d.ngrok.io/TheCommuterAPI/public/api/location";
+    public static String  URL = "http://58cbf2d6adba.ngrok.io/TheCommuterAPI/public/api/location";
 
     private MapFragmentLocationCallback callback = new MapFragmentLocationCallback(this);
 
