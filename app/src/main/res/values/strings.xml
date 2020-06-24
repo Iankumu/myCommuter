@@ -13,7 +13,7 @@
     <string name="emailpref">emailpref</string>
     <string name="passpref">emailpref</string>
     <string name="remember_me">Remember me</string>
-
+    <string name="cardslidin">card slide in</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

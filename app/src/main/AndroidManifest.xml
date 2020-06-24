@@ -12,8 +12,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".EditProfile"
-            android:parentActivityName="com.example.mycommuter.BottomNavigationActivity" />
+        <activity android:name=".TaskDetail"></activity>
+        <activity
+            android:name=".EditProfile"
+            android:parentActivityName=".BottomNavigationActivity" />
         <activity android:name=".BottomNavigationActivity" />
         <activity android:name=".HomeActivity" />
         <activity android:name=".LoginActivity">

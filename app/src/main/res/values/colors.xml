@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#55c57a</color>
-    <color name="colorPrimaryDark">#28b485</color>
+    <color name="colorPrimary">#00E676</color>
+    <color name="colorPrimaryDark">#00C853</color>
     <color name="colorAccent">#ffffff</color>
-    <color name="bottomNav">#28b485</color>
+    <color name="bottomNav">#00C853</color>
     <color name="item">#ffffff</color>
     <color name="shimmer_color">#E4E2E2</color>
 

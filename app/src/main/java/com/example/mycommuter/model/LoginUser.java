@@ -40,8 +40,10 @@ public class LoginUser {
             return 0;
         else if (!Patterns.EMAIL_ADDRESS.matcher(getEmailAddress()).matches())
             return 1;
-        else if (getPassword().length() < 8)
+        else if (TextUtils.isEmpty(getPassword()))
             return 2;
+        else if (getPassword().length() < 8)
+            return 3;
         else
             return -1;
     }

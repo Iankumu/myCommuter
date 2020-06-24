@@ -1,82 +1,78 @@
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+<?xml version="1.0" encoding="utf-8"?>
+
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp"
-    android:checkable="true"
-    android:clickable="true"
 
+    android:shrinkColumns="0">
 
-    android:focusable="true"
+    <TableRow>
 
-
-    android:orientation="vertical"
-    android:padding="8dp"
-    android:requiresFadingEdge="horizontal"
-    android:theme="@style/Theme.MaterialComponents.Light"
-    card_view:rippleColor="@color/colorPrimary">
-
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:id="@+id/shimmerframelay"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <LinearLayout
-            android:id="@+id/linearcard"
+        <com.google.android.material.card.MaterialCardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/taskcardviewer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_margin="8dp"
+            android:checkable="true"
+            android:clickable="true"
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:background="@color/shimmer_color"
-                android:textAppearance="?attr/textAppearanceHeadline3"
-                android:textSize="12sp" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/due"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@color/shimmer_color"
-                android:layout_weight="1"
-                android:textAppearance="?attr/textAppearanceSubtitle1"
-                android:textSize="12sp" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/description"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@color/shimmer_color"
-                android:layout_weight="2"
-                android:textAppearance="?attr/textAppearanceBody1"
-                android:textSize="12sp" />
+            android:focusable="true"
+            android:foreground="@android:color/holo_red_light"
+            android:orientation="vertical"
+            android:requiresFadingEdge="horizontal"
+            android:theme="@style/Theme.MaterialComponents.Light"
+            app:shapeAppearance="@style/ShapeAppearance.MyApp.MediumComponent"
+            card_view:cardBackgroundColor="@color/shimmer_color"
+            card_view:cardElevation="7dp"
+            card_view:contentPadding="10dp"
+            card_view:rippleColor="@color/colorPrimary"
+            card_view:state_dragged="true">
 
 
             <LinearLayout
+                android:id="@+id/linearcard"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@color/shimmer_color"
-                android:layout_margin="8dp"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:transitionName="@string/cardslidin">
 
 
-                <com.google.android.material.button.MaterialButton
-                    style="?attr/borderlessButtonStyle"
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:backgroundTint="@color/colorPrimary"
-                    android:elevation="5dp"
-                    android:background="@color/shimmer_color"
-                    android:text=""
-                    android:textColor="@android:color/white" />
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textAppearance="?attr/textAppearanceHeadline3"
+                    android:textSize="12sp" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/due"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:textAppearance="?attr/textAppearanceSubtitle1"
+                    android:textSize="12sp" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/description"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="2"
+                    android:ellipsize="end"
+                    android:maxLines="3"
+                    android:textAppearance="?attr/textAppearanceBody1"
+                    android:textSize="12sp" />
+
+
             </LinearLayout>
-        </LinearLayout>
-    </com.facebook.shimmer.ShimmerFrameLayout>
-</com.google.android.material.card.MaterialCardView>
+        </com.google.android.material.card.MaterialCardView>
+    </TableRow>
+</TableLayout>

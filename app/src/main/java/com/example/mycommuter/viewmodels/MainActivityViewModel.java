@@ -1,30 +1,43 @@
 package com.example.mycommuter.viewmodels;
 
+import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
+import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.ViewModel;
 
+import com.example.mycommuter.LoginActivity;
+import com.example.mycommuter.MainActivity;
 import com.example.mycommuter.RestApi.ApiClient;
 import com.example.mycommuter.RestApi.theCommuterApiendpoints;
 import com.example.mycommuter.interfaces.SignupResultCallback;
 import com.example.mycommuter.model.SignupUser;
 import com.example.mycommuter.model.User;
 
+import es.dmoral.toasty.Toasty;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivityViewModel extends ViewModel {
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
+
+public class MainActivityViewModel extends AndroidViewModel {
     private static final String TAG = "MainActivitymodelview";
     private SignupResultCallback signupResultCallback;
     private SignupUser signupUser;
+    private Context context;
 
 
-    public MainActivityViewModel(SignupResultCallback signupResultCallback) {
-        this.signupResultCallback = signupResultCallback;
+    public MainActivityViewModel(SignupResultCallback signupResultCallback, Application application) {
+        super(application);
+        context=application;
+        this.signupResultCallback =signupResultCallback;
         this.signupUser = new SignupUser();
     }
 
@@ -103,8 +116,14 @@ public class MainActivityViewModel extends ViewModel {
             }
         };
     }
-
+    public void  launchLogin(View view){
+        Log.e(TAG, "launchLogin: clicked on login");
+        Intent intent = new Intent(context, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(intent);
+    }
     public void onSignupClick(View view) {
+        Log.e(TAG, "launchLogin: clicked on login");
         System.out.println("email is " + signupUser.getPassword());
         int error = signupUser.isValidSignup();
         if (error == 0) {

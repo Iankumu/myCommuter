@@ -58,25 +58,21 @@ import android.widget.Toast;
 
 import java.util.Objects;
 
-public class LoginActivity extends AppCompatActivity implements LoginResultCallback {
+public class LoginActivity extends AppCompatActivity {
     private Button loginBtn;
     private EditText emailEdit, passwordEdit;
     private Switch switch1;
 
 
-
-
     private LoginActivityModelView loginActivityModelView;
-    //
-////
-//
-//    /
+
     ActivityLoginBinding binding;
-LinearLayout login;
+    LinearLayout login;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+//        getActionBar().hide();
         if (saveSharedPref.getLoggedStatus(getApplicationContext())) {
             Intent intent = new Intent(getApplicationContext(), BottomNavigationActivity.class);
             startActivity(intent);
@@ -86,15 +82,17 @@ LinearLayout login;
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
 
-        login =  findViewById(R.id.loginlay);
+        login = findViewById(R.id.loginlay);
         Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.background);
-        Bitmap blurredBitmap = BlurBuilder.blur( this, originalBitmap );
+        Bitmap blurredBitmap = BlurBuilder.blur(this, originalBitmap);
         login.setBackground(new BitmapDrawable(getResources(), blurredBitmap));
 
 
-        loginActivityModelView = new ViewModelProvider(this, new LoginViewHolderModelFactory(this))
+        loginActivityModelView = new ViewModelProvider(this, new LoginViewHolderModelFactory(getApplication()))
                 .get(LoginActivityModelView.class);
+//        loginActivityModelView=new ViewModelProvider(this).get(LoginActivityModelView.class);
 
+//        loginActivityModelView = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(LoginActivityModelView.class);
 
         binding = DataBindingUtil.setContentView(LoginActivity.this, R.layout.activity_login);
         binding.setLifecycleOwner(this);
@@ -103,77 +101,6 @@ LinearLayout login;
 
 
     }
-
-    @Override
-    public void onSuccess(String message,String token) {
-        saveSharedPref.setLoggedIn(getApplicationContext(), new Pair<>(true,token));
-        Toasty.success(this, message, Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(getApplicationContext(), BottomNavigationActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-
-    }
-
-    @Override
-    public void onError(String message) {
-        Toasty.success(this, message, Toast.LENGTH_SHORT).show();
-    }
-
-
-//    public void login(View view) {
-//        final theCommuterApiendpoints apiService = ApiClient.getClient().create(theCommuterApiendpoints.class);
-//
-//        String emailT = emailEdit.getText().toString().trim();
-//        String passwordT = passwordEdit.getText().toString().trim();
-//
-//
-//        Call<User> call = apiService.User(emailT, passwordT);
-//        call.enqueue(new Callback<User>() {
-//            @Override
-//            public void onResponse(Call<User> call, Response<User> response) {
-//
-//                Log.d(TAG, "login successful");
-//                if (response.body().getAccess_token() != null) {
-//                    token = response.body().getAccess_token();
-//                    Log.d(TAG, token);
-//                    SharedPreferences mPreferences = getSharedPreferences(SHARED_PREF, MODE_PRIVATE);
-//                    saveSharedPref.setLoggedIn(getApplicationContext(), true);
-//                    SharedPreferences.Editor preferencesEditor = mPreferences.edit();
-//                    switch1.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//                        @Override
-//                        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-//                            if (isChecked) {
-//                                Log.d(TAG, "it is checked");
-//                                preferencesEditor.putString(email, emailT);
-//                                preferencesEditor.putString(password, passwordT);
-//
-//                            } else {
-//                                Log.d(TAG, "it not checked");
-//                            }
-//                        }
-//                    });
-//
-//
-//                    preferencesEditor.putString(toks, token);
-//                    preferencesEditor.apply();
-//                    Intent intent = new Intent(getApplicationContext(), HomeActivity.class);
-//                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
-//                    startActivity(intent);
-//                } else {
-//                    token = "no access token generated";
-//                }
-//
-//
-//            }
-//
-//            @Override
-//            public void onFailure(Call<User> call, Throwable t) {
-//                Log.d(TAG, "login failed");
-//                t.printStackTrace();
-//            }
-//        });
-
-//    }
 
 
 }

@@ -35,10 +35,10 @@ FloatingActionButton floatingActionButton;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+//        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
         // Inflate the layout for this fragment
         View view =inflater.inflate(R.layout.fragment_profile, container, false);
-        ((BottomNavigationActivity)requireActivity()).getSupportActionBar().hide();
+//        ((BottomNavigationActivity)requireActivity()).getSupportActionBar().hide();
         button=view.findViewById(R.id.logoutbtn);
         floatingActionButton=view.findViewById(R.id.editprof);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -69,12 +69,12 @@ FloatingActionButton floatingActionButton;
     @Override
     public void onStart() {
         super.onStart();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
+//        ((AppCompatActivity)getActivity()).getSupportActionBar().hide();
     }
     @Override
     public void onStop() {
         super.onStop();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
+//        ((AppCompatActivity)getActivity()).getSupportActionBar().show();
     }
 
 }

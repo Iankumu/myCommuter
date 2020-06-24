@@ -50,8 +50,8 @@ public class HomeActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.myListView);
         progressBar = findViewById(R.id.progressBar);
         title = findViewById(R.id.title);
-        description = findViewById(R.id.description);
-        due = findViewById(R.id.due);
+//        description = findViewById(R.id.description);
+//        due = findViewById(R.id.due);
 
 
         homeActivityViewModel= new ViewModelProvider(this).get(HomeActivityViewModel.class);
