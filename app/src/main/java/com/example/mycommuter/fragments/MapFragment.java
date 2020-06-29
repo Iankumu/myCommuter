@@ -28,14 +28,21 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mycommuter.R;
+import com.example.mycommuter.RestApi.ApiClient;
 import com.example.mycommuter.model.LocationModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
@@ -43,8 +50,15 @@ import com.mapbox.android.core.location.LocationEngineRequest;
 import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
+import com.mapbox.api.directions.v5.MapboxDirections;
+import com.mapbox.api.directions.v5.models.DirectionsRoute;
+import com.mapbox.geojson.Feature;
+import com.mapbox.geojson.FeatureCollection;
+import com.mapbox.geojson.Geometry;
+import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
+import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
@@ -59,9 +73,12 @@ import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -72,6 +89,7 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.visibility;
+import static com.mapbox.core.constants.Constants.PRECISION_6;
 
 import com.example.mycommuter.sharedPrefs.saveSharedPref;
 
@@ -95,15 +113,17 @@ public class MapFragment extends Fragment implements PermissionsListener {
     private static final String DROPPED_MARKER_LAYER_ID = "DROPPED_MARKER_LAYER_ID";
 
     private static final String LOG_TAG_Code ="Hashcode";
+    public static String  Base_URL="http://c23143081c2c.ngrok.io/";
+    public static String  URL = Base_URL+"api/location";
+    public static String Navigation_url = Base_URL+"api/navigation";
+    private FeatureCollection dashedLineDirectionsFeatureCollection;
+    private static final String SOURCE_ID = "SOURCE_ID";
 
-    public static String  URL = " http://953e23c78b3b.ngrok.io/api/location";
-    public static String Navigation_url = "http://953e23c78b3b.ngrok.io/api/navigation";
-    public static String Navigation_get_url = "http://953e23c78b3b.ngrok.io/api/navigations";
+
 
     private MapFragmentLocationCallback callback = new MapFragmentLocationCallback(this);
 
 
-    public MapFragment() { }
 
 
     @Override
@@ -173,7 +193,9 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                                 Toast.makeText(getActivity().getApplicationContext(), "Destination:\t" +
                                                         destinationLatitude + "\t" + destinationLongitude, Toast.LENGTH_SHORT).show();
 
-                                               postDestinationRequest(destinationLatitude,destinationLongitude);
+//                                               postDestinationRequest(destinationLatitude,destinationLongitude);
+                                                getRequest();
+
                                             } else {
                                                 selectLocationButton.setBackgroundColor(
                                                         ContextCompat.getColor(getActivity().getApplicationContext(), R.color.colorPrimary));
@@ -221,6 +243,8 @@ public class MapFragment extends Fragment implements PermissionsListener {
                         @Override
                         public void onResponse(String response) {
 
+//                            getRequest();
+
                         }
                     }
                     , new Response.ErrorListener() {
@@ -239,6 +263,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                     params.put("destinationLongitude", destinationLongitude);
                     params.put("email",email);
                     return params;
+
                 }
                 @Override
                 public Map<String,String>getHeaders() throws AuthFailureError {
@@ -253,28 +278,62 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
         }
 
-    public void getRequest(){
+    private void getRequest() {
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
 
-        JsonObjectRequest objectRequest = new JsonObjectRequest(
-                Request.Method.GET,
-                Navigation_get_url,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.d(LOG_TAG_Code, response.toString());
+       JsonObjectRequest objectRequest = new JsonObjectRequest(
+               Request.Method.GET,
+               Navigation_url,
+               null,
+               new Response.Listener<JSONObject>() {
+                   @Override
+                   public void onResponse(JSONObject response) {
+                       try {
+                           JSONArray routes = response.getJSONArray("routes");
+                           JSONObject firstroute = routes.getJSONObject(0);
+                           Log.d(LOG_TAG_Code, String.valueOf(firstroute));
+                           Gson gson;
+
+
+//                           drawNavigationPolylineRoute(gson.fromJson(firstroute.toString());
+                       } catch (JSONException e) {
+                           e.printStackTrace();
+                       }
+
+                   }
+               }, new Response.ErrorListener() {
+           @Override
+           public void onErrorResponse(VolleyError error) {
+
+           }
+       }
+       );
+
+       requestQueue.add(objectRequest);
+
+
+
+    }
+
+    private void drawNavigationPolylineRoute(final DirectionsRoute route) {
+        if (mapboxMap != null) {
+            mapboxMap.getStyle(new Style.OnStyleLoaded() {
+                @Override
+                public void onStyleLoaded(@NonNull Style style) {
+                    List<Feature> directionsRouteFeatureList = new ArrayList<>();
+                    LineString lineString = LineString.fromPolyline(route.geometry(), PRECISION_6);
+                    List<Point> coordinates = lineString.coordinates();
+                    for (int i = 0; i < coordinates.size(); i++) {
+                        directionsRouteFeatureList.add(Feature.fromGeometry(LineString.fromLngLats(coordinates)));
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e(LOG_TAG_Code, error.toString());
-            }
-
+                    dashedLineDirectionsFeatureCollection = FeatureCollection.fromFeatures(directionsRouteFeatureList);
+                    GeoJsonSource source = style.getSourceAs(SOURCE_ID);
+                    if (source != null) {
+                        source.setGeoJson(dashedLineDirectionsFeatureCollection);
+                    }
+                }
+            });
         }
-        );
-        requestQueue.add(objectRequest);
-
     }
 
 
@@ -289,6 +348,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                 visibility(Property.NONE),
                 iconAllowOverlap(true),
                 iconIgnorePlacement(true)
+
         ));
     }
 
@@ -429,7 +489,41 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
         }
 
-
+//        private void getRequest(String latitude, String longitude, String destinationLatitude, String destinationLongitude) {
+//            RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+//
+//            JsonObjectRequest objectRequest = new JsonObjectRequest(
+//                    Request.Method.GET,
+//                    Navigation_url,
+//                    null,
+//                    new Response.Listener<JSONObject>() {
+//                        @Override
+//                        public void onResponse(JSONObject response) {
+//
+//                            if (response != null){
+//                                Log.d(LOG_TAG_Code,"The body has DATA");
+//                                Log.d(LOG_TAG_Code,String.valueOf(response));
+//                                try {
+//                                    String routes = response.getString("routes");
+//                                    Log.d(LOG_TAG_Code,routes);
+//                                } catch (JSONException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }else{
+//                                Log.d(LOG_TAG_Code,"The body is Empty");
+//                            }
+//                        }
+//                    }, new Response.ErrorListener() {
+//                @Override
+//                public void onErrorResponse(VolleyError error) {
+//
+//                }
+//            }
+//            );
+//
+//            requestQueue.add(objectRequest);
+//
+//        }
 
 
         /**
@@ -470,4 +564,41 @@ public class MapFragment extends Fragment implements PermissionsListener {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        mapView.onResume();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        mapView.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mapView.onStop();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
+
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
 }
+
