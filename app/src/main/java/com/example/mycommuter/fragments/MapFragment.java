@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 
@@ -69,6 +70,7 @@ import com.mapbox.mapboxsdk.maps.MapboxMap;
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.style.layers.Layer;
+import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
@@ -88,6 +90,10 @@ import static com.mapbox.mapboxsdk.style.layers.Property.VISIBLE;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconImage;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineColor;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineDasharray;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineTranslate;
+import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.visibility;
 import static com.mapbox.core.constants.Constants.PRECISION_6;
 
@@ -113,11 +119,14 @@ public class MapFragment extends Fragment implements PermissionsListener {
     private static final String DROPPED_MARKER_LAYER_ID = "DROPPED_MARKER_LAYER_ID";
 
     private static final String LOG_TAG_Code ="Hashcode";
-    public static String  Base_URL="http://c23143081c2c.ngrok.io/";
+    public static String  Base_URL="http://65c5fc3b72e6.ngrok.io/";
     public static String  URL = Base_URL+"api/location";
     public static String Navigation_url = Base_URL+"api/navigation";
     private FeatureCollection dashedLineDirectionsFeatureCollection;
+
     private static final String SOURCE_ID = "SOURCE_ID";
+    private static final String DIRECTIONS_LAYER_ID = "DIRECTIONS_LAYER_ID";
+    private static final String LAYER_BELOW_ID = "road-label-small";
 
 
 
@@ -194,6 +203,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                                         destinationLatitude + "\t" + destinationLongitude, Toast.LENGTH_SHORT).show();
 
 //                                               postDestinationRequest(destinationLatitude,destinationLongitude);
+                                                initDottedLineSourceAndLayer(style);
                                                 getRequest();
 
                                             } else {
@@ -291,11 +301,11 @@ public class MapFragment extends Fragment implements PermissionsListener {
                        try {
                            JSONArray routes = response.getJSONArray("routes");
                            JSONObject firstroute = routes.getJSONObject(0);
-                           Log.d(LOG_TAG_Code, String.valueOf(firstroute));
-                           Gson gson;
+                           String geometry = firstroute.getString("geometry");
+                           Log.wtf(LOG_TAG_Code, String.valueOf(geometry));
 
 
-//                           drawNavigationPolylineRoute(gson.fromJson(firstroute.toString());
+                           drawNavigationPolylineRoute(firstroute);
                        } catch (JSONException e) {
                            e.printStackTrace();
                        }
@@ -315,27 +325,44 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
     }
 
-    private void drawNavigationPolylineRoute(final DirectionsRoute route) {
+    private void drawNavigationPolylineRoute(final JSONObject route) {
         if (mapboxMap != null) {
             mapboxMap.getStyle(new Style.OnStyleLoaded() {
                 @Override
                 public void onStyleLoaded(@NonNull Style style) {
                     List<Feature> directionsRouteFeatureList = new ArrayList<>();
-                    LineString lineString = LineString.fromPolyline(route.geometry(), PRECISION_6);
-                    List<Point> coordinates = lineString.coordinates();
-                    for (int i = 0; i < coordinates.size(); i++) {
-                        directionsRouteFeatureList.add(Feature.fromGeometry(LineString.fromLngLats(coordinates)));
-                    }
-                    dashedLineDirectionsFeatureCollection = FeatureCollection.fromFeatures(directionsRouteFeatureList);
-                    GeoJsonSource source = style.getSourceAs(SOURCE_ID);
-                    if (source != null) {
-                        source.setGeoJson(dashedLineDirectionsFeatureCollection);
+                    try {
+                        String geometry = route.getString("geometry");
+                        LineString lineString = LineString.fromJson(geometry);
+//                        LineString lineString = LineString.fromPolyline(geometry, PRECISION_6);
+                        List<Point> coordinates = lineString.coordinates();
+                        for (int i = 0; i < coordinates.size(); i++) {
+                            directionsRouteFeatureList.add(Feature.fromGeometry(LineString.fromLngLats(coordinates)));
+                        }
+                        dashedLineDirectionsFeatureCollection = FeatureCollection.fromFeatures(directionsRouteFeatureList);
+                        GeoJsonSource source = style.getSourceAs(SOURCE_ID);
+                        if (source != null) {
+                            source.setGeoJson(dashedLineDirectionsFeatureCollection);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 }
             });
         }
     }
 
+    private void initDottedLineSourceAndLayer(@NonNull Style loadedMapStyle) {
+        loadedMapStyle.addSource(new GeoJsonSource(SOURCE_ID));
+        loadedMapStyle.addLayerBelow(
+                new LineLayer(
+                        DIRECTIONS_LAYER_ID, SOURCE_ID).withProperties(
+                        lineWidth(4.5f),
+                        lineColor(Color.RED),
+                        lineTranslate(new Float[] {0f, 4f}),
+                        lineDasharray(new Float[] {1.2f, 1.2f})
+                ), LAYER_BELOW_ID);
+    }
 
 
     private void initDroppedMarker(@NonNull Style loadedMapStyle) {
