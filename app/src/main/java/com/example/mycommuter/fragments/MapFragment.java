@@ -119,7 +119,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
     private static final String DROPPED_MARKER_LAYER_ID = "DROPPED_MARKER_LAYER_ID";
 
     private static final String LOG_TAG_Code ="Hashcode";
-    public static String  Base_URL="http://65c5fc3b72e6.ngrok.io/";
+    public static String  Base_URL="http://ed3d8c2c7db2.ngrok.io/";
     public static String  URL = Base_URL+"api/location";
     public static String Navigation_url = Base_URL+"api/navigation";
     private FeatureCollection dashedLineDirectionsFeatureCollection;
@@ -202,9 +202,9 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                                 Toast.makeText(getActivity().getApplicationContext(), "Destination:\t" +
                                                         destinationLatitude + "\t" + destinationLongitude, Toast.LENGTH_SHORT).show();
 
-//                                               postDestinationRequest(destinationLatitude,destinationLongitude);
+                                               postDestinationRequest(destinationLatitude,destinationLongitude);
                                                 initDottedLineSourceAndLayer(style);
-                                                getRequest();
+
 
                                             } else {
                                                 selectLocationButton.setBackgroundColor(
@@ -244,7 +244,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
     private void postDestinationRequest(String destinationLatitude, String destinationLongitude) {
 
-            String email = saveSharedPref.getEmail(getContext());
+            String token = saveSharedPref.getToken(getActivity().getApplicationContext());
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
             StringRequest objectRequest = new StringRequest(
                     Request.Method.POST,
@@ -253,7 +253,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                         @Override
                         public void onResponse(String response) {
 
-//                            getRequest();
+                            getRequest();
 
                         }
                     }
@@ -271,7 +271,6 @@ public class MapFragment extends Fragment implements PermissionsListener {
                     Map<String,String> params = new HashMap<String ,String>();
                     params.put("destinationLatitude", destinationLatitude);
                     params.put("destinationLongitude", destinationLongitude);
-                    params.put("email",email);
                     return params;
 
                 }
@@ -279,6 +278,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                 public Map<String,String>getHeaders() throws AuthFailureError {
                     Map<String,String> params = new HashMap<String ,String>();
                     params.put("Application-Type","application/x-www-form-urlencoded");
+                    params.put("Authorization", "Bearer " +token);
                     return params;
                 }
             };
@@ -290,7 +290,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
     private void getRequest() {
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
-
+        String token = saveSharedPref.getToken(getActivity().getApplicationContext());
        JsonObjectRequest objectRequest = new JsonObjectRequest(
                Request.Method.GET,
                Navigation_url,
@@ -304,20 +304,26 @@ public class MapFragment extends Fragment implements PermissionsListener {
                            String geometry = firstroute.getString("geometry");
                            Log.wtf(LOG_TAG_Code, String.valueOf(geometry));
 
-
                            drawNavigationPolylineRoute(firstroute);
                        } catch (JSONException e) {
                            e.printStackTrace();
                        }
 
                    }
-               }, new Response.ErrorListener() {
+               },
+               new Response.ErrorListener() {
+                   @Override
+                   public void onErrorResponse(VolleyError error) {
+                       // do stuff here
+                   }
+               }) {
            @Override
-           public void onErrorResponse(VolleyError error) {
-
+           public Map<String, String> getHeaders() throws AuthFailureError {
+               HashMap<String, String> headers = new HashMap<String, String> ();
+               headers.put("Authorization", "Bearer " + token);
+               return headers;
            }
-       }
-       );
+       };
 
        requestQueue.add(objectRequest);
 
@@ -476,7 +482,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
         public  void postCurrentRequest(final String latitude, final String longitude){
 
-            String email = saveSharedPref.getEmail(getContext());
+            String token = saveSharedPref.getToken(getContext());
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
             StringRequest objectRequest = new StringRequest(
                     Request.Method.POST,
@@ -501,13 +507,13 @@ public class MapFragment extends Fragment implements PermissionsListener {
                     Map<String,String> params = new HashMap<String ,String>();
                     params.put("latitude", latitude);
                     params.put("longitude", longitude);
-                    params.put("email", email);
                     return params;
                 }
                 @Override
                 public Map<String,String>getHeaders() throws AuthFailureError {
                     Map<String,String> params = new HashMap<String ,String>();
                     params.put("Application-Type","application/x-www-form-urlencoded");
+                    params.put("Authorization", "Bearer " +token);
                     return params;
                 }
             };
