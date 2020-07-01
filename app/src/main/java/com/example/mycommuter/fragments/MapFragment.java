@@ -173,6 +173,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                     mapView.addView(hoveringMarker);
 
                                     initDroppedMarker(style);
+                                    initDottedLineSourceAndLayer(style);
 
                                     selectLocationButton.setOnClickListener(new View.OnClickListener() {
                                         @Override
@@ -203,7 +204,6 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                                         destinationLatitude + "\t" + destinationLongitude, Toast.LENGTH_SHORT).show();
 
                                                postDestinationRequest(destinationLatitude,destinationLongitude);
-                                                initDottedLineSourceAndLayer(style);
 
 
                                             } else {
