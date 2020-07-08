@@ -119,14 +119,20 @@ public class MapFragment extends Fragment implements PermissionsListener {
     private static final String DROPPED_MARKER_LAYER_ID = "DROPPED_MARKER_LAYER_ID";
 
     private static final String LOG_TAG_Code ="Hashcode";
-    public static String  Base_URL="http://ed3d8c2c7db2.ngrok.io/";
+    public static String  Base_URL="http://5580a54a2efc.ngrok.io/";
     public static String  URL = Base_URL+"api/location";
     public static String Navigation_url = Base_URL+"api/navigation";
     private FeatureCollection dashedLineDirectionsFeatureCollection;
 
+    //for route 1
     private static final String SOURCE_ID = "SOURCE_ID";
     private static final String DIRECTIONS_LAYER_ID = "DIRECTIONS_LAYER_ID";
     private static final String LAYER_BELOW_ID = "road-label-small";
+
+    //for route 2
+    private static final String SOURCE_ID2 = "SOURCE_ID2";
+    private static final String DIRECTIONS_LAYER_ID2 = "DIRECTIONS_LAYER_ID2";
+    private static final String LAYER_BELOW_ID2 = "road-label-small2";
 
 
 
@@ -174,6 +180,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
                                     initDroppedMarker(style);
                                     initDottedLineSourceAndLayer(style);
+                                    initDottedLineSourceAndLayer2(style);
 
                                     selectLocationButton.setOnClickListener(new View.OnClickListener() {
                                         @Override
@@ -203,7 +210,8 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                                 Toast.makeText(getActivity().getApplicationContext(), "Destination:\t" +
                                                         destinationLatitude + "\t" + destinationLongitude, Toast.LENGTH_SHORT).show();
 
-                                               postDestinationRequest(destinationLatitude,destinationLongitude);
+//                                               postDestinationRequest(destinationLatitude,destinationLongitude);
+                                                getRequest();
 
 
                                             } else {
@@ -284,14 +292,12 @@ public class MapFragment extends Fragment implements PermissionsListener {
             };
 
             requestQueue.add(objectRequest);
-
-
         }
 
     private void getRequest() {
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         String token = saveSharedPref.getToken(getActivity().getApplicationContext());
-       JsonObjectRequest objectRequest = new JsonObjectRequest(
+        JsonObjectRequest objectRequest = new JsonObjectRequest(
                Request.Method.GET,
                Navigation_url,
                null,
@@ -300,11 +306,28 @@ public class MapFragment extends Fragment implements PermissionsListener {
                    public void onResponse(JSONObject response) {
                        try {
                            JSONArray routes = response.getJSONArray("routes");
+                           Log.wtf(LOG_TAG_Code + "\tNo. of routes", String.valueOf(routes.length()));
+
+                           if (routes.length() == 2){
+                               JSONObject secondroute = routes.getJSONObject(1);
+
+                               String geometry2 = secondroute.getString("geometry");
+                               Log.wtf(LOG_TAG_Code, String.valueOf(geometry2));
+
+                               drawNavigationPolylineRoute2(secondroute);
+
+                           }
+
                            JSONObject firstroute = routes.getJSONObject(0);
+
+
                            String geometry = firstroute.getString("geometry");
                            Log.wtf(LOG_TAG_Code, String.valueOf(geometry));
 
+
+
                            drawNavigationPolylineRoute(firstroute);
+
                        } catch (JSONException e) {
                            e.printStackTrace();
                        }
@@ -323,7 +346,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                headers.put("Authorization", "Bearer " + token);
                return headers;
            }
-       };
+        };
 
        requestQueue.add(objectRequest);
 
@@ -358,16 +381,55 @@ public class MapFragment extends Fragment implements PermissionsListener {
         }
     }
 
+    private void drawNavigationPolylineRoute2(final JSONObject route) {
+        if (mapboxMap != null) {
+            mapboxMap.getStyle(new Style.OnStyleLoaded() {
+                @Override
+                public void onStyleLoaded(@NonNull Style style) {
+                    List<Feature> directionsRouteFeatureList = new ArrayList<>();
+                    try {
+                        String geometry = route.getString("geometry");
+                        LineString lineString = LineString.fromJson(geometry);
+//                        LineString lineString = LineString.fromPolyline(geometry, PRECISION_6);
+                        List<Point> coordinates = lineString.coordinates();
+                        for (int i = 0; i < coordinates.size(); i++) {
+                            directionsRouteFeatureList.add(Feature.fromGeometry(LineString.fromLngLats(coordinates)));
+                        }
+                        dashedLineDirectionsFeatureCollection = FeatureCollection.fromFeatures(directionsRouteFeatureList);
+                        GeoJsonSource source = style.getSourceAs(SOURCE_ID2);
+                        if (source != null) {
+                            source.setGeoJson(dashedLineDirectionsFeatureCollection);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+    }
+
     private void initDottedLineSourceAndLayer(@NonNull Style loadedMapStyle) {
         loadedMapStyle.addSource(new GeoJsonSource(SOURCE_ID));
         loadedMapStyle.addLayerBelow(
                 new LineLayer(
                         DIRECTIONS_LAYER_ID, SOURCE_ID).withProperties(
                         lineWidth(4.5f),
-                        lineColor(Color.RED),
+                        lineColor(Color.GREEN),
                         lineTranslate(new Float[] {0f, 4f}),
                         lineDasharray(new Float[] {1.2f, 1.2f})
                 ), LAYER_BELOW_ID);
+    }
+
+    private void initDottedLineSourceAndLayer2(@NonNull Style loadedMapStyle) {
+        loadedMapStyle.addSource(new GeoJsonSource(SOURCE_ID2));
+        loadedMapStyle.addLayerBelow(
+                new LineLayer(
+                        DIRECTIONS_LAYER_ID2, SOURCE_ID2).withProperties(
+                        lineWidth(4.5f),
+                        lineColor(Color.RED),
+                        lineTranslate(new Float[] {0f, 4f}),
+                        lineDasharray(new Float[] {1.2f, 1.2f})
+                ), LAYER_BELOW_ID2);
     }
 
 
@@ -469,7 +531,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 //
 ////                    Toast.makeText(getActivity().getApplicationContext(), userToken, Toast.LENGTH_SHORT).show();
 //                    Toast.makeText(getActivity().getApplicationContext(), email, Toast.LENGTH_SHORT).show();
-                    postCurrentRequest(locationModel.getLatitude(), locationModel.getLongitude());
+//                    postCurrentRequest(locationModel.getLatitude(), locationModel.getLongitude());
                 } catch (NullPointerException e){
 
                 }
