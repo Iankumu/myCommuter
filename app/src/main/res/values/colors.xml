@@ -6,6 +6,7 @@
     <color name="bottomNav">#00C853</color>
     <color name="item">#ffffff</color>
     <color name="shimmer_color">#E4E2E2</color>
+    <color name="searchbar_background">#A8A5A5</color>
 
 </resources>
 
