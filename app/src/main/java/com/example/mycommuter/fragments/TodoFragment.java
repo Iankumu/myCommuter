@@ -30,6 +30,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.mycommuter.BottomNavigationActivity;
+import com.example.mycommuter.NewTaskActivity;
 import com.example.mycommuter.R;
 import com.example.mycommuter.TaskDetail;
 import com.example.mycommuter.adapter.RecyclerItemClickListener;
@@ -51,11 +52,11 @@ public class TodoFragment extends Fragment {
 
     private TaskAdapter adapter;
     private RecyclerView.LayoutManager layoutManager;
-    Tasks tasks;
+    private Tasks tasks;
     private TextView description, due, title;
     private RecyclerView recyclerView;
     List<Tasks> listinit = new ArrayList<>();
-    LinearLayout linearLayout;
+
     Toolbar toolbar;
     private HomeActivityViewModel homeActivityViewModel;
     private ShimmerFrameLayout shimmerFrameLayout;
@@ -73,7 +74,7 @@ public class TodoFragment extends Fragment {
         setRetainInstance(true);
         shimmerFrameLayout = view.findViewById(R.id.shimmerframelay);
         progressBar = view.findViewById(R.id.progressBar);
-        linearLayout = view.findViewById(R.id.linearcard);
+
         recyclerView = view.findViewById(R.id.myListView);
         toolbar = view.findViewById(R.id.tasktoolbar);
 
@@ -207,10 +208,10 @@ public class TodoFragment extends Fragment {
     }
 
     private void additem() {
-        MaterialDatePicker.Builder builder = MaterialDatePicker.Builder.datePicker();
-        builder.setTitleText("add new");
-        MaterialDatePicker materialDatePicker = builder.build();
-        materialDatePicker.show(getParentFragmentManager(), "Date picker");
+
+        Intent dintent = new Intent(getActivity(), NewTaskActivity.class);
+        startActivity(dintent);
+
     }
 
 }

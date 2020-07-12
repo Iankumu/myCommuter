@@ -9,9 +9,9 @@
 
     <TableRow>
 
-        <com.google.android.material.card.MaterialCardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/taskcardviewer"
-            android:layout_width="match_parent"
+            android:layout_width="11dp"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:checkable="true"
@@ -22,12 +22,12 @@
             android:orientation="vertical"
             android:requiresFadingEdge="horizontal"
             android:theme="@style/Theme.MaterialComponents.Light"
+            app:cardBackgroundColor="@color/shimmer_color"
+            app:cardElevation="7dp"
+            app:contentPadding="10dp"
+            app:rippleColor="@color/colorPrimary"
             app:shapeAppearance="@style/ShapeAppearance.MyApp.MediumComponent"
-            card_view:cardBackgroundColor="@color/shimmer_color"
-            card_view:cardElevation="7dp"
-            card_view:contentPadding="10dp"
-            card_view:rippleColor="@color/colorPrimary"
-            card_view:state_dragged="true">
+            app:state_dragged="true">
 
 
             <LinearLayout

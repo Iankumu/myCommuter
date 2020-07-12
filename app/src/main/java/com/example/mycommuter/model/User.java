@@ -19,6 +19,9 @@ public class User {
     @SerializedName("access_token")
     private String access_token;
 
+    public User() {
+    }
+
     public User(String username, String emailAddress, String password, String confirmPassword) {
         this.setUsername(username);
         this.setEmailAddress(emailAddress);
@@ -75,5 +78,11 @@ public class User {
         return access_token;
     }
 
+    public int isUserNameValid() {
+        if (TextUtils.isEmpty(getUsername()))
+            return 1;
+        else
+            return 0;
+    }
 
 }

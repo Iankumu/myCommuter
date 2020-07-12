@@ -1,47 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:orientation="vertical"
-    android:layout_height="match_parent"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.WeatherFragment">
+    xmlns:card_view="http://schemas.android.com/tools"
+    android:id="@+id/cardViewWeatherCard"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="4dp"
+    android:layout_marginLeft="8dp"
+    android:layout_marginRight="8dp"
+    android:layout_marginTop="4dp"
+    card_view:cardCornerRadius="4dp"
+    android:foreground="?attr/selectableItemBackground"
+    app:cardElevation="2dp"
+    android:transitionName="weatherCardTransition">
 
-
-    <androidx.cardview.widget.CardView
-
-        xmlns:card_view="http://schemas.android.com/tools"
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:layout_marginTop="4dp"
-        card_view:cardCornerRadius="4dp"
-        android:foreground="?attr/selectableItemBackground"
-        app:cardElevation="2dp"
-        android:transitionName="weatherCardTransition">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:id="@+id/todaycard"
         android:layout_height="match_parent">
 
         <TextView
-            android:id="@+id/WeatherCardCityName"
+            android:id="@+id/textViewCardDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginTop="16dp"
-            android:text="Nairobi ,kenya"
+            android:text="Nairobi, Kenya"
             android:textSize="30sp"
             android:textStyle=""
             app:layout_constraintTop_toTopOf="parent" />
 
 
         <TextView
-            android:id="@+id/weatherCardWeatherDescription"
+            android:id="@+id/textViewCardWeatherDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -49,7 +40,7 @@
             android:text="Partly Cloudy"
             android:textSize="16sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/WeatherCardCityName" />
+            app:layout_constraintTop_toBottomOf="@+id/textViewCardCityName" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -60,24 +51,24 @@
             android:layout_marginTop="8dp"
             android:orientation="horizontal"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/weatherCardWeatherDescription">
+            app:layout_constraintTop_toBottomOf="@+id/textViewCardWeatherDescription">
 
             <ImageView
-                android:id="@+id/WeatherCardWeatherIcon"
+                android:id="@+id/imageViewCardWeatherIcon"
                 android:layout_width="0dp"
                 android:layout_height="120dp"
                 android:layout_weight="40"
-                />
+              />
 
             <TextView
-                android:id="@+id/WeatherCardCurrentTemp"
+                android:id="@+id/textViewCardCurrentTemp"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="16dp"
                 android:layout_marginRight="8dp"
                 android:layout_weight="40"
                 android:gravity="center"
-                android:text="21°"
+                android:text="99°"
                 android:textSize="80sp" />
 
             <LinearLayout
@@ -88,7 +79,7 @@
                 android:orientation="vertical"
                 >
                 <TextView
-                    android:id="@+id/WeatherCardfeelsLike"
+                    android:id="@+id/textViewCardfeelslike"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:gravity="center_horizontal|bottom"
@@ -98,7 +89,7 @@
                     android:textSize="18sp"
                     />
                 <TextView
-                    android:id="@+id/WeatherCardMinTemp"
+                    android:id="@+id/textViewCardMinTemp"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="5"
@@ -112,14 +103,7 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.cardview.widget.CardView>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/myweatherRe"
-        android:layout_width="match_parent"
-        android:layout_height="169dp"
 
 
-        android:layout_weight="2" />
-
-    </LinearLayout>
+</androidx.cardview.widget.CardView
+>

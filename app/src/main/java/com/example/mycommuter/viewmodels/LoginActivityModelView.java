@@ -40,104 +40,104 @@ import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 
 public class LoginActivityModelView extends AndroidViewModel  {
 
-    private LoginResultCallback loginResultCallback;
-    private LoginUser loginUser;
-    private LoginRepo loginRepo;
-    private Context context;
-    public MutableLiveData<String> EmailAddress = new MutableLiveData<>();
-    public MutableLiveData<String> Password = new MutableLiveData<>();
+  private LoginResultCallback loginResultCallback;
+  private LoginUser loginUser;
+  private LoginRepo loginRepo;
+  private Context context;
+  public MutableLiveData<String> EmailAddress = new MutableLiveData<>();
+  public MutableLiveData<String> Password = new MutableLiveData<>();
 
 
-    public LoginActivityModelView(@NonNull Application application, LoginResultCallback loginResultCallback) {
-        super(application);
-        this.loginResultCallback= new LoginResultCallback() {
-            @Override
-            public void onSuccess(String message, String token) {
-                Toasty.success(context, message, Toast.LENGTH_SHORT).show();
-            }
+  public LoginActivityModelView(@NonNull Application application, LoginResultCallback loginResultCallback) {
+    super(application);
+    this.loginResultCallback= new LoginResultCallback() {
+      @Override
+      public void onSuccess(String message, String token) {
+        Toasty.success(context, message, Toast.LENGTH_SHORT).show();
+      }
 
-            @Override
-            public void onError(String message) {
-                Toasty.error(context, message, Toast.LENGTH_SHORT).show();
-            }
-        };
+      @Override
+      public void onError(String message) {
+        Toasty.error(context, message, Toast.LENGTH_SHORT).show();
+      }
+    };
 
-        this.context = application.getApplicationContext();
-        loginUser=new LoginUser();
+    this.context = application.getApplicationContext();
+    loginUser=new LoginUser();
+  }
+
+
+
+  public TextWatcher getEmailTextWatcher() {
+    return new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+      }
+
+      @Override
+      public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+      }
+
+      @Override
+      public void afterTextChanged(Editable s) {
+
+        loginUser.setEmailAddress(s.toString());
+      }
+    };
+  }
+
+  public TextWatcher getPasswordWatcher() {
+    return new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+      }
+
+      @Override
+      public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+      }
+
+      @Override
+      public void afterTextChanged(Editable s) {
+        loginUser.setPassword(s.toString());
+      }
+    };
+  }
+
+  public void onLoginClick(View view) {
+    System.out.println("email is " + loginUser.getPassword());
+    int error = loginUser.isValidlogin();
+    if (error == 0) {
+      loginResultCallback.onError("Your must enter an EmailAddress");
+    } else if (error == 1) {
+      loginResultCallback.onError("Your must enter a Valid EmailAddress");
+
+    } else if (error == 2) {
+      loginResultCallback.onError("You must enter a password");
+    }
+    else if(error==3){
+      loginResultCallback.onError("Password is too short");
+    }else {
+      EmailAddress.setValue(loginUser.getEmailAddress());
+      Password.setValue(loginUser.getPassword());
+      loginUser();
     }
 
 
+  }
+  public void launchRegister(View view) {
+    Intent intent = new Intent(context, MainActivity.class);
+    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+    context.startActivity(intent);
+  }
 
-    public TextWatcher getEmailTextWatcher() {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+  public boolean loginUser() {
+    loginRepo = LoginRepo.getInstance(context,EmailAddress,Password);
 
-            }
+    return loginRepo.getUser();
+  }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
-                loginUser.setEmailAddress(s.toString());
-            }
-        };
-    }
-
-    public TextWatcher getPasswordWatcher() {
-        return new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                loginUser.setPassword(s.toString());
-            }
-        };
-    }
-
-    public void onLoginClick(View view) {
-        System.out.println("email is " + loginUser.getPassword());
-        int error = loginUser.isValidlogin();
-        if (error == 0) {
-            loginResultCallback.onError("Your must enter an EmailAddress");
-        } else if (error == 1) {
-            loginResultCallback.onError("Your must enter a Valid EmailAddress");
-
-        } else if (error == 2) {
-            loginResultCallback.onError("You must enter a password");
-        }
-        else if(error==3){
-            loginResultCallback.onError("Password is too short");
-        }else {
-            EmailAddress.setValue(loginUser.getEmailAddress());
-            Password.setValue(loginUser.getPassword());
-            loginUser();
-        }
-
-
-    }
-    public void launchRegister(View view) {
-        Intent intent = new Intent(context, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
-        context.startActivity(intent);
-    }
-
-    public boolean loginUser() {
-        loginRepo = LoginRepo.getInstance(context,EmailAddress,Password);
-
-        return loginRepo.getUser();
-    }
-
-    }
+}

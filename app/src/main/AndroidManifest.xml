@@ -12,7 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".TaskDetail"></activity>
+        <activity android:name=".NewTaskActivity"></activity>
+        <activity android:name=".TaskDetail" />
         <activity
             android:name=".EditProfile"
             android:parentActivityName=".BottomNavigationActivity" />

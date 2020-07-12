@@ -90,14 +90,14 @@
 
 
             <TextView
-                android:id="@+id/userurl"
+                android:id="@+id/useremail"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="5dp"
                 android:gravity="center"
                 android:padding="8dp"
-                android:text="Lives in embakassi...more details to be added below"
+
                 android:textAppearance="?attr/textAppearanceHeadline3"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="15sp" />
@@ -110,7 +110,7 @@
                 android:background="@drawable/btn_bg"
                 android:onClick="logout"
 
-       android:paddingHorizontal="40dp"
+                 android:paddingHorizontal="40dp"
                 android:text="Logout button" />
         </LinearLayout>
 

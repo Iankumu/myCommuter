@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true">
+
+    <data>
+
+        <variable
+            name="NewTaskViewModel"
+            type="com.example.mycommuter.viewmodels.NewTaskViewModel" />
+    </data>
+
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:isScrollContainer="true">
+
+        <LinearLayout
+            android:id="@+id/loginlay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:background="@drawable/background"
+            android:gravity="center"
+            android:orientation="vertical"
+            tools:context=".NewTaskActivity">
+
+            <com.google.android.material.textview.MaterialTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Do or do not, man.There is no try?"
+                android:textSize="24sp"
+                android:textColor="@color/colorPrimary"/>
+
+            <EditText
+                android:id="@+id/newTitle"
+                android:layout_width="match_parent"
+
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="60dp"
+                android:layout_marginRight="20dp"
+                android:fontFamily="@font/lato_lightitalic"
+                android:hint="Title"
+                android:inputType="text"
+
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#fff"
+                android:theme="@style/MyEditTextTheme"
+
+                app:addTextChangedListener="@{NewTaskViewModel.getTitleOnTextChangeListener}" />
+
+
+            <EditText
+                android:id="@+id/newDesc"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="20dp"
+                android:fontFamily="@font/lato_lightitalic"
+                android:hint="Description"
+                android:inputType="textCapSentences|textMultiLine"
+
+                app:addTextChangedListener="@{NewTaskViewModel.getdescriptionOnTextChangeListener}"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#fff"
+                android:theme="@style/MyEditTextTheme"
+                app:errorEnabled="true" />
+
+            <EditText
+                android:id="@+id/newDue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginRight="20dp"
+                android:drawableStart="@drawable/ic_event_available_24px"
+                android:fontFamily="@font/lato_lightitalic"
+                android:hint="Date due"
+                android:focusable="false"
+
+                android:inputType="none"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#fff"
+                android:theme="@style/MyEditTextTheme"
+                android:onClick="@{NewTaskViewModel::datePick}"
+
+                app:errorEnabled="true" />
+
+
+            <Button
+                android:id="@+id/loginbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+
+                android:background="@drawable/btn_bg"
+
+                android:fontFamily="@font/lato_lightitalic"
+
+                android:onClick="@{NewTaskViewModel::onPost}"
+                android:padding="10dp"
+                android:text="Submit"
+
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>

@@ -44,77 +44,77 @@
                 android:textSize="45sp" />
 
             <EditText
-                    android:id="@+id/regUsernameEdit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="20dp"
+                android:id="@+id/regUsernameEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="20dp"
                 android:layout_marginTop="50dp"
-                    app:addTextChangedListener="@{MainActivityViewModel.getUsernameWatcher}"
+                app:addTextChangedListener="@{MainActivityViewModel.getUsernameWatcher}"
 
 
-                    android:layout_marginRight="20dp"
-                    android:fontFamily="@font/lato_lightitalic"
-                    android:hint="@string/username"
-                    android:inputType="text"
+                android:layout_marginRight="20dp"
+                android:fontFamily="@font/lato_lightitalic"
+                android:hint="@string/username"
+                android:inputType="text"
 
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="#fff"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#fff"
 
-                    />
+                />
 
             <EditText
-                    android:id="@+id/regEmailEdit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="20dp"
+                android:id="@+id/regEmailEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="20dp"
 
-                    android:layout_marginRight="20dp"
-                    android:fontFamily="@font/lato_lightitalic"
-                    android:hint="@string/email_address"
-                    app:addTextChangedListener="@{MainActivityViewModel.getEmailTextWatcher}"
-                    android:inputType="textEmailAddress"
+                android:layout_marginRight="20dp"
+                android:fontFamily="@font/lato_lightitalic"
+                android:hint="@string/email_address"
+                app:addTextChangedListener="@{MainActivityViewModel.getEmailTextWatcher}"
+                android:inputType="textEmailAddress"
 
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="#fff"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#fff"
                 android:importantForAutofill="no" />
 
 
             <EditText
 
-                    android:id="@+id/regPasswordEdit"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:fontFamily="@font/lato_lightitalic"
-                    android:hint="@string/password"
-                    android:importantForAutofill="no"
+                android:id="@+id/regPasswordEdit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:fontFamily="@font/lato_lightitalic"
+                android:hint="@string/password"
+                android:importantForAutofill="no"
 
-                    app:addTextChangedListener="@{MainActivityViewModel.getPasswordWatcher}"
-                    android:inputType="textPassword"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="#fff" />
+                app:addTextChangedListener="@{MainActivityViewModel.getPasswordWatcher}"
+                android:inputType="textPassword"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#fff" />
 
 
             <EditText
-                    android:id="@+id/confirmPassword"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    app:addTextChangedListener="@{MainActivityViewModel.getConfirmPasswordwatcher}"
-                    android:fontFamily="@font/lato_lightitalic"
-                    android:hint="@string/confirm_password"
-                    android:importantForAutofill="no"
+                android:id="@+id/confirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                app:addTextChangedListener="@{MainActivityViewModel.getConfirmPasswordwatcher}"
+                android:fontFamily="@font/lato_lightitalic"
+                android:hint="@string/confirm_password"
+                android:importantForAutofill="no"
 
 
-                    android:inputType="textPassword"
-                    android:textAppearance="?android:attr/textAppearanceLarge"
-                    android:textColor="#fff" />
+                android:inputType="textPassword"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#fff" />
 
 
 

@@ -3,18 +3,25 @@ package com.example.mycommuter.repository;
 import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.example.mycommuter.BottomNavigationActivity;
+import com.example.mycommuter.MainActivity;
 import com.example.mycommuter.RestApi.ApiClient;
 import com.example.mycommuter.RestApi.theCommuterApiendpoints;
+import com.example.mycommuter.interfaces.LoginResultCallback;
 import com.example.mycommuter.interfaces.TaskupdateCallback;
+import com.example.mycommuter.model.LoginUser;
 import com.example.mycommuter.model.Tasks;
+import com.example.mycommuter.model.User;
 import com.example.mycommuter.sharedPrefs.saveSharedPref;
 import com.google.gson.JsonObject;
+
+import java.util.Date;
 
 import es.dmoral.toasty.Toasty;
 import retrofit2.Call;
@@ -24,27 +31,37 @@ import retrofit2.Response;
 import static android.content.ContentValues.TAG;
 import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
 
-public class ProfileRepo {
-    private Context context;
-    private static ProfileRepo instance;
-    public MutableLiveData<String> username = new MutableLiveData<>();
-    public ProfileRepo(Context context, MutableLiveData<String> username) {
-        this.context = context;
-        this.username = username;
 
+public class uploadTrepo {
+    private Context context;
+    private static uploadTrepo instance;
+    private MutableLiveData<Tasks> taskMutableLiveData;
+    public MutableLiveData<String> title = new MutableLiveData<>();
+    public MutableLiveData<String> description = new MutableLiveData<>();
+     public MutableLiveData<String> due = new MutableLiveData<>();
+
+
+
+    public uploadTrepo(Context context, MutableLiveData<String> title, MutableLiveData<String> description,MutableLiveData<String> due ) {
+        this.context = context;
+        this.title = title;
+        this.description = description;
+        this.due=due;
 
     }
-    public static ProfileRepo getInstance(Context context,  MutableLiveData<String> username) {
+
+    //singleton
+    public static uploadTrepo getInstance(Context context,  MutableLiveData<String> title, MutableLiveData<String> description,MutableLiveData<String> due ) {
 
         if (instance == null) {
-            instance = new ProfileRepo(context, username);
+            instance = new uploadTrepo(context, title, description,due);
 
         }
         return instance;
     }
-    public boolean postProfileUpdate() {
+    public boolean postTask() {
 
-        setProfileUpdate(new TaskupdateCallback() {
+        settask(new TaskupdateCallback() {
             @Override
             public void onSuccess(String message) {
 
@@ -65,15 +82,16 @@ public class ProfileRepo {
 
     }
 
-    private void setProfileUpdate(TaskupdateCallback taskupdateCallback) {
+    private void settask(TaskupdateCallback taskupdateCallback) {
         final theCommuterApiendpoints apiService = ApiClient.getClient().create(theCommuterApiendpoints.class);
         String token = saveSharedPref.getToken(context);
-        LiveData<String> liveUsername = username;
-
-        Log.e(TAG, "settatokesk: "+username.getValue() );
-
+        LiveData<String> livetitle = title;
+        LiveData<String> Livedescription = description;
+        LiveData<String> livedue = due;
+        Log.e(TAG, "settatokesk: "+title.getValue() );
+        Log.e(TAG, "settatokesk: "+description.getValue() );
         Log.e(TAG, "settatokesk: "+token );
-        Call<JsonObject> call = apiService.setProfile(liveUsername.getValue(),"Bearer "+token);
+        Call<JsonObject> call = apiService.uploadTask(livetitle.getValue(), Livedescription.getValue(),"Bearer "+token);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -82,7 +100,7 @@ public class ProfileRepo {
                 if (response.body() != null) {
 //                    LoginActivity.token = response.body().getAccess_token();
 
-                    ;
+;
                     taskupdateCallback.onSuccess("update Successful");
                     Log.e(TAG, "onSuccess: Login complete");
 
@@ -103,5 +121,7 @@ public class ProfileRepo {
                 taskupdateCallback.onError("Invalid update");
             }
         });
+
+
     }
 }

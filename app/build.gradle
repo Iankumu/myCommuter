@@ -52,9 +52,7 @@ dependencies {
     implementation('com.braintreepayments.api:braintree:2.13.0') {
         exclude group: 'com.braintreepayments.api', module: 'visa-checkout'
     }
-
-
-
+    implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.1.0'
     implementation 'com.mapbox.mapboxsdk:mapbox-android-navigation:0.42.6'
 

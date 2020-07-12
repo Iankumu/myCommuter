@@ -1,5 +1,5 @@
 package com.example.mycommuter.RestApi;
-import com.example.mycommuter.model.JSONObj;
+
 import com.example.mycommuter.model.Tasks;
 
 import java.lang.reflect.Type;

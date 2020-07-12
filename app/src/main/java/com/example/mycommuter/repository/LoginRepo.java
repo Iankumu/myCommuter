@@ -37,7 +37,7 @@ public class LoginRepo {
     public MutableLiveData<String> Password = new MutableLiveData<>();
 
 
-    public LoginRepo(Context context, MutableLiveData<String> email, MutableLiveData<String> pass ) {
+    public LoginRepo(Context context, MutableLiveData<String> email, MutableLiveData<String> pass) {
         this.context = context;
         this.Email = email;
         this.Password = pass;
@@ -45,7 +45,7 @@ public class LoginRepo {
     }
 
     //singleton
-    public static LoginRepo getInstance(Context context, MutableLiveData<String> email, MutableLiveData<String> pass ) {
+    public static LoginRepo getInstance(Context context, MutableLiveData<String> email, MutableLiveData<String> pass) {
 
         if (instance == null) {
             instance = new LoginRepo(context, email, pass);
@@ -58,13 +58,18 @@ public class LoginRepo {
         checkCredentials(new LoginResultCallback() {
             @Override
             public void onSuccess(String message, String token) {
+                try {
+                    saveSharedPref.setLoggedIn(context, new Pair<>(true, token));
+                    Toasty.success(context, message, Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, BottomNavigationActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+                    context.startActivity(intent);
+                    Log.e(TAG, "onSuccess: Login complete");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "onErrormans: " + 1);
 
-                saveSharedPref.setLoggedIn(context, new Pair<>(true,token));
-                Toasty.success(context, message, Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(context, BottomNavigationActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
-                context.startActivity(intent);
-                Log.e(TAG, "onSuccess: Login complete");
+                }
             }
 
             @Override
@@ -87,19 +92,25 @@ public class LoginRepo {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
 
-                Log.d(TAG, "login successful"+response.body().getAccess_token());
-                if (response.body().getAccess_token() != null) {
+
+                try {
+
+
+                    if (response.body().getAccess_token() != null) {
 //                    LoginActivity.token = response.body().getAccess_token();
+                        Log.d(TAG, "login successful" + response.body().getAccess_token());
+                        String token = response.body().getAccess_token();
+                        loginResultCallback.onSuccess("Login Successful", token);
+                        Log.e(TAG, "onSuccess: Login complete");
 
-                    String token = response.body().getAccess_token();
-                    loginResultCallback.onSuccess("Login Successful", token);
-                    Log.e(TAG, "onSuccess: Login complete");
-
-                } else {
-                    Log.e(TAG, "onSuccess: Login failed");
-                    loginResultCallback.onError("Invalid credentials");
+                    } else {
+                        Log.e(TAG, "onSuccess: Login failed");
+                        loginResultCallback.onError("Invalid credentials");
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "onResponselogin mans "+response.errorBody());
                 }
-
 
             }
 

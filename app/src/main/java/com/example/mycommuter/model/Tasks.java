@@ -1,5 +1,8 @@
 package com.example.mycommuter.model;
 
+import android.text.TextUtils;
+import android.util.Patterns;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
@@ -67,5 +70,13 @@ public class Tasks {
 
     public void setDue(String due) {
         this.due = due;
+    }
+
+    public int isValidTask() {
+        if (TextUtils.isEmpty(getTitle()))
+            return 0;
+
+        else
+            return -1;
     }
 }

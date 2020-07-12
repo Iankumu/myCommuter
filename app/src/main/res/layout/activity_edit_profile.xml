@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true">
+
+    <data>
+
+        <variable
+            name="EditProfile"
+            type="com.example.mycommuter.viewmodels.ProfileViewModel" />
+    </data>
+
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
 
@@ -51,10 +63,10 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/uploadpic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-
         android:src="@drawable/ic_add_a_photo_black_18dp"
         app:fabSize="normal"
         app:layout_anchor="@id/appbar_layout"
@@ -74,12 +86,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <TextView
+            <EditText
                 android:id="@+id/usersusername"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:paddingBottom="10dp"
+                app:addTextChangedListener="@{EditProfile.getNameOnTextChangeListener}"
                 android:text="Random Person"
                 android:textAppearance="?attr/textAppearanceHeadline1"
 
@@ -98,7 +111,16 @@
                 android:textAppearance="?attr/textAppearanceHeadline3"
                 android:textColor="?android:attr/textColorSecondary"
                 android:textSize="15sp" />
+            <Button
+                android:id="@+id/update"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/btn_bg"
+                android:onClick="@{EditProfile::onProfileUpdateClick}"
 
+                android:paddingHorizontal="40dp"
+                android:text="Update profile" />
 
         </LinearLayout>
 
@@ -107,3 +129,4 @@
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>
