@@ -55,7 +55,7 @@ public class TasksRepo {
             public void getTask(List<Tasks> tasks) {
 
                 data.setValue(arrayofTask);
-                Log.e("data", "" + data);
+
 
             }
         });
@@ -99,7 +99,8 @@ public class TasksRepo {
                             task.setTitle(jo2.getString("title"));
                             task.setDescritpion(jo2.getString("descritpion"));
                             task.setDue(jo2.getString("created_at"));
-
+//                            Log.e("dataT", "" + jo2.getString("title"));
+//                            Log.e("dataD", "" + task.getDescritpion());
                             arrayofTask.add(task);
 
                         } catch (JSONException ex) {

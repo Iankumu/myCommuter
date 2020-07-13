@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -14,9 +15,10 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.mycommuter.interfaces.ProfileUpdateCallback;
 import com.example.mycommuter.model.User;
 import com.example.mycommuter.repository.ProfileRepo;
-import com.example.mycommuter.repository.uploadTrepo;
 
 import es.dmoral.toasty.Toasty;
+
+import static android.content.ContentValues.TAG;
 
 public class ProfileViewModel extends AndroidViewModel {
     private Context context;
@@ -51,7 +53,7 @@ public class ProfileViewModel extends AndroidViewModel {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
+                Log.e(TAG, "onProfileUpdateClick: "+s);
             }
 
             @Override
@@ -68,15 +70,15 @@ public class ProfileViewModel extends AndroidViewModel {
             profileUpdateCallback.onError("Your must enter a task");
         } else {
             username.setValue(user.getUsername());
-
+            Log.e(TAG, "onProfileUpdateClick: "+user.getUsername() );
             setProfileUpdate();
 
         }
     }
 
-    private void setProfileUpdate() {
+    private boolean setProfileUpdate() {
         profileRepo = ProfileRepo.getInstance(context, username);
-        profileRepo.postProfileUpdate();
+        return profileRepo.postProfileUpdate();
     }
 
 

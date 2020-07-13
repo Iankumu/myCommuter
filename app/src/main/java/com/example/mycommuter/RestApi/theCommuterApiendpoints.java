@@ -102,8 +102,14 @@ public interface theCommuterApiendpoints {
     Call<JsonObject> getProfile(
 
             @Header("Authorization") String authorization);
+
+    @Headers(
+            "Accept: application/json"
+
+    )
+    @FormUrlEncoded
     @POST("api/profile")
-    Call<JsonObject> setProfile(
+    Call<User> setProfile(
             @Field("name") String name,
             @Header("Authorization") String authorization);
 

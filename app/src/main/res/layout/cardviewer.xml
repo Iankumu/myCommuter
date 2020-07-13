@@ -11,7 +11,7 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/taskcardviewer"
-            android:layout_width="11dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="8dp"
             android:checkable="true"
@@ -46,6 +46,7 @@
                     android:layout_weight="1"
                     android:ellipsize="end"
                     android:maxLines="1"
+                     android:text="hey guys"
                     android:textAppearance="?attr/textAppearanceHeadline3"
                     android:textSize="12sp" />
 
@@ -54,9 +55,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+
+                    android:text="hey guys"
                     android:layout_weight="1"
                     android:ellipsize="end"
                     android:maxLines="1"
+                    android:textColor="@color/colorPrimary"
                     android:textAppearance="?attr/textAppearanceSubtitle1"
                     android:textSize="12sp" />
 
@@ -66,7 +70,10 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_weight="2"
+
+                    android:text="hey guys"
                     android:ellipsize="end"
+                    android:textColor="@color/colorPrimary"
                     android:maxLines="3"
                     android:textAppearance="?attr/textAppearanceBody1"
                     android:textSize="12sp" />
