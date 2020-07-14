@@ -2,6 +2,7 @@ package com.example.mycommuter.fragments;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
@@ -13,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 import android.util.Log;
 import android.view.Gravity;
@@ -33,6 +36,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.mycommuter.BottomNavigationActivity;
 import com.example.mycommuter.R;
 import com.example.mycommuter.RestApi.ApiClient;
 import com.example.mycommuter.model.LocationModel;
@@ -52,6 +56,7 @@ import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
 import com.mapbox.api.directions.v5.MapboxDirections;
+import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
@@ -86,6 +91,7 @@ import java.util.List;
 import java.util.Map;
 
 import static android.os.Looper.getMainLooper;
+import static com.mapbox.mapboxsdk.style.layers.Property.NONE;
 import static com.mapbox.mapboxsdk.style.layers.Property.VISIBLE;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement;
@@ -98,6 +104,10 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.visibility;
 import static com.mapbox.core.constants.Constants.PRECISION_6;
 
 import com.example.mycommuter.sharedPrefs.saveSharedPref;
+import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher;
+import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
+import com.mapbox.services.android.navigation.ui.v5.route.NavigationMapRoute;
+import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -108,9 +118,11 @@ public class MapFragment extends Fragment implements PermissionsListener {
     private MapboxMap mapboxMap;
     private PermissionsManager permissionsManager;
     private ImageView hoveringMarker;
-    private Button selectLocationButton;
+    private Button selectLocationButton, button;
     private FloatingActionButton btnSearchLocation, btnMarker;
     private Layer droppedMarkerLayer;
+    private DirectionsRoute currentRoute;
+    private NavigationMapRoute navigationMapRoute;
 
     private LocationEngine locationEngine;
     private long DEFAULT_INTERVAL_IN_MILLISECONDS = 60000L;
@@ -119,7 +131,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
     private static final String DROPPED_MARKER_LAYER_ID = "DROPPED_MARKER_LAYER_ID";
 
     private static final String LOG_TAG_Code ="Hashcode";
-    public static String  Base_URL="http://5580a54a2efc.ngrok.io/";
+    public static String  Base_URL="http://cf109af7b81e.ngrok.io/";
     public static String  URL = Base_URL+"api/location";
     public static String Navigation_url = Base_URL+"api/navigation";
     private FeatureCollection dashedLineDirectionsFeatureCollection;
@@ -134,11 +146,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
     private static final String DIRECTIONS_LAYER_ID2 = "DIRECTIONS_LAYER_ID2";
     private static final String LAYER_BELOW_ID2 = "road-label-small2";
 
-
-
     private MapFragmentLocationCallback callback = new MapFragmentLocationCallback(this);
-
-
 
 
     @Override
@@ -150,6 +158,18 @@ public class MapFragment extends Fragment implements PermissionsListener {
         btnSearchLocation = view.findViewById(R.id.btnSearchLocation);
         btnMarker = view.findViewById(R.id.btnShowMarker);
         selectLocationButton = view.findViewById(R.id.select_location_button);
+        button = view.findViewById(R.id.selectroute);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean simulateRoute = true;
+                NavigationLauncherOptions options = NavigationLauncherOptions.builder()
+                        .directionsRoute(currentRoute)
+                        .shouldSimulateRoute(simulateRoute)
+                        .build();
+                NavigationLauncher.startNavigation(getActivity(), options);
+            }
+        });
 
         final boolean[] markerIsShown = {false};
 
@@ -211,10 +231,12 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                                         destinationLatitude + "\t" + destinationLongitude, Toast.LENGTH_SHORT).show();
 
 //                                               postDestinationRequest(destinationLatitude,destinationLongitude);
-                                                getRequest();
+
+                                                getRequest(style);
 
 
                                             } else {
+                                                clearRoutes(style);
                                                 selectLocationButton.setBackgroundColor(
                                                         ContextCompat.getColor(getActivity().getApplicationContext(), R.color.colorPrimary));
                                                 selectLocationButton.setText("Select Location");
@@ -223,7 +245,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
                                                 droppedMarkerLayer = style.getLayer(DROPPED_MARKER_LAYER_ID);
                                                 if (droppedMarkerLayer != null) {
-                                                    droppedMarkerLayer.setProperties(visibility(Property.NONE));
+                                                    droppedMarkerLayer.setProperties(visibility(NONE));
                                                 }
                                             }
                                         }
@@ -260,9 +282,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-
-                            getRequest();
-
+//                            getRequest();
                         }
                     }
                     , new Response.ErrorListener() {
@@ -292,9 +312,9 @@ public class MapFragment extends Fragment implements PermissionsListener {
             };
 
             requestQueue.add(objectRequest);
-        }
+    }
 
-    private void getRequest() {
+    private void getRequest(@NonNull Style loadedMapStyle) {
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         String token = saveSharedPref.getToken(getActivity().getApplicationContext());
         JsonObjectRequest objectRequest = new JsonObjectRequest(
@@ -314,7 +334,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                String geometry2 = secondroute.getString("geometry");
                                Log.wtf(LOG_TAG_Code, String.valueOf(geometry2));
 
-                               drawNavigationPolylineRoute2(secondroute);
+                               drawNavigationPolylineRoute2(secondroute, loadedMapStyle);
 
                            }
 
@@ -326,7 +346,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
 
 
-                           drawNavigationPolylineRoute(firstroute);
+                           drawNavigationPolylineRoute(firstroute, loadedMapStyle);
 
                        } catch (JSONException e) {
                            e.printStackTrace();
@@ -354,7 +374,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
     }
 
-    private void drawNavigationPolylineRoute(final JSONObject route) {
+    private void drawNavigationPolylineRoute(final JSONObject route, @NonNull Style loadedMapStyle) {
         if (mapboxMap != null) {
             mapboxMap.getStyle(new Style.OnStyleLoaded() {
                 @Override
@@ -379,9 +399,53 @@ public class MapFragment extends Fragment implements PermissionsListener {
                 }
             });
         }
+
+        Layer route1 = loadedMapStyle.getLayer(DIRECTIONS_LAYER_ID);
+        assert route1 != null;
+
+        if (NONE.equals(route1.getVisibility().getValue())) {
+            route1.setProperties(visibility(VISIBLE));
+        }
+
+        Point destinationPoint = Point.fromLngLat(36.843069,-1.306865);
+        Point originPoint = Point.fromLngLat(36.8385369, -1.3128765);
+
+        NavigationRoute.builder(getActivity().getApplicationContext())
+                .accessToken(Mapbox.getAccessToken())
+                .origin(originPoint)
+                .destination(destinationPoint)
+                .build()
+                .getRoute(new Callback<DirectionsResponse>() {
+                    @Override
+                    public void onResponse(Call<DirectionsResponse> call, retrofit2.Response<DirectionsResponse> response) {
+                        Log.d("Ha", "Response code: " + response.code());
+                        if (response.body() == null) {
+                            Log.e("Ha", "No routes found, make sure you set the right user and access token.");
+                            return;
+                        } else if (response.body().routes().size() < 1) {
+                            Log.e("Ha", "No routes found");
+                            return;
+                        }
+
+                        currentRoute = response.body().routes().get(0);
+
+                        // Draw the route on the map (Only draws one route) refer to comment on: https://github.com/mapbox/mapbox-navigation-android/issues/467
+//                        if (navigationMapRoute != null) {
+//                            navigationMapRoute.removeRoute();
+//                        } else {
+//                            navigationMapRoute = new NavigationMapRoute(null, mapView, mapboxMap, R.style.NavigationMapRoute);
+//                        }
+//                        navigationMapRoute.addRoute(currentRoute);
+                    }
+
+                    @Override
+                    public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+
+                    }
+                });
     }
 
-    private void drawNavigationPolylineRoute2(final JSONObject route) {
+    private void drawNavigationPolylineRoute2(final JSONObject route, @NonNull Style loadedMapStyle) {
         if (mapboxMap != null) {
             mapboxMap.getStyle(new Style.OnStyleLoaded() {
                 @Override
@@ -405,6 +469,13 @@ public class MapFragment extends Fragment implements PermissionsListener {
                     }
                 }
             });
+        }
+
+        Layer route2 = loadedMapStyle.getLayer(DIRECTIONS_LAYER_ID2);
+        assert route2 != null;
+
+        if (NONE.equals(route2.getVisibility().getValue())) {
+            route2.setProperties(visibility(VISIBLE));
         }
     }
 
@@ -432,6 +503,16 @@ public class MapFragment extends Fragment implements PermissionsListener {
                 ), LAYER_BELOW_ID2);
     }
 
+    private void clearRoutes(@NonNull Style loadedMapStyle){
+        Layer route1 = loadedMapStyle.getLayer(DIRECTIONS_LAYER_ID);
+        Layer route2 = loadedMapStyle.getLayer(DIRECTIONS_LAYER_ID2);
+
+        assert route1 != null;
+        route1.setProperties(visibility(NONE));
+        assert route2 != null;
+        route2.setProperties(visibility(NONE));
+    }
+
 
     private void initDroppedMarker(@NonNull Style loadedMapStyle) {
         loadedMapStyle.addImage("dropped-icon-image", BitmapFactory.decodeResource(
@@ -440,7 +521,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
         loadedMapStyle.addLayer(new SymbolLayer(DROPPED_MARKER_LAYER_ID,
                 "dropped-marker-source-id").withProperties(
                 iconImage("dropped-icon-image"),
-                visibility(Property.NONE),
+                visibility(NONE),
                 iconAllowOverlap(true),
                 iconIgnorePlacement(true)
 
