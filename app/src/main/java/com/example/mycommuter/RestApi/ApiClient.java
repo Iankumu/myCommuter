@@ -16,7 +16,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ApiClient {
-    private static String Base_URL = "http://9650fc7df277.ngrok.io/";
+    private static String Base_URL = "http://35ee111a9d66.ngrok.io/";
 
     public static Retrofit getClient() {
         OkHttpClient okHttpClient = new OkHttpClient.Builder()

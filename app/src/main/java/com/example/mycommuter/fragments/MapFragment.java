@@ -39,6 +39,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.mycommuter.BottomNavigationActivity;
 import com.example.mycommuter.R;
 import com.example.mycommuter.RestApi.ApiClient;
+import com.example.mycommuter.interfaces.Navigation;
 import com.example.mycommuter.model.LocationModel;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -131,7 +132,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
     private static final String DROPPED_MARKER_LAYER_ID = "DROPPED_MARKER_LAYER_ID";
 
     private static final String LOG_TAG_Code ="Hashcode";
-    public static String  Base_URL="http://9650fc7df277.ngrok.io/";
+    public static String  Base_URL="http://35ee111a9d66.ngrok.io/";
     public static String  URL = Base_URL+"api/location";
     public static String Navigation_url = Base_URL+"api/navigation";
     public static String coordinates = Base_URL+"api/coordinates";
@@ -148,6 +149,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
     private static final String LAYER_BELOW_ID2 = "road-label-small2";
 
     private MapFragmentLocationCallback callback = new MapFragmentLocationCallback(this);
+    double curLong,curLat,destLong,destLat;
 
 
     @Override
@@ -268,8 +270,6 @@ public class MapFragment extends Fragment implements PermissionsListener {
                 });
             }
         });
-
-
         return view;
     }
 
@@ -284,7 +284,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                     @Override
                     public void onResponse(String response) {
                             getRequest(loadedMapStyle);
-                            getCoordinatesRequest();
+
                     }
                 }
                 , new Response.ErrorListener() {
@@ -346,8 +346,6 @@ public class MapFragment extends Fragment implements PermissionsListener {
                             String geometry = firstroute.getString("geometry");
                             Log.wtf(LOG_TAG_Code, String.valueOf(geometry));
 
-
-
                             drawNavigationPolylineRoute(firstroute, loadedMapStyle);
 
                         } catch (JSONException e) {
@@ -359,7 +357,6 @@ public class MapFragment extends Fragment implements PermissionsListener {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // do stuff here
                     }
                 }) {
             @Override
@@ -373,7 +370,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
         requestQueue.add(objectRequest);
 
     }
-    private void getCoordinatesRequest() {
+    private void getCoordinatesRequest(Navigation navigation) {
         String token = saveSharedPref.getToken(getActivity().getApplicationContext());
         final LocationModel locationModel = new LocationModel();
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
@@ -395,10 +392,11 @@ public class MapFragment extends Fragment implements PermissionsListener {
                             locationModel.setCurrentLongitude(curlong);
                             locationModel.setDestinationLatitude(destlat);
                             locationModel.setDestinationLongitude(destlong);
-                            Log.d("Cooridinates", "CurrentLatitude:"+String.valueOf(curlat));
-                            Log.d("Cooridinates", "CurrentLongitude:"+String.valueOf(curlong));
-                            Log.d("Cooridinates", "DestinationLatitude:"+String.valueOf(destlat));
-                            Log.d("Cooridinates","DestinationLongitude:"+ String.valueOf(destlong));
+                            navigation.getCoordinates(locationModel);
+//                            Log.d("Cooridinates", "CurrentLatitude:"+String.valueOf(curlat));
+//                            Log.d("Cooridinates", "CurrentLongitude:"+String.valueOf(curlong));
+//                            Log.d("Cooridinates", "DestinationLatitude:"+String.valueOf(destlat));
+//                            Log.d("Cooridinates","DestinationLongitude:"+ String.valueOf(destlong));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -456,8 +454,37 @@ public class MapFragment extends Fragment implements PermissionsListener {
             route1.setProperties(visibility(VISIBLE));
         }
 
-        Point destinationPoint = Point.fromLngLat(36.843069,-1.306865);
-        Point originPoint = Point.fromLngLat(36.8385369, -1.3128765);
+
+//        double destLat =-0.28954112968664547;
+//        double destLong = 36.06092857793996;
+//        double curLat = -0.2981674;
+//        double curLong =36.0567935;
+
+        getCoordinatesRequest(new Navigation() {
+            @Override
+            public void getCoordinates(LocationModel locationModel) {
+            String currentLatitude=locationModel.getCurrentLatitude();
+            String currentLongitude=locationModel.getCurrentLongitude();
+            String destinationLatitude=locationModel.getDestinationLatitude();
+            String destinationLongitude=locationModel.getDestinationLongitude();
+
+             curLong = Double.parseDouble(currentLongitude);
+             curLat = Double.parseDouble(currentLatitude);
+             destLong = Double.parseDouble(destinationLongitude);
+             destLat = Double.parseDouble(destinationLatitude);
+                Log.d("Cooridinates", "CurrentLatitude:"+String.valueOf(curLat));
+                Log.d("Cooridinates", "CurrentLongitude:"+String.valueOf(curLong));
+                Log.d("Cooridinates", "DestinationLatitude:"+String.valueOf(destLat));
+                Log.d("Cooridinates","DestinationLongitude:"+ String.valueOf(destLong));
+
+
+
+//        Point originPoint = Point.fromLngLat(36.0567935, -0.2981674);
+//        Point destinationPoint = Point.fromLngLat( 36.06092857793996,-0.28954112968664547);
+
+                Point originPoint = Point.fromLngLat(curLong, curLat);
+                Point destinationPoint = Point.fromLngLat( destLong,destLat);
+
 
         NavigationRoute.builder(getActivity().getApplicationContext())
                 .accessToken(Mapbox.getAccessToken())
@@ -492,6 +519,8 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
                     }
                 });
+            }
+        });
     }
 
     private void drawNavigationPolylineRoute2(final JSONObject route, @NonNull Style loadedMapStyle) {
@@ -661,7 +690,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 //
 ////                    Toast.makeText(getActivity().getApplicationContext(), userToken, Toast.LENGTH_SHORT).show();
 //                    Toast.makeText(getActivity().getApplicationContext(), email, Toast.LENGTH_SHORT).show();
-//                    postCurrentRequest(locationModel.getLatitude(), locationModel.getLongitude());
+                    postCurrentRequest(locationModel.getLatitude(), locationModel.getLongitude());
                 } catch (NullPointerException e){
 
                 }
