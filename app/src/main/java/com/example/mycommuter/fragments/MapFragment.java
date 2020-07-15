@@ -131,9 +131,10 @@ public class MapFragment extends Fragment implements PermissionsListener {
     private static final String DROPPED_MARKER_LAYER_ID = "DROPPED_MARKER_LAYER_ID";
 
     private static final String LOG_TAG_Code ="Hashcode";
-    public static String  Base_URL="http://cf109af7b81e.ngrok.io/";
+    public static String  Base_URL="http://9650fc7df277.ngrok.io/";
     public static String  URL = Base_URL+"api/location";
     public static String Navigation_url = Base_URL+"api/navigation";
+    public static String coordinates = Base_URL+"api/coordinates";
     private FeatureCollection dashedLineDirectionsFeatureCollection;
 
     //for route 1
@@ -230,9 +231,9 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                                 Toast.makeText(getActivity().getApplicationContext(), "Destination:\t" +
                                                         destinationLatitude + "\t" + destinationLongitude, Toast.LENGTH_SHORT).show();
 
-//                                               postDestinationRequest(destinationLatitude,destinationLongitude);
+                                               postDestinationRequest(destinationLatitude,destinationLongitude,style);
 
-                                                getRequest(style);
+//                                                getRequest(style);
 
 
                                             } else {
@@ -272,107 +273,155 @@ public class MapFragment extends Fragment implements PermissionsListener {
         return view;
     }
 
-    private void postDestinationRequest(String destinationLatitude, String destinationLongitude) {
+    private void postDestinationRequest(String destinationLatitude, String destinationLongitude,@NonNull Style loadedMapStyle) {
 
-            String token = saveSharedPref.getToken(getActivity().getApplicationContext());
-            RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
-            StringRequest objectRequest = new StringRequest(
-                    Request.Method.POST,
-                    Navigation_url,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-//                            getRequest();
-                        }
+        String token = saveSharedPref.getToken(getActivity().getApplicationContext());
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+        StringRequest objectRequest = new StringRequest(
+                Request.Method.POST,
+                Navigation_url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                            getRequest(loadedMapStyle);
+                            getCoordinatesRequest();
                     }
-                    , new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-
                 }
-            })
-            {
-                //Overriding methods to pass data to the server
-                @Override
-                protected Map<String,String> getParams(){
-                    //Creating a Map with key and value and send the data to the database
-                    Map<String,String> params = new HashMap<String ,String>();
-                    params.put("destinationLatitude", destinationLatitude);
-                    params.put("destinationLongitude", destinationLongitude);
-                    return params;
+                , new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
 
-                }
-                @Override
-                public Map<String,String>getHeaders() throws AuthFailureError {
-                    Map<String,String> params = new HashMap<String ,String>();
-                    params.put("Application-Type","application/x-www-form-urlencoded");
-                    params.put("Authorization", "Bearer " +token);
-                    return params;
-                }
-            };
+            }
+        })
+        {
+            //Overriding methods to pass data to the server
+            @Override
+            protected Map<String,String> getParams(){
+                //Creating a Map with key and value and send the data to the database
+                Map<String,String> params = new HashMap<String ,String>();
+                params.put("destinationLatitude", destinationLatitude);
+                params.put("destinationLongitude", destinationLongitude);
+                return params;
 
-            requestQueue.add(objectRequest);
+            }
+            @Override
+            public Map<String,String>getHeaders() throws AuthFailureError {
+                Map<String,String> params = new HashMap<String ,String>();
+                params.put("Application-Type","application/x-www-form-urlencoded");
+                params.put("Authorization", "Bearer " +token);
+                return params;
+            }
+        };
+
+        requestQueue.add(objectRequest);
     }
 
     private void getRequest(@NonNull Style loadedMapStyle) {
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         String token = saveSharedPref.getToken(getActivity().getApplicationContext());
         JsonObjectRequest objectRequest = new JsonObjectRequest(
-               Request.Method.GET,
-               Navigation_url,
-               null,
-               new Response.Listener<JSONObject>() {
-                   @Override
-                   public void onResponse(JSONObject response) {
-                       try {
-                           JSONArray routes = response.getJSONArray("routes");
-                           Log.wtf(LOG_TAG_Code + "\tNo. of routes", String.valueOf(routes.length()));
+                Request.Method.GET,
+                Navigation_url,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray routes = response.getJSONArray("routes");
+                            Log.wtf(LOG_TAG_Code + "\tNo. of routes", String.valueOf(routes.length()));
 
-                           if (routes.length() == 2){
-                               JSONObject secondroute = routes.getJSONObject(1);
+                            if (routes.length() == 2){
+                                JSONObject secondroute = routes.getJSONObject(1);
 
-                               String geometry2 = secondroute.getString("geometry");
-                               Log.wtf(LOG_TAG_Code, String.valueOf(geometry2));
+                                String geometry2 = secondroute.getString("geometry");
+                                Log.wtf(LOG_TAG_Code, String.valueOf(geometry2));
 
-                               drawNavigationPolylineRoute2(secondroute, loadedMapStyle);
+                                drawNavigationPolylineRoute2(secondroute, loadedMapStyle);
 
-                           }
+                            }
 
-                           JSONObject firstroute = routes.getJSONObject(0);
-
-
-                           String geometry = firstroute.getString("geometry");
-                           Log.wtf(LOG_TAG_Code, String.valueOf(geometry));
+                            JSONObject firstroute = routes.getJSONObject(0);
 
 
+                            String geometry = firstroute.getString("geometry");
+                            Log.wtf(LOG_TAG_Code, String.valueOf(geometry));
 
-                           drawNavigationPolylineRoute(firstroute, loadedMapStyle);
 
-                       } catch (JSONException e) {
-                           e.printStackTrace();
-                       }
 
-                   }
-               },
-               new Response.ErrorListener() {
-                   @Override
-                   public void onErrorResponse(VolleyError error) {
-                       // do stuff here
-                   }
-               }) {
-           @Override
-           public Map<String, String> getHeaders() throws AuthFailureError {
-               HashMap<String, String> headers = new HashMap<String, String> ();
-               headers.put("Authorization", "Bearer " + token);
-               return headers;
-           }
+                            drawNavigationPolylineRoute(firstroute, loadedMapStyle);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        // do stuff here
+                    }
+                }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String> ();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
         };
 
-       requestQueue.add(objectRequest);
+        requestQueue.add(objectRequest);
 
+    }
+    private void getCoordinatesRequest() {
+        String token = saveSharedPref.getToken(getActivity().getApplicationContext());
+        final LocationModel locationModel = new LocationModel();
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+        JsonObjectRequest objectRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                coordinates,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray jo = response.getJSONArray("data");
+                            String curlat = (String) jo.get(0);
+                            String curlong = (String) jo.get(1);
+                            String destlat = (String) jo.get(2);
+                            String destlong = (String) jo.get(3);
+
+                            locationModel.setCurrentLatitude(curlat);
+                            locationModel.setCurrentLongitude(curlong);
+                            locationModel.setDestinationLatitude(destlat);
+                            locationModel.setDestinationLongitude(destlong);
+                            Log.d("Cooridinates", "CurrentLatitude:"+String.valueOf(curlat));
+                            Log.d("Cooridinates", "CurrentLongitude:"+String.valueOf(curlong));
+                            Log.d("Cooridinates", "DestinationLatitude:"+String.valueOf(destlat));
+                            Log.d("Cooridinates","DestinationLongitude:"+ String.valueOf(destlong));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // do stuff here
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String> ();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+
+        requestQueue.add(objectRequest);
 
 
     }
+
 
     private void drawNavigationPolylineRoute(final JSONObject route, @NonNull Style loadedMapStyle) {
         if (mapboxMap != null) {
@@ -777,4 +826,3 @@ public class MapFragment extends Fragment implements PermissionsListener {
         mapView.onLowMemory();
     }
 }
-
