@@ -20,4 +20,5 @@
     <string name="map_access_token">pk.eyJ1IjoiYnJheW8zMzMiLCJhIjoiY2s5aGYzcjZlMHVrOTNubzl2dmM4dXZjbiJ9.n3uugG5iwpN1rFn88CCGCA</string>
     <string name="notify_permission_required">To be able to use map, you need to allow the application to access to device location</string>
     <string name="permission_explanation">Please grant permission to the application to access device location</string>
+    <string name="simulate_route">Simulate Route</string>
 </resources>
