@@ -49,9 +49,7 @@ MainActivityViewModel mainActivityViewModel;
 
         mainActivityViewModel = new ViewModelProvider(this, new SignupViewHolderModelFactory(getApplication()))
                 .get(MainActivityViewModel.class);
-//        loginActivityModelView=new ViewModelProvider(this).get(LoginActivityModelView.class);
 
-//        loginActivityModelView = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(LoginActivityModelView.class);
 
         mainBinding = DataBindingUtil.setContentView(MainActivity.this, R.layout.activity_main);
         mainBinding.setLifecycleOwner(this);

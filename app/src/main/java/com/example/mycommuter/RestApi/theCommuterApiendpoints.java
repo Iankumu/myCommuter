@@ -113,9 +113,14 @@ public interface theCommuterApiendpoints {
             @Field("name") String name,
             @Header("Authorization") String authorization);
 
-    @GET("api/email/resend")
+    @Headers(
+            "Accept: application/json"
+
+    )
+    @GET("api/email/verifysend")
     Call<User> getVerified(
             @Header("Authorization") String authorization);
+
 }
 //    @Path("title") String title,
 //    @Path("descritpion") String descritpion ,
