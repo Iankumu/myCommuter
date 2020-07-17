@@ -2,18 +2,13 @@ package com.example.mycommuter.fragments;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.location.Location;
-import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
@@ -21,9 +16,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import retrofit2.Call;
 import retrofit2.Callback;
-import timber.log.Timber;
 
-import android.os.Handler;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -53,11 +46,9 @@ import com.mapbox.android.core.location.LocationEngineRequest;
 import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
-import com.mapbox.api.geocoding.v5.GeocodingCriteria;
-import com.mapbox.api.geocoding.v5.MapboxGeocoding;
+import com.mapbox.api.directions.v5.models.DirectionsResponse;
+import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.api.geocoding.v5.models.CarmenFeature;
-import com.mapbox.api.geocoding.v5.models.GeocodingResponse;
-import com.mapbox.core.exceptions.ServicesException;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
 import com.mapbox.geojson.LineString;
@@ -75,12 +66,14 @@ import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.model.PlaceOptions;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceAutocompleteFragment;
 import com.mapbox.mapboxsdk.plugins.places.autocomplete.ui.PlaceSelectionListener;
-import com.mapbox.mapboxsdk.storage.Resource;
 import com.mapbox.mapboxsdk.style.layers.Layer;
 import com.mapbox.mapboxsdk.style.layers.LineLayer;
 import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
+import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher;
+import com.mapbox.services.android.navigation.ui.v5.NavigationLauncherOptions;
+import com.mapbox.services.android.navigation.v5.navigation.NavigationRoute;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -92,7 +85,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static android.app.usage.UsageEvents.Event.NONE;
 import static android.content.ContentValues.TAG;
 import static android.os.Looper.getMainLooper;
 import static com.mapbox.mapboxsdk.style.layers.Property.VISIBLE;
@@ -113,9 +105,10 @@ public class MapFragment extends Fragment implements PermissionsListener {
     private MapboxMap mapboxMap;
     private PermissionsManager permissionsManager;
     private ImageView hoveringMarker;
-    private Button selectLocationButton, cancelSearchbarDestination;
+    private Button selectLocationButton, cancelSearchbarDestination, btnSimulate;
     private FloatingActionButton btnSearchLocation, btnMarker;
     private Layer droppedMarkerLayer, droppedSearchBarMarkerLayer;
+    private DirectionsRoute currentRoute;
 
     private LocationEngine locationEngine;
     private long DEFAULT_INTERVAL_IN_MILLISECONDS = 60000L;
@@ -127,7 +120,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
     private static final String LOG_TAG_Code ="Hashcode";
 
     //    public static String  URL = "https://radiant-lowlands-66469.herokuapp.com/TheCommuterAPI/public/api/location";
-    public static String  Base_URL="http://6887b114882d.ngrok.io/";
+    public static String  Base_URL="http://1680d0d72761.ngrok.io/";
     public static String  URL = Base_URL+"api/location";
     public static String Navigation_url = Base_URL+"api/navigation";
     private FeatureCollection dashedLineDirectionsFeatureCollection;
@@ -156,6 +149,21 @@ public class MapFragment extends Fragment implements PermissionsListener {
         btnMarker = view.findViewById(R.id.btnShowMarker);
         selectLocationButton = view.findViewById(R.id.select_location_button);
         cancelSearchbarDestination = view.findViewById(R.id.cancel_search_bar_destination);
+        btnSimulate = view.findViewById(R.id.simulateRoute);
+        btnSimulate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentRoute != null) {
+                    NavigationLauncherOptions options = NavigationLauncherOptions.builder()
+                            .directionsRoute(currentRoute)
+                            .shouldSimulateRoute(true)
+                            .build();
+                    NavigationLauncher.startNavigation(getActivity(), options);
+                }else {
+                    Toast.makeText(getActivity().getApplicationContext(), "Please try again after a few seconds", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         final boolean[] markerIsShown = {false};
         final boolean[] searchIsUsed = {false};
@@ -166,6 +174,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
         cancelSearchbarDestination.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                btnSimulate.setVisibility(View.GONE);
                 cancelSearchbarDestination.setVisibility(View.GONE);
                 searchIsUsed[0] = false;
 
@@ -227,6 +236,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
                                                     hoveringMarker.setVisibility(View.INVISIBLE);
 
+                                                    btnSimulate.setVisibility(View.VISIBLE);
                                                     selectLocationButton.setBackgroundColor(
                                                             ContextCompat.getColor(getActivity().getApplicationContext(), R.color.colorPrimary));
                                                     selectLocationButton.setText("Cancel");
@@ -249,9 +259,11 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                                     Toast.makeText(getActivity().getApplicationContext(), "Destination:\t" +
                                                             destinationLatitude + "\t" + destinationLongitude, Toast.LENGTH_SHORT).show();
 
-//                                                    getRequest();
+//                                                    getRequest(style);
 
                                                 } else {
+                                                    clearRoutes(style);
+                                                    btnSimulate.setVisibility(View.GONE);
                                                     selectLocationButton.setBackgroundColor(
                                                             ContextCompat.getColor(getActivity().getApplicationContext(), R.color.colorPrimary));
                                                     selectLocationButton.setText("Select Location");
@@ -299,7 +311,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
 
     //destination coordinates to (routes from) api
-    private void postDestinationRequest(String destinationLatitude, String destinationLongitude) {
+    private void postDestinationRequest(String destinationLatitude, String destinationLongitude, @NonNull Style loadedMapStyle) {
         String token = saveSharedPref.getToken(getActivity().getApplicationContext());
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         StringRequest objectRequest = new StringRequest(
@@ -308,7 +320,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        getRequest();
+                        getRequest(loadedMapStyle);
                     }
                 }
                 , new Response.ErrorListener() {
@@ -340,7 +352,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
         requestQueue.add(objectRequest);
     }
 
-    private void getRequest() {
+    private void getRequest(@NonNull Style loadedMapStyle) {
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         String token = saveSharedPref.getToken(getActivity().getApplicationContext());
         JsonObjectRequest objectRequest = new JsonObjectRequest(
@@ -360,7 +372,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                 String geometry2 = secondroute.getString("geometry");
                                 Log.wtf(LOG_TAG_Code, String.valueOf(geometry2));
 
-                                drawNavigationPolylineRoute2(secondroute);
+                                drawNavigationPolylineRoute2(secondroute, loadedMapStyle);
                             }
 
                             JSONObject firstroute = routes.getJSONObject(0);
@@ -368,7 +380,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                             String geometry = firstroute.getString("geometry");
                             Log.wtf(LOG_TAG_Code, String.valueOf(geometry));
 
-                            drawNavigationPolylineRoute(firstroute);
+                            drawNavigationPolylineRoute(firstroute, loadedMapStyle);
 
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -395,7 +407,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
 
     //drawing route 1
-    private void drawNavigationPolylineRoute(final JSONObject route) {
+    private void drawNavigationPolylineRoute(final JSONObject route, @NonNull Style loadedMapStyle) {
         if (mapboxMap != null) {
             mapboxMap.getStyle(new Style.OnStyleLoaded() {
                 @Override
@@ -420,10 +432,46 @@ public class MapFragment extends Fragment implements PermissionsListener {
                 }
             });
         }
+
+        Layer route1 = loadedMapStyle.getLayer(DIRECTIONS_LAYER_ID);
+        assert route1 != null;
+
+        if (Property.NONE.equals(route1.getVisibility().getValue())) {
+            route1.setProperties(visibility(VISIBLE));
+        }
+
+        Point destinationPoint = Point.fromLngLat(36.843069,-1.306865);
+        Point originPoint = Point.fromLngLat(36.8385369, -1.3128765);
+
+        NavigationRoute.builder(getActivity().getApplicationContext())
+                .accessToken(Mapbox.getAccessToken())
+                .origin(originPoint)
+                .destination(destinationPoint)
+                .build()
+                .getRoute(new Callback<DirectionsResponse>() {
+                    @Override
+                    public void onResponse(Call<DirectionsResponse> call, retrofit2.Response<DirectionsResponse> response) {
+                        Log.wtf(LOG_TAG_Code + " for Simulation", "Response code: " + response.code());
+                        if (response.body() == null) {
+                            Log.e(LOG_TAG_Code, "No routes found, make sure you set the right user and access token.");
+                            return;
+                        } else if (response.body().routes().size() < 1) {
+                            Log.e(LOG_TAG_Code, "No routes found");
+                            return;
+                        }
+
+                        currentRoute = response.body().routes().get(0);
+                    }
+
+                    @Override
+                    public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+
+                    }
+                });
     }
 
     //drawing route 2
-    private void drawNavigationPolylineRoute2(final JSONObject route) {
+    private void drawNavigationPolylineRoute2(final JSONObject route, @NonNull Style loadedMapStyle) {
         if (mapboxMap != null) {
             mapboxMap.getStyle(new Style.OnStyleLoaded() {
                 @Override
@@ -447,6 +495,13 @@ public class MapFragment extends Fragment implements PermissionsListener {
                     }
                 }
             });
+        }
+
+        Layer route2 = loadedMapStyle.getLayer(DIRECTIONS_LAYER_ID2);
+        assert route2 != null;
+
+        if (Property.NONE.equals(route2.getVisibility().getValue())) {
+            route2.setProperties(visibility(VISIBLE));
         }
     }
 
@@ -474,6 +529,16 @@ public class MapFragment extends Fragment implements PermissionsListener {
                         lineTranslate(new Float[] {0f, 4f}),
                         lineDasharray(new Float[] {1.2f, 1.2f})
                 ), LAYER_BELOW_ID2);
+    }
+
+    private void clearRoutes(@NonNull Style loadedMapStyle){
+        Layer route1 = loadedMapStyle.getLayer(DIRECTIONS_LAYER_ID);
+        Layer route2 = loadedMapStyle.getLayer(DIRECTIONS_LAYER_ID2);
+
+        assert route1 != null;
+        route1.setProperties(visibility(Property.NONE));
+        assert route2 != null;
+        route2.setProperties(visibility(Property.NONE));
     }
 
     //initialize marker from the searchbar mode
@@ -520,6 +585,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
                 getFragmentManager().popBackStack();
 
+                btnSimulate.setVisibility(View.VISIBLE);
                 cancelSearchbarDestination.setVisibility(View.VISIBLE);
 
                 if (style.getLayer(DROPPED_SEARCHBAR_MARKER_LAYER_ID) != null) {
@@ -535,6 +601,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
                 Toast.makeText(getActivity().getApplicationContext(), "Destination" +
                         searchLatitude + "\t" + searchLongitude, Toast.LENGTH_LONG).show();
+//                getRequest(style);
 
             }
 
