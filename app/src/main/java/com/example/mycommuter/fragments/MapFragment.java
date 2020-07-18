@@ -36,6 +36,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.mycommuter.R;
+import com.example.mycommuter.interfaces.Navigation;
 import com.example.mycommuter.model.LocationModel;
 import com.example.mycommuter.sharedPrefs.saveSharedPref;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -120,9 +121,10 @@ public class MapFragment extends Fragment implements PermissionsListener {
     private static final String LOG_TAG_Code ="Hashcode";
 
     //    public static String  URL = "https://radiant-lowlands-66469.herokuapp.com/TheCommuterAPI/public/api/location";
-    public static String  Base_URL="http://1680d0d72761.ngrok.io/";
+    public static String  Base_URL="http://b7ec581e884f.ngrok.io/";
     public static String  URL = Base_URL+"api/location";
     public static String Navigation_url = Base_URL+"api/navigation";
+    public static String coordinates = Base_URL+"api/coordinates";
     private FeatureCollection dashedLineDirectionsFeatureCollection;
 
     //for route 1
@@ -259,7 +261,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                                     Toast.makeText(getActivity().getApplicationContext(), "Destination:\t" +
                                                             destinationLatitude + "\t" + destinationLongitude, Toast.LENGTH_SHORT).show();
 
-//                                                    getRequest(style);
+                                                    postDestinationRequest(destinationLatitude, destinationLongitude, style);
 
                                                 } else {
                                                     clearRoutes(style);
@@ -405,6 +407,55 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
     }
 
+    //Call navigation Coordinates
+    private void getCoordinatesRequest(Navigation navigation) {
+        String token = saveSharedPref.getToken(getActivity().getApplicationContext());
+        final LocationModel locationModel = new LocationModel();
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+        JsonObjectRequest objectRequest = new JsonObjectRequest(
+                Request.Method.GET,
+                coordinates,
+                null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            JSONArray jo = response.getJSONArray("data");
+                            String curlat = (String) jo.get(0);
+                            String curlong = (String) jo.get(1);
+                            String destlat = (String) jo.get(2);
+                            String destlong = (String) jo.get(3);
+
+                            LocationModel locationModel = new LocationModel(curlat, curlong, destlat, destlong);
+                            navigation.getCoordinates(locationModel);
+
+                            Log.d("Cooridinates", "CurrentLatitude:"+String.valueOf(curlat));
+                            Log.d("Cooridinates", "CurrentLongitude:"+String.valueOf(curlong));
+                            Log.d("Cooridinates", "DestinationLatitude:"+String.valueOf(destlat));
+                            Log.d("Cooridinates","DestinationLongitude:"+ String.valueOf(destlong));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                // do stuff here
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String> ();
+                headers.put("Authorization", "Bearer " + token);
+                return headers;
+            }
+        };
+
+        requestQueue.add(objectRequest);
+
+
+    }
+
 
     //drawing route 1
     private void drawNavigationPolylineRoute(final JSONObject route, @NonNull Style loadedMapStyle) {
@@ -440,34 +491,46 @@ public class MapFragment extends Fragment implements PermissionsListener {
             route1.setProperties(visibility(VISIBLE));
         }
 
-        Point destinationPoint = Point.fromLngLat(36.843069,-1.306865);
-        Point originPoint = Point.fromLngLat(36.8385369, -1.3128765);
+        getCoordinatesRequest(new Navigation() {
+            @Override
+            public void getCoordinates(LocationModel locationModel) {
+                double desLong =  Double.parseDouble(locationModel.getNav_dest_long());
+                double desLat = Double.parseDouble(locationModel.getNav_dest_lat());
 
-        NavigationRoute.builder(getActivity().getApplicationContext())
-                .accessToken(Mapbox.getAccessToken())
-                .origin(originPoint)
-                .destination(destinationPoint)
-                .build()
-                .getRoute(new Callback<DirectionsResponse>() {
-                    @Override
-                    public void onResponse(Call<DirectionsResponse> call, retrofit2.Response<DirectionsResponse> response) {
-                        Log.wtf(LOG_TAG_Code + " for Simulation", "Response code: " + response.code());
-                        if (response.body() == null) {
-                            Log.e(LOG_TAG_Code, "No routes found, make sure you set the right user and access token.");
-                            return;
-                        } else if (response.body().routes().size() < 1) {
-                            Log.e(LOG_TAG_Code, "No routes found");
-                            return;
-                        }
+                double oriLong =  Double.parseDouble(locationModel.getNav_current_long());
+                double oriLat = Double.parseDouble(locationModel.getNav_current_lat());
 
-                        currentRoute = response.body().routes().get(0);
-                    }
+                Point destinationPoint = Point.fromLngLat(desLong, desLat);
+                Point originPoint = Point.fromLngLat(oriLong, oriLat);
 
-                    @Override
-                    public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+                NavigationRoute.builder(getActivity().getApplicationContext())
+                        .accessToken(Mapbox.getAccessToken())
+                        .origin(originPoint)
+                        .destination(destinationPoint)
+                        .build()
+                        .getRoute(new Callback<DirectionsResponse>() {
+                            @Override
+                            public void onResponse(Call<DirectionsResponse> call, retrofit2.Response<DirectionsResponse> response) {
+                                Log.wtf(LOG_TAG_Code + " for Simulation", "Response code: " + response.code());
+                                if (response.body() == null) {
+                                    Log.e(LOG_TAG_Code, "No routes found, make sure you set the right user and access token.");
+                                    return;
+                                } else if (response.body().routes().size() < 1) {
+                                    Log.e(LOG_TAG_Code, "No routes found");
+                                    return;
+                                }
 
-                    }
-                });
+                                currentRoute = response.body().routes().get(0);
+                            }
+
+                            @Override
+                            public void onFailure(Call<DirectionsResponse> call, Throwable t) {
+
+                            }
+                        });
+            }
+        });
+
     }
 
     //drawing route 2
@@ -601,7 +664,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
                 Toast.makeText(getActivity().getApplicationContext(), "Destination" +
                         searchLatitude + "\t" + searchLongitude, Toast.LENGTH_LONG).show();
-//                getRequest(style);
+                postDestinationRequest(searchLatitude, searchLongitude, style);
 
             }
 
@@ -704,7 +767,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 //                    Toast.makeText(getActivity().getApplicationContext(),
 //                            locationModel.getLatitude() + "\t" +  locationModel.getLongitude(), Toast.LENGTH_SHORT).show();
 
-//                    postRequest(locationModel.getLatitude(), locationModel.getLongitude());
+                    postRequest(locationModel.getLatitude(), locationModel.getLongitude());
                 } catch (NullPointerException e){
 
                 }
@@ -716,10 +779,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
         }
 
         public  void postRequest(final String latitude, final String longitude){
-
-//        Log.d("Lat", latitude);
-//        Log.d("Longi", longitude);
-
+            String token = saveSharedPref.getToken(getActivity().getApplicationContext());
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
             StringRequest objectRequest = new StringRequest(
                     Request.Method.POST,
@@ -750,6 +810,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                 public Map<String,String>getHeaders() throws AuthFailureError {
                     Map<String,String> params = new HashMap<String ,String>();
                     params.put("Application-Type","application/x-www-form-urlencoded");
+                    params.put("Authorization", "Bearer " +token);
                     return params;
                 }
             };
@@ -757,32 +818,6 @@ public class MapFragment extends Fragment implements PermissionsListener {
             requestQueue.add(objectRequest);
 
         }
-        public void getRequest(){
-            RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
-
-            JsonObjectRequest objectRequest = new JsonObjectRequest(
-                    Request.Method.GET,
-                    URL,
-                    null,
-                    new Response.Listener<JSONObject>() {
-                        @Override
-                        public void onResponse(JSONObject response) {
-                            Log.d(LOG_TAG_Code, response.toString());
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    Log.e(LOG_TAG_Code, error.toString());
-                }
-
-            }
-            );
-            requestQueue.add(objectRequest);
-
-        }
-        public  void putRequest() { }
-
-        public  void DeleteRequest(){ }
 
         /**
          * The LocationEngineCallback interface's method which fires when the device's location can not be captured
