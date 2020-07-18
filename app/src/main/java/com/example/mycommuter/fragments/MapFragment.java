@@ -307,11 +307,6 @@ public class MapFragment extends Fragment implements PermissionsListener {
         this.destinationLongitude = destinationLongitude;
     }
 
-    public String getDestinationLongitude() { return destinationLongitude; }
-
-    public String getDestinationLatitude() { return destinationLatitude; }
-
-
     //destination coordinates to (routes from) api
     private void postDestinationRequest(String destinationLatitude, String destinationLongitude, @NonNull Style loadedMapStyle) {
         String token = saveSharedPref.getToken(getActivity().getApplicationContext());
