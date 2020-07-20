@@ -280,12 +280,12 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                             }
                                         });
                                     } else {
-                                        if (hoveringMarker.getVisibility() == View.VISIBLE) {
-                                            markerIsShown[0] = false;
-
-                                            refreshFragment();
-                                        }
-//                                        markerIsShown[0] = false;
+//                                        if (hoveringMarker.getVisibility() == View.VISIBLE) {
+//                                            markerIsShown[0] = false;
+//
+//                                            refreshFragment();
+//                                        }
+                                        markerIsShown[0] = false;
                                     }
                                 } else{
                                     Toast.makeText(getActivity().getApplicationContext(),

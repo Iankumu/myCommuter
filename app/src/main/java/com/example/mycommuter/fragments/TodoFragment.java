@@ -174,6 +174,7 @@ public class TodoFragment extends Fragment {
 
     @Override
     public void onResume() {
+        listinit.clear();
         super.onResume();
 
     }
@@ -189,8 +190,7 @@ public class TodoFragment extends Fragment {
     @Override
     public void onStop() {
         setShimmer(false);
-//        listinit.clear();
-
+        listinit.clear();
         super.onStop();
     }
 
