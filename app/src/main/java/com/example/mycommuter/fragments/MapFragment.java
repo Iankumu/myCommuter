@@ -88,6 +88,7 @@ import java.util.Map;
 
 import static android.content.ContentValues.TAG;
 import static android.os.Looper.getMainLooper;
+import static com.mapbox.mapboxsdk.style.layers.Property.NONE;
 import static com.mapbox.mapboxsdk.style.layers.Property.VISIBLE;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconAllowOverlap;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.iconIgnorePlacement;
@@ -120,8 +121,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
     private static final String LOG_TAG_Code ="Hashcode";
 
-    //    public static String  URL = "https://radiant-lowlands-66469.herokuapp.com/TheCommuterAPI/public/api/location";
-    public static String  Base_URL="http://b7ec581e884f.ngrok.io/";
+    public static String  Base_URL="https://radiant-lowlands-66469.herokuapp.com/";
     public static String  URL = Base_URL+"api/location";
     public static String Navigation_url = Base_URL+"api/navigation";
     public static String coordinates = Base_URL+"api/coordinates";
@@ -142,7 +142,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
     public MapFragment() { }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, final Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         Mapbox.getInstance(getContext().getApplicationContext(), getString(R.string.map_access_token));
 
         final View view = inflater.inflate(R.layout.fragment_map, container, false);
@@ -155,13 +155,13 @@ public class MapFragment extends Fragment implements PermissionsListener {
         btnSimulate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentRoute != null) {
+                if (currentRoute != null)   {
                     NavigationLauncherOptions options = NavigationLauncherOptions.builder()
                             .directionsRoute(currentRoute)
                             .shouldSimulateRoute(true)
                             .build();
                     NavigationLauncher.startNavigation(getActivity(), options);
-                }else {
+                } else {
                     Toast.makeText(getActivity().getApplicationContext(), "Please try again after a few seconds", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -285,6 +285,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
                                             refreshFragment();
                                         }
+//                                        markerIsShown[0] = false;
                                     }
                                 } else{
                                     Toast.makeText(getActivity().getApplicationContext(),
@@ -308,7 +309,8 @@ public class MapFragment extends Fragment implements PermissionsListener {
     }
 
     //destination coordinates to (routes from) api
-    private void postDestinationRequest(String destinationLatitude, String destinationLongitude, @NonNull Style loadedMapStyle) {
+    private void postDestinationRequest(String destinationLatitude, String destinationLongitude,@NonNull Style loadedMapStyle) {
+
         String token = saveSharedPref.getToken(getActivity().getApplicationContext());
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         StringRequest objectRequest = new StringRequest(
@@ -318,6 +320,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                     @Override
                     public void onResponse(String response) {
                         getRequest(loadedMapStyle);
+
                     }
                 }
                 , new Response.ErrorListener() {
@@ -370,9 +373,11 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                 Log.wtf(LOG_TAG_Code, String.valueOf(geometry2));
 
                                 drawNavigationPolylineRoute2(secondroute, loadedMapStyle);
+
                             }
 
                             JSONObject firstroute = routes.getJSONObject(0);
+
 
                             String geometry = firstroute.getString("geometry");
                             Log.wtf(LOG_TAG_Code, String.valueOf(geometry));
@@ -382,12 +387,12 @@ public class MapFragment extends Fragment implements PermissionsListener {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
                     }
                 },
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        // do stuff here
                     }
                 }) {
             @Override
@@ -401,11 +406,9 @@ public class MapFragment extends Fragment implements PermissionsListener {
         requestQueue.add(objectRequest);
 
     }
-
-    //Call navigation Coordinates
+    //get destination coordinates
     private void getCoordinatesRequest(Navigation navigation) {
         String token = saveSharedPref.getToken(getActivity().getApplicationContext());
-        final LocationModel locationModel = new LocationModel();
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
         JsonObjectRequest objectRequest = new JsonObjectRequest(
                 Request.Method.GET,
@@ -421,13 +424,12 @@ public class MapFragment extends Fragment implements PermissionsListener {
                             String destlat = (String) jo.get(2);
                             String destlong = (String) jo.get(3);
 
-                            LocationModel locationModel = new LocationModel(curlat, curlong, destlat, destlong);
+                            LocationModel locationModel = new LocationModel(curlat,curlong,destlat,destlong);
                             navigation.getCoordinates(locationModel);
-
-                            Log.d("Cooridinates", "CurrentLatitude:"+String.valueOf(curlat));
-                            Log.d("Cooridinates", "CurrentLongitude:"+String.valueOf(curlong));
-                            Log.d("Cooridinates", "DestinationLatitude:"+String.valueOf(destlat));
-                            Log.d("Cooridinates","DestinationLongitude:"+ String.valueOf(destlong));
+//                            Log.d("Cooridinates", "CurrentLatitude:"+String.valueOf(curlat));
+//                            Log.d("Cooridinates", "CurrentLongitude:"+String.valueOf(curlong));
+//                            Log.d("Cooridinates", "DestinationLatitude:"+String.valueOf(destlat));
+//                            Log.d("Cooridinates","DestinationLongitude:"+ String.valueOf(destlong));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -450,6 +452,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
 
     }
+
 
 
     //drawing route 1
@@ -482,7 +485,10 @@ public class MapFragment extends Fragment implements PermissionsListener {
         Layer route1 = loadedMapStyle.getLayer(DIRECTIONS_LAYER_ID);
         assert route1 != null;
 
-        if (Property.NONE.equals(route1.getVisibility().getValue())) {
+//        if (Property.NONE.equals(route1.getVisibility().getValue())) {
+//            route1.setProperties(visibility(VISIBLE));
+//        }
+        if (NONE.equals(route1.getVisibility().getValue())) {
             route1.setProperties(visibility(VISIBLE));
         }
 
@@ -558,7 +564,10 @@ public class MapFragment extends Fragment implements PermissionsListener {
         Layer route2 = loadedMapStyle.getLayer(DIRECTIONS_LAYER_ID2);
         assert route2 != null;
 
-        if (Property.NONE.equals(route2.getVisibility().getValue())) {
+//        if (Property.NONE.equals(route2.getVisibility().getValue())) {
+//            route2.setProperties(visibility(VISIBLE));
+//        }
+        if (NONE.equals(route2.getVisibility().getValue())) {
             route2.setProperties(visibility(VISIBLE));
         }
     }
@@ -870,9 +879,9 @@ public class MapFragment extends Fragment implements PermissionsListener {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
-        mapView.onPause();
+    public void onStart() {
+        super.onStart();
+        mapView.onStart();
     }
 
     @Override
@@ -881,4 +890,23 @@ public class MapFragment extends Fragment implements PermissionsListener {
         mapView.onStop();
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        mapView.onSaveInstanceState(outState);
+    }
+
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
+    }
 }
+
