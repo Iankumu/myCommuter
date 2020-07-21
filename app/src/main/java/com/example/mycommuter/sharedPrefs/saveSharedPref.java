@@ -28,4 +28,15 @@ public class saveSharedPref {
     public static String getToken(Context context) {
         return getPreferences(context).getString("token", null);
     }
+
+    public void storeDestination(Context context, String latitude, String longitude) {
+        SharedPreferences.Editor mEditor = getPreferences(context).edit();
+        mEditor.putString("Lat", latitude);
+        mEditor.putString("Long", longitude);
+        mEditor.apply();
+    }
+
+    public static String retrieveDestination(Context context, String tag){
+        return getPreferences(context).getString(tag, null);
+    }
 }

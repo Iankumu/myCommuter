@@ -180,6 +180,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                 cancelSearchbarDestination.setVisibility(View.GONE);
                 searchIsUsed[0] = false;
 
+                new saveSharedPref().storeDestination(getActivity().getApplicationContext(), null, null);
                 refreshFragment();
             }
         });
@@ -192,6 +193,36 @@ public class MapFragment extends Fragment implements PermissionsListener {
                     @Override
                     public void onStyleLoaded(@NonNull final Style style) {
                         enableLocationComponent(style);
+
+                        String storedLat = saveSharedPref.retrieveDestination(getActivity().getApplicationContext(), "Lat");
+                        String storedLong = saveSharedPref.retrieveDestination(getActivity().getApplicationContext(), "Long");
+
+                        if (storedLat != null && storedLong != null){
+                            searchIsUsed[0] = true;
+                            markerIsShown[0] = false;
+
+                            initDroppedSearchBarMarker(style);
+                            initDottedLineSourceAndLayer(style);
+                            initDottedLineSourceAndLayer2(style);
+
+                            btnSimulate.setVisibility(View.VISIBLE);
+                            cancelSearchbarDestination.setVisibility(View.VISIBLE);
+
+                            if (style.getLayer(DROPPED_SEARCHBAR_MARKER_LAYER_ID) != null) {
+                                GeoJsonSource source = style.getSourceAs("dropped-searchbarmarker-source-id");
+                                if (source != null) {
+                                    source.setGeoJson(Point.fromLngLat(Double.valueOf(storedLong), Double.valueOf(storedLat)));
+                                }
+                                droppedSearchBarMarkerLayer = style.getLayer(DROPPED_SEARCHBAR_MARKER_LAYER_ID);
+                                if (droppedSearchBarMarkerLayer != null) {
+                                    droppedSearchBarMarkerLayer.setProperties(visibility(VISIBLE));
+                                }
+                            }
+
+//                            Toast.makeText(getActivity().getApplicationContext(), "Destination" +
+//                                    storedLat + "\t" + storedLong, Toast.LENGTH_LONG).show();
+                            postDestinationRequest(storedLat, storedLong, style);
+                        }
 
                         btnSearchLocation.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -256,10 +287,10 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                                     String destinationLatitude = String.valueOf(mapTargetLatLng.getLatitude());
                                                     String destinationLongitude = String.valueOf(mapTargetLatLng.getLongitude());
 
-                                                    setDestination(destinationLatitude, destinationLongitude);
+                                                    new saveSharedPref().storeDestination(getActivity().getApplicationContext(), destinationLatitude, destinationLongitude);
 
-                                                    Toast.makeText(getActivity().getApplicationContext(), "Destination:\t" +
-                                                            destinationLatitude + "\t" + destinationLongitude, Toast.LENGTH_SHORT).show();
+//                                                    Toast.makeText(getActivity().getApplicationContext(), "Destination:\t" +
+//                                                            destinationLatitude + "\t" + destinationLongitude, Toast.LENGTH_SHORT).show();
 
                                                     postDestinationRequest(destinationLatitude, destinationLongitude, style);
 
@@ -280,12 +311,11 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                             }
                                         });
                                     } else {
-//                                        if (hoveringMarker.getVisibility() == View.VISIBLE) {
-//                                            markerIsShown[0] = false;
-//
-//                                            refreshFragment();
-//                                        }
-                                        markerIsShown[0] = false;
+                                        if (hoveringMarker.getVisibility() == View.VISIBLE) {
+                                            markerIsShown[0] = false;
+
+                                            refreshFragment();
+                                        }
                                     }
                                 } else{
                                     Toast.makeText(getActivity().getApplicationContext(),
@@ -301,11 +331,6 @@ public class MapFragment extends Fragment implements PermissionsListener {
         });
 
         return view;
-    }
-
-    public void setDestination(String destinationLatitude, String destinationLongitude) {
-        this.destinationLatitude = destinationLatitude;
-        this.destinationLongitude = destinationLongitude;
     }
 
     //destination coordinates to (routes from) api
@@ -648,7 +673,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                 String searchLatitude = String.valueOf(carmenFeature.center().latitude());
                 String searchLongitude = String.valueOf(carmenFeature.center().longitude());
 
-                setDestination(searchLatitude, searchLongitude);
+                new saveSharedPref().storeDestination(getActivity().getApplicationContext(), searchLatitude, searchLongitude);
 
                 getFragmentManager().popBackStack();
 
@@ -666,8 +691,8 @@ public class MapFragment extends Fragment implements PermissionsListener {
                     }
                 }
 
-                Toast.makeText(getActivity().getApplicationContext(), "Destination" +
-                        searchLatitude + "\t" + searchLongitude, Toast.LENGTH_LONG).show();
+//                Toast.makeText(getActivity().getApplicationContext(), "Destination" +
+//                        searchLatitude + "\t" + searchLongitude, Toast.LENGTH_LONG).show();
                 postDestinationRequest(searchLatitude, searchLongitude, style);
 
             }
