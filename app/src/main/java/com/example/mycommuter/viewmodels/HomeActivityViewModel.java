@@ -29,8 +29,7 @@ public class HomeActivityViewModel extends AndroidViewModel {
     private TasksRepo tasksRepo;
 
     private MutableLiveData<Boolean> taskUpdate = new MutableLiveData<>();
-    private Context context ,ctx;
-
+    private Context context, ctx;
 
 
     public HomeActivityViewModel(@NonNull Application application) {
@@ -40,9 +39,17 @@ public class HomeActivityViewModel extends AndroidViewModel {
 
     }
 
-    public LiveData<List<Tasks>> getTasks() {
+    public void init() {
+        if(tasks!=null){
+            return;
+        }
         tasksRepo = TasksRepo.getInstance(context);
-        return tasksRepo.getTasks();
+        tasks = tasksRepo.getTasks();
+    }
+
+    public LiveData<List<Tasks>> getTasks() {
+
+        return tasks;
     }
 
     public void addnewt(final Tasks task) {

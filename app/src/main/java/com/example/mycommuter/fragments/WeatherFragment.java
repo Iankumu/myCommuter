@@ -104,9 +104,9 @@ public class WeatherFragment extends Fragment {
                 listinit = tasks;
                 initRecyclerView(listinit);
 
-                Log.e("mainact", "" + tasks.toString());
+
                 weatherAdapter.notifyDataSetChanged();
-//            setShimmer(false);
+
 
             }
         });
@@ -133,7 +133,7 @@ public class WeatherFragment extends Fragment {
                 description.setText(weather.getDescription());
             }
         });
-//        toolbar.setOnMenuItemClickListener(this::onOptionsItemSelected);
+
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(),
                         new RecyclerItemClickListener.OnItemClickListener() {
@@ -141,13 +141,7 @@ public class WeatherFragment extends Fragment {
                             public void onItemClick(View view, int position) {
 
                                 weather = listinit.get(position);
-//                                Intent dintent = new Intent(getActivity(), TaskDetail.class);
-//                                dintent.putExtra("Dtitle", weather.getTitle());
-//                                dintent.putExtra("Ddue", tasks.getDue());
-////                                dintent.putExtra("Ddescription", tasks.getDescritpion());
-//
-//
-//                                startActivity(dintent);
+
 
 
                             }
@@ -156,7 +150,7 @@ public class WeatherFragment extends Fragment {
     }
 
     public void initRecyclerView(List<Weather> weather) {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);
 
         recyclerView.setHasFixedSize(true);
@@ -172,7 +166,7 @@ public class WeatherFragment extends Fragment {
         String token = saveSharedPref.getToken(getContext());
         String stringlongitude = String.valueOf("36.8219");
         String stringLatitude = String.valueOf("1.2921");
-        Log.e(TAG, "setweather: " + token);
+
         final theCommuterApiendpoints apiService = ApiClient.getClient().create(theCommuterApiendpoints.class);
 
 
@@ -199,7 +193,7 @@ public class WeatherFragment extends Fragment {
                         JsonObject obj = new JsonParser().parse(String.valueOf(jsonElement)).getAsJsonObject();
 
                         jo2 = new JSONObject(obj.toString());
-                        Log.e(TAG, "onResponse2: " + jo2.getString("city"));
+
                         Weather weather = new Weather();
 
                         weather.setCity(jo2.getString("city"));
@@ -226,7 +220,7 @@ public class WeatherFragment extends Fragment {
             public void onFailure(Call<JsonObject> call, Throwable t) {
 
 
-                Log.d(TAG, "weather request failed");
+
                 t.printStackTrace();
             }
         });

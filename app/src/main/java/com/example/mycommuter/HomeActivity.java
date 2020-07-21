@@ -92,13 +92,13 @@ public class HomeActivity extends AppCompatActivity {
   }
 
   public void initRecyclerView(List<Tasks> tasks) {
-    layoutManager = new LinearLayoutManager(this);
-    recyclerView.setLayoutManager(layoutManager);
-    recyclerView.setHasFixedSize(true);
-//        Log.e("mainactivity1",""+ homeActivityViewModel.getTasks().getValue().toString());
-
-    adapter = new TaskAdapter(getApplicationContext(), tasks);
-    recyclerView.setAdapter(adapter);
+//    layoutManager = new LinearLayoutManager(this);
+//    recyclerView.setLayoutManager(layoutManager);
+//    recyclerView.setHasFixedSize(true);
+////        Log.e("mainactivity1",""+ homeActivityViewModel.getTasks().getValue().toString());
+//
+//    adapter = new TaskAdapter(getApplicationContext());
+//    recyclerView.setAdapter(adapter);
 
   }
 

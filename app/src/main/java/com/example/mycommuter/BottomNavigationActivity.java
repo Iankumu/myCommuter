@@ -12,36 +12,53 @@ import com.example.mycommuter.fragments.TodoFragment;
 import com.example.mycommuter.fragments.WeatherFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class BottomNavigationActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener{
+public class BottomNavigationActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
     BottomNavigationView bottomNavigationView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bottom_navigation);
-        bottomNavigationView=findViewById(R.id.bottom_nav);
+        bottomNavigationView = findViewById(R.id.bottom_nav);
         bottomNavigationView.setOnNavigationItemSelectedListener(this);
-        if(savedInstanceState == null){
-            getSupportFragmentManager().beginTransaction().replace(R.id.frag_container,new MapFragment()).commit();
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction().replace(R.id.frag_container, new MapFragment()).commit();
             bottomNavigationView.setSelectedItemId(R.id.maps_id);
 
         }
+//        if (getIntent().getExtras().getString("frgToLoad") != null) {
+//            String intentFragment = getIntent().getExtras().getString("frgToLoad");
+//
+//            switch (intentFragment) {
+//                case "todoFragment":
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.frag_container, new TodoFragment()).commit();
+//                    break;
+//                case "profilefragment":
+//                    getSupportFragmentManager().beginTransaction().replace(R.id.frag_container, new ProfileFragment()).commit();
+//                    break;
+//                case "mapFragment":
+//                    // Load corresponding fragment
+//                    break;
+//            }
+//        }
     }
+
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
 
             case R.id.maps_id:
-                getSupportFragmentManager().beginTransaction().replace(R.id.frag_container,new MapFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frag_container, new MapFragment()).commit();
                 break;
             case R.id.todo_id:
-                getSupportFragmentManager().beginTransaction().replace(R.id.frag_container,new TodoFragment( )).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frag_container, new TodoFragment()).commit();
                 break;
             case R.id.weather_id:
-                getSupportFragmentManager().beginTransaction().replace(R.id.frag_container,new WeatherFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frag_container, new WeatherFragment()).commit();
                 break;
 
             case R.id.account_id:
-                getSupportFragmentManager().beginTransaction().replace(R.id.frag_container,new ProfileFragment()).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.frag_container, new ProfileFragment()).commit();
                 break;
 
         }

@@ -43,6 +43,8 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import java.util.ArrayList;
 import java.util.List;
 
+import es.dmoral.toasty.Toasty;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -50,16 +52,18 @@ public class TodoFragment extends Fragment {
     private static final String TAG = "TODOFRAGMENT";
     private ProgressBar progressBar;
 
-    private TaskAdapter adapter;
+
     private RecyclerView.LayoutManager layoutManager;
     private Tasks tasks;
     private TextView description, due, title;
     private RecyclerView recyclerView;
     List<Tasks> listinit = new ArrayList<>();
-
-    Toolbar toolbar;
+    private TaskAdapter adapter;
+    Toolbar toolbar, contextualtoolbar;
     private HomeActivityViewModel homeActivityViewModel;
     private ShimmerFrameLayout shimmerFrameLayout;
+    public boolean isContextModeEnabled = false;
+    StaggeredGridLayoutManager staggeredGridLayoutManager;
 
     public TodoFragment() {
         // Required empty public constructor
@@ -74,7 +78,7 @@ public class TodoFragment extends Fragment {
         setRetainInstance(true);
         shimmerFrameLayout = view.findViewById(R.id.shimmerframelay);
         progressBar = view.findViewById(R.id.progressBar);
-
+        contextualtoolbar = view.findViewById(R.id.contextualToolbar);
         recyclerView = view.findViewById(R.id.myListView);
         toolbar = view.findViewById(R.id.tasktoolbar);
 
@@ -85,23 +89,25 @@ public class TodoFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        initRecyclerView();
 
         homeActivityViewModel = new ViewModelProvider(this).get(HomeActivityViewModel.class);
-
+        homeActivityViewModel.init();
         homeActivityViewModel.getTasks().observe(getViewLifecycleOwner(), new Observer<List<Tasks>>() {
-
             @Override
-            public void onChanged(@Nullable List<Tasks> tasks) {
+            public void onChanged(List<Tasks> tasks) {
+
 
                 listinit = tasks;
-                initRecyclerView(listinit);
-
+                adapter = new TaskAdapter(getContext(), listinit);
+                adapter.setTasks(tasks);
                 Log.e("mainact", "" + tasks.toString());
-                adapter.notifyDataSetChanged();
+                recyclerView.setAdapter(adapter);
                 setShimmer(false);
 
             }
         });
+
         homeActivityViewModel.getUpdate().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
             @Override
             public void onChanged(Boolean aBoolean) {
@@ -115,7 +121,7 @@ public class TodoFragment extends Fragment {
             }
         });
         // TODO: Use the ViewModel
-        initRecyclerView(listinit);
+
         toolbar.setOnMenuItemClickListener(this::onOptionsItemSelected);
         recyclerView.addOnItemTouchListener(
                 new RecyclerItemClickListener(getActivity(),
@@ -125,39 +131,27 @@ public class TodoFragment extends Fragment {
 
                                 tasks = listinit.get(position);
                                 Intent dintent = new Intent(getActivity(), TaskDetail.class);
-                                dintent.putExtra("Dtitle", tasks.getTitle());
-                                dintent.putExtra("Ddue", tasks.getDue());
-                                dintent.putExtra("Ddescription", tasks.getDescritpion());
 
+                                dintent.putExtra("task", tasks);
 
-//                                Log.e(TAG, "onItemClick: "+ gitHubUser.getUrl());
                                 startActivity(dintent);
 
 
-//                                Intent intent = new Intent();
-//                                String transitionName = getString(R.string.cardslidin);
-//                                ActivityOptionsCompat options =
-//                                        ActivityOptionsCompat.makeSceneTransitionAnimation(TaskDetail,
-//                                                linearLayout,   // The view which starts the transition
-//                                                transitionName    // The transitionName of the view we’re transitioning to
-//                                        );
-//                                ActivityCompat.startActivity(TaskDetail, intent, options.toBundle());
                             }
                         }));
     }
 
 
-    public void initRecyclerView(List<Tasks> tasks) {
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL);
+    public void initRecyclerView() {
+        Log.e(TAG, "initRecyclerView: " + listinit);
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(1, LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
 //        layoutManager = new LinearLayoutManager(getContext());
 //        recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
+//        adapter = new TaskAdapter(getContext(), listinit);
 
-
-        adapter = new TaskAdapter(getContext(), tasks);
-
-        recyclerView.setAdapter(adapter);
+        recyclerView.setAdapter(new TaskAdapter(getContext(), listinit));
 
     }
 
@@ -170,6 +164,23 @@ public class TodoFragment extends Fragment {
             shimmerFrameLayout.setVisibility(View.GONE);
         }
 
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case 120:
+                displaymessage("Task deleted");
+                break;
+            case 121:
+                displaymessage("Task opened");
+                break;
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    public void displaymessage(String message) {
+        Toasty.info(getContext(), message).show();
     }
 
     @Override
@@ -213,5 +224,6 @@ public class TodoFragment extends Fragment {
         startActivity(dintent);
 
     }
+
 
 }

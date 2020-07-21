@@ -6,6 +6,8 @@ import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
 
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
@@ -13,6 +15,8 @@ import com.example.mycommuter.BottomNavigationActivity;
 import com.example.mycommuter.MainActivity;
 import com.example.mycommuter.RestApi.ApiClient;
 import com.example.mycommuter.RestApi.theCommuterApiendpoints;
+import com.example.mycommuter.adapter.TaskAdapter;
+import com.example.mycommuter.fragments.TodoFragment;
 import com.example.mycommuter.interfaces.LoginResultCallback;
 import com.example.mycommuter.interfaces.TaskupdateCallback;
 import com.example.mycommuter.model.LoginUser;
@@ -38,37 +42,44 @@ public class uploadTrepo {
     private MutableLiveData<Tasks> taskMutableLiveData;
     public MutableLiveData<String> title = new MutableLiveData<>();
     public MutableLiveData<String> description = new MutableLiveData<>();
-     public MutableLiveData<String> due = new MutableLiveData<>();
+    public MutableLiveData<String> due = new MutableLiveData<>();
+    private FragmentManager fragmentManager;
 
-
-
-    public uploadTrepo(Context context, MutableLiveData<String> title, MutableLiveData<String> description,MutableLiveData<String> due ) {
+    private TaskAdapter adapter;
+    public uploadTrepo(Context context, FragmentManager fragmentManager, MutableLiveData<String> title, MutableLiveData<String> description, MutableLiveData<String> due) {
         this.context = context;
         this.title = title;
         this.description = description;
-        this.due=due;
+        this.due = due;
 
     }
 
     //singleton
-    public static uploadTrepo getInstance(Context context,  MutableLiveData<String> title, MutableLiveData<String> description,MutableLiveData<String> due ) {
+    public static uploadTrepo getInstance(Context context, FragmentManager fragmentManager, MutableLiveData<String> title, MutableLiveData<String> description, MutableLiveData<String> due) {
 
         if (instance == null) {
-            instance = new uploadTrepo(context, title, description,due);
+            instance = new uploadTrepo(context, fragmentManager, title, description, due);
 
         }
         return instance;
     }
+
     public boolean postTask() {
 
         settask(new TaskupdateCallback() {
             @Override
             public void onSuccess(String message) {
-
+                String fragid = "todoFragment";
+                adapter=new TaskAdapter();
+                adapter.notifyDataSetChanged();
                 Toasty.success(context, message, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, BottomNavigationActivity.class);
+                intent.putExtra("frgToLoad", fragid);
+
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
                 context.startActivity(intent);
+
+
                 Log.e(TAG, "onSuccess: Login complete");
             }
 
@@ -88,24 +99,22 @@ public class uploadTrepo {
         LiveData<String> livetitle = title;
         LiveData<String> Livedescription = description;
         LiveData<String> livedue = due;
-        Log.e(TAG, "settatokesk: "+title.getValue() );
-        Log.e(TAG, "settatokesk: "+description.getValue() );
-        Log.e(TAG, "settatokesk: "+token );
-        Call<JsonObject> call = apiService.uploadTask(livetitle.getValue(), Livedescription.getValue(),"Bearer "+token);
+
+        Call<JsonObject> call = apiService.uploadTask(livetitle.getValue(), Livedescription.getValue(), livedue.getValue(),"Bearer " + token);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
 
                 if (response.body() != null) {
-//                    LoginActivity.token = response.body().getAccess_token();
 
-;
+
+                    ;
                     taskupdateCallback.onSuccess("update Successful");
-                    Log.e(TAG, "onSuccess: Login complete");
+
 
                 } else {
-                    Log.e(TAG, "onSuccess: Login failed"+response.message());
+
 
                     taskupdateCallback.onError("update failed");
                 }
@@ -117,7 +126,7 @@ public class uploadTrepo {
             public void onFailure(Call<JsonObject> call, Throwable t) {
 
                 t.printStackTrace();
-                Log.e(TAG, "taskrepos"+t);
+
                 taskupdateCallback.onError("Invalid update");
             }
         });

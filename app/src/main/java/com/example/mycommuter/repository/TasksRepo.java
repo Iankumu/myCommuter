@@ -34,6 +34,7 @@ public class TasksRepo {
     private static TasksRepo instance;
     private Context context;
 
+
     public TasksRepo(Context context) {
         this.context = context;
     }
@@ -63,13 +64,12 @@ public class TasksRepo {
         return data;
 
 
-
     }
 
     //data retrieval from api
     public void setTasks(TaskInterface taskscallback) {
         String token = saveSharedPref.getToken(context);
-        Log.e(TAG, "setTasks: "+token );
+        Log.e(TAG, "setTasks: " + token);
         final theCommuterApiendpoints apiService = ApiClient.getClient().create(theCommuterApiendpoints.class);
 
 
@@ -95,7 +95,7 @@ public class TasksRepo {
                             JSONObject jo2 = new JSONObject(obj.toString());
 
                             Tasks task = new Tasks();
-
+                            task.setId(jo2.getInt("id"));
                             task.setTitle(jo2.getString("title"));
                             task.setDescritpion(jo2.getString("descritpion"));
                             task.setDue(jo2.getString("created_at"));

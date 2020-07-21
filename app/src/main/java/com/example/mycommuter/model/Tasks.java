@@ -6,9 +6,10 @@ import android.util.Patterns;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Tasks {
+public class Tasks implements Serializable {
     @SerializedName("title")
     @Expose
 
@@ -25,20 +26,28 @@ public class Tasks {
     @Expose
 
     String due;
+    @SerializedName("id")
+    @Expose
 
+    int id;
 
     public Tasks() {
     }
 
-    public Tasks(String title, String descritpion, String due) {
+    public Tasks(String title, String descritpion, String due, int id) {
         this.title = title;
         this.descritpion = descritpion;
-
         this.due = due;
+        this.id = id;
     }
 
+    public int getId() {
+        return id;
+    }
 
-
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;

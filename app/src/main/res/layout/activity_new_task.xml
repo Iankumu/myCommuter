@@ -30,8 +30,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Do or do not, man.There is no try?"
-                android:textSize="24sp"
-                android:textColor="@color/colorPrimary"/>
+                android:textColor="@color/colorPrimary"
+                android:textSize="24sp" />
 
             <EditText
                 android:id="@+id/newTitle"
@@ -65,32 +65,37 @@
                 android:hint="Description"
                 android:inputType="textCapSentences|textMultiLine"
 
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="#fff"
+                android:theme="@style/MyEditTextTheme"
                 app:addTextChangedListener="@{NewTaskViewModel.getdescriptionOnTextChangeListener}"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#fff"
-                android:theme="@style/MyEditTextTheme"
                 app:errorEnabled="true" />
 
-            <EditText
-                android:id="@+id/newDue"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginRight="20dp"
-                android:drawableStart="@drawable/ic_event_available_24px"
-                android:fontFamily="@font/lato_lightitalic"
-                android:hint="Date due"
-                android:focusable="false"
 
-                android:inputType="none"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="#fff"
-                android:theme="@style/MyEditTextTheme"
-                android:onClick="@{NewTaskViewModel::datePick}"
+                <Button
+                    android:id="@+id/selectdate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
 
-                app:errorEnabled="true" />
+                    android:layout_marginTop="30dp"
+
+                    android:paddingStart="70dp"
+                    android:paddingEnd="70dp"
+                    android:background="@drawable/btn_bg"
+                    android:onClick="@{NewTaskViewModel::datePick}"
+                    android:fontFamily="@font/lato_lightitalic"
+
+
+                    android:padding="10dp"
+                    android:text="Pick Date"
+
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+
+
+
+
+
 
 
             <Button
@@ -98,7 +103,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-
+                android:paddingStart="70dp"
+                android:paddingEnd="70dp"
+                android:layout_marginTop="40dp"
                 android:background="@drawable/btn_bg"
 
                 android:fontFamily="@font/lato_lightitalic"

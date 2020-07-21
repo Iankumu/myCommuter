@@ -49,8 +49,10 @@ public class ProfileRepo {
             @Override
             public void onSuccess(String message) {
 
+                String fragid = "profilefragment";
                 Toasty.success(context, message, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, BottomNavigationActivity.class);
+                intent.putExtra("frgToLoad", fragid);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
                 context.startActivity(intent);
                 Log.e(TAG, "onSuccess: Login complete");

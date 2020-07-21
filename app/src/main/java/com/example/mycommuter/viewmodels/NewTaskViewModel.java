@@ -1,10 +1,14 @@
 package com.example.mycommuter.viewmodels;
 
 import android.app.Application;
+import android.app.TimePickerDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -12,6 +16,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 
+import com.example.mycommuter.common.TimePickerDialogue;
 import com.example.mycommuter.interfaces.LoginResultCallback;
 import com.example.mycommuter.interfaces.TaskupdateCallback;
 import com.example.mycommuter.model.Tasks;
@@ -21,7 +26,7 @@ import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClic
 
 import es.dmoral.toasty.Toasty;
 
-public class NewTaskViewModel extends AndroidViewModel {
+public class NewTaskViewModel extends AndroidViewModel  {
     FragmentManager fragmentManager;
     private Tasks tasksM;
     private uploadTrepo uploadtrepo;
@@ -30,11 +35,12 @@ public class NewTaskViewModel extends AndroidViewModel {
     public MutableLiveData<String> description = new MutableLiveData<>();
     public MutableLiveData<String> due = new MutableLiveData<>();
     Context context;
+
     public NewTaskViewModel(@NonNull Application application, FragmentManager fragmentManager) {
         super(application);
-        this.context=application.getApplicationContext();
-        this.fragmentManager=fragmentManager;
-        tasksM=new Tasks();
+        this.context = application.getApplicationContext();
+        this.fragmentManager = fragmentManager;
+        tasksM = new Tasks();
         this.taskupdateCallback = new TaskupdateCallback() {
             @Override
             public void onSuccess(String message) {
@@ -92,14 +98,28 @@ public class NewTaskViewModel extends AndroidViewModel {
         MaterialDatePicker.Builder builder = MaterialDatePicker.Builder.datePicker();
         builder.setTitleText("Due date");
         MaterialDatePicker materialDatePicker = builder.build();
-        materialDatePicker.show( fragmentManager, "Date picker");
+        materialDatePicker.show(fragmentManager, "Date picker");
         materialDatePicker.addOnPositiveButtonClickListener(new MaterialPickerOnPositiveButtonClickListener() {
             @Override
             public void onPositiveButtonClick(Object selection) {
+
                 tasksM.setDue(materialDatePicker.getHeaderText());
+                Toasty.info(context, materialDatePicker.getHeaderText()).show();
             }
         });
+      materialDatePicker.addOnCancelListener(new DialogInterface.OnCancelListener() {
+          @Override
+          public void onCancel(DialogInterface dialog) {
+              dialog.dismiss();
+          }
+      });
     }
+//    public void timePick(String date) {
+//        TimePickerDialogue timePickerDialogue=new TimePickerDialogue();
+//        timePickerDialogue.show(fragmentManager,"timepicker");
+//
+//    }
+
 
 
     public void onPost(View view) {
@@ -117,8 +137,12 @@ public class NewTaskViewModel extends AndroidViewModel {
 
     private void setTask() {
 
-        uploadtrepo = uploadTrepo.getInstance(context, title, description, due);
+        uploadtrepo = uploadTrepo.getInstance(context,fragmentManager, title, description, due);
         uploadtrepo.postTask();
     }
 
+//    @Override
+//    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+//        tasksM.setDue(materialDatePicker.getHeaderText());
+//    }
 }
