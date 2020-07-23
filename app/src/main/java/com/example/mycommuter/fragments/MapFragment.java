@@ -2,8 +2,6 @@ package com.example.mycommuter.fragments;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -11,6 +9,7 @@ import android.location.Location;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -20,6 +19,7 @@ import retrofit2.Callback;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -32,23 +32,12 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.mycommuter.BottomNavigationActivity;
 import com.example.mycommuter.R;
-import com.example.mycommuter.RestApi.ApiClient;
-import com.example.mycommuter.interfaces.Navigation;
 import com.example.mycommuter.model.LocationModel;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.mapbox.android.core.location.LocationEngine;
 import com.mapbox.android.core.location.LocationEngineCallback;
 import com.mapbox.android.core.location.LocationEngineProvider;
@@ -56,16 +45,13 @@ import com.mapbox.android.core.location.LocationEngineRequest;
 import com.mapbox.android.core.location.LocationEngineResult;
 import com.mapbox.android.core.permissions.PermissionsListener;
 import com.mapbox.android.core.permissions.PermissionsManager;
-import com.mapbox.api.directions.v5.MapboxDirections;
 import com.mapbox.api.directions.v5.models.DirectionsResponse;
 import com.mapbox.api.directions.v5.models.DirectionsRoute;
 import com.mapbox.geojson.Feature;
 import com.mapbox.geojson.FeatureCollection;
-import com.mapbox.geojson.Geometry;
 import com.mapbox.geojson.LineString;
 import com.mapbox.geojson.Point;
 import com.mapbox.mapboxsdk.Mapbox;
-import com.mapbox.mapboxsdk.annotations.Icon;
 import com.mapbox.mapboxsdk.geometry.LatLng;
 import com.mapbox.mapboxsdk.location.LocationComponent;
 import com.mapbox.mapboxsdk.location.LocationComponentActivationOptions;
@@ -77,7 +63,6 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback;
 import com.mapbox.mapboxsdk.maps.Style;
 import com.mapbox.mapboxsdk.style.layers.Layer;
 import com.mapbox.mapboxsdk.style.layers.LineLayer;
-import com.mapbox.mapboxsdk.style.layers.Property;
 import com.mapbox.mapboxsdk.style.layers.SymbolLayer;
 import com.mapbox.mapboxsdk.style.sources.GeoJsonSource;
 
@@ -102,7 +87,6 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineDasharray;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineTranslate;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.lineWidth;
 import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.visibility;
-import static com.mapbox.core.constants.Constants.PRECISION_6;
 
 import com.example.mycommuter.sharedPrefs.saveSharedPref;
 import com.mapbox.services.android.navigation.ui.v5.NavigationLauncher;
@@ -120,7 +104,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
     private PermissionsManager permissionsManager;
     private ImageView hoveringMarker;
     private Button selectLocationButton, button;
-    private FloatingActionButton btnSearchLocation, btnMarker;
+    private FloatingActionButton btnSearchLocation, btnMarker, btnStyle;
     private Layer droppedMarkerLayer;
     private DirectionsRoute currentRoute;
     private NavigationMapRoute navigationMapRoute;
@@ -132,7 +116,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
     private static final String DROPPED_MARKER_LAYER_ID = "DROPPED_MARKER_LAYER_ID";
 
     private static final String LOG_TAG_Code ="Hashcode";
-    public static String  Base_URL="http://35ee111a9d66.ngrok.io/";
+    public static String  Base_URL="http://9650fc7df277.ngrok.io/";
     public static String  URL = Base_URL+"api/location";
     public static String Navigation_url = Base_URL+"api/navigation";
     public static String coordinates = Base_URL+"api/coordinates";
@@ -149,7 +133,6 @@ public class MapFragment extends Fragment implements PermissionsListener {
     private static final String LAYER_BELOW_ID2 = "road-label-small2";
 
     private MapFragmentLocationCallback callback = new MapFragmentLocationCallback(this);
-    double curLong,curLat,destLong,destLat;
 
 
     @Override
@@ -160,6 +143,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
         btnSearchLocation = view.findViewById(R.id.btnSearchLocation);
         btnMarker = view.findViewById(R.id.btnShowMarker);
+        btnStyle = view.findViewById(R.id.btnStyleSelector);
         selectLocationButton = view.findViewById(R.id.select_location_button);
         button = view.findViewById(R.id.selectroute);
         button.setOnClickListener(new View.OnClickListener() {
@@ -182,7 +166,17 @@ public class MapFragment extends Fragment implements PermissionsListener {
             @Override
             public void onMapReady(@NonNull final MapboxMap mapboxMap) {
                 MapFragment.this.mapboxMap = mapboxMap;
-                mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/brayo333/ck9i2acpk1lgg1iqwhfr15mu7"), new Style.OnStyleLoaded() {
+//                new Style.Builder().fromUri("mapbox://styles/brayo333/ck9i2acpk1lgg1iqwhfr15mu7")
+                String checkMapStyle = saveSharedPref.setMapStyle(getActivity().getApplicationContext());
+
+                String mapStyle;
+                if (checkMapStyle!=null){
+                    mapStyle = checkMapStyle;
+                } else {
+                    mapStyle = Style.SATELLITE;
+                }
+
+                mapboxMap.setStyle(mapStyle, new Style.OnStyleLoaded() {
                     @Override
                     public void onStyleLoaded(@NonNull final Style style) {
                         enableLocationComponent(style);
@@ -265,11 +259,39 @@ public class MapFragment extends Fragment implements PermissionsListener {
                             }
                         });
 
+                        btnStyle.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                PopupMenu popup = new PopupMenu(getActivity(), btnStyle);
+                                popup.getMenuInflater().inflate(R.menu.navigation_drawer, popup.getMenu());
+                                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                    @Override
+                                    public boolean onMenuItemClick(MenuItem item) {
+                                        switch (item.getItemId()) {
+                                            case R.id.profile_frag:
+                                                new saveSharedPref().storeMapStyle(getActivity().getApplicationContext(), Style.MAPBOX_STREETS);
+                                                return true;
+
+                                            case R.id.logout_frag:
+                                                new saveSharedPref().storeMapStyle(getActivity().getApplicationContext(), Style.SATELLITE_STREETS);
+                                                return true;
+
+                                            default:
+                                                return true;
+                                        }
+
+                                    }
+                                });
+                                popup.show();
+                            }
+                        });
 
                     }
                 });
             }
         });
+
+
         return view;
     }
 
@@ -284,7 +306,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                     @Override
                     public void onResponse(String response) {
                             getRequest(loadedMapStyle);
-
+//                            getCoordinatesRequest();
                     }
                 }
                 , new Response.ErrorListener() {
@@ -346,6 +368,8 @@ public class MapFragment extends Fragment implements PermissionsListener {
                             String geometry = firstroute.getString("geometry");
                             Log.wtf(LOG_TAG_Code, String.valueOf(geometry));
 
+
+
                             drawNavigationPolylineRoute(firstroute, loadedMapStyle);
 
                         } catch (JSONException e) {
@@ -357,6 +381,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        // do stuff here
                     }
                 }) {
             @Override
@@ -370,55 +395,54 @@ public class MapFragment extends Fragment implements PermissionsListener {
         requestQueue.add(objectRequest);
 
     }
-    private void getCoordinatesRequest(Navigation navigation) {
-        String token = saveSharedPref.getToken(getActivity().getApplicationContext());
-        final LocationModel locationModel = new LocationModel();
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
-        JsonObjectRequest objectRequest = new JsonObjectRequest(
-                Request.Method.GET,
-                coordinates,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jo = response.getJSONArray("data");
-                            String curlat = (String) jo.get(0);
-                            String curlong = (String) jo.get(1);
-                            String destlat = (String) jo.get(2);
-                            String destlong = (String) jo.get(3);
-
-                            locationModel.setCurrentLatitude(curlat);
-                            locationModel.setCurrentLongitude(curlong);
-                            locationModel.setDestinationLatitude(destlat);
-                            locationModel.setDestinationLongitude(destlong);
-                            navigation.getCoordinates(locationModel);
+//    private void getCoordinatesRequest() {
+//        String token = saveSharedPref.getToken(getActivity().getApplicationContext());
+//        final LocationModel locationModel = new LocationModel();
+//        RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+//        JsonObjectRequest objectRequest = new JsonObjectRequest(
+//                Request.Method.GET,
+//                coordinates,
+//                null,
+//                new Response.Listener<JSONObject>() {
+//                    @Override
+//                    public void onResponse(JSONObject response) {
+//                        try {
+//                            JSONArray jo = response.getJSONArray("data");
+//                            String curlat = (String) jo.get(0);
+//                            String curlong = (String) jo.get(1);
+//                            String destlat = (String) jo.get(2);
+//                            String destlong = (String) jo.get(3);
+//
+//                            locationModel.setCurrentLatitude(curlat);
+//                            locationModel.setCurrentLongitude(curlong);
+//                            locationModel.setDestinationLatitude(destlat);
+//                            locationModel.setDestinationLongitude(destlong);
 //                            Log.d("Cooridinates", "CurrentLatitude:"+String.valueOf(curlat));
 //                            Log.d("Cooridinates", "CurrentLongitude:"+String.valueOf(curlong));
 //                            Log.d("Cooridinates", "DestinationLatitude:"+String.valueOf(destlat));
 //                            Log.d("Cooridinates","DestinationLongitude:"+ String.valueOf(destlong));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                // do stuff here
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String> ();
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
-            }
-        };
-
-        requestQueue.add(objectRequest);
-
-
-    }
+//                        } catch (JSONException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//                }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                // do stuff here
+//            }
+//        }) {
+//            @Override
+//            public Map<String, String> getHeaders() throws AuthFailureError {
+//                HashMap<String, String> headers = new HashMap<String, String> ();
+//                headers.put("Authorization", "Bearer " + token);
+//                return headers;
+//            }
+//        };
+//
+//        requestQueue.add(objectRequest);
+//
+//
+//    }
 
 
     private void drawNavigationPolylineRoute(final JSONObject route, @NonNull Style loadedMapStyle) {
@@ -454,37 +478,8 @@ public class MapFragment extends Fragment implements PermissionsListener {
             route1.setProperties(visibility(VISIBLE));
         }
 
-
-//        double destLat =-0.28954112968664547;
-//        double destLong = 36.06092857793996;
-//        double curLat = -0.2981674;
-//        double curLong =36.0567935;
-
-        getCoordinatesRequest(new Navigation() {
-            @Override
-            public void getCoordinates(LocationModel locationModel) {
-            String currentLatitude=locationModel.getCurrentLatitude();
-            String currentLongitude=locationModel.getCurrentLongitude();
-            String destinationLatitude=locationModel.getDestinationLatitude();
-            String destinationLongitude=locationModel.getDestinationLongitude();
-
-             curLong = Double.parseDouble(currentLongitude);
-             curLat = Double.parseDouble(currentLatitude);
-             destLong = Double.parseDouble(destinationLongitude);
-             destLat = Double.parseDouble(destinationLatitude);
-                Log.d("Cooridinates", "CurrentLatitude:"+String.valueOf(curLat));
-                Log.d("Cooridinates", "CurrentLongitude:"+String.valueOf(curLong));
-                Log.d("Cooridinates", "DestinationLatitude:"+String.valueOf(destLat));
-                Log.d("Cooridinates","DestinationLongitude:"+ String.valueOf(destLong));
-
-
-
-//        Point originPoint = Point.fromLngLat(36.0567935, -0.2981674);
-//        Point destinationPoint = Point.fromLngLat( 36.06092857793996,-0.28954112968664547);
-
-                Point originPoint = Point.fromLngLat(curLong, curLat);
-                Point destinationPoint = Point.fromLngLat( destLong,destLat);
-
+        Point destinationPoint = Point.fromLngLat(36.843069,-1.306865);
+        Point originPoint = Point.fromLngLat(36.8385369, -1.3128765);
 
         NavigationRoute.builder(getActivity().getApplicationContext())
                 .accessToken(Mapbox.getAccessToken())
@@ -519,8 +514,6 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
                     }
                 });
-            }
-        });
     }
 
     private void drawNavigationPolylineRoute2(final JSONObject route, @NonNull Style loadedMapStyle) {
@@ -690,7 +683,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 //
 ////                    Toast.makeText(getActivity().getApplicationContext(), userToken, Toast.LENGTH_SHORT).show();
 //                    Toast.makeText(getActivity().getApplicationContext(), email, Toast.LENGTH_SHORT).show();
-                    postCurrentRequest(locationModel.getLatitude(), locationModel.getLongitude());
+//                    postCurrentRequest(locationModel.getLatitude(), locationModel.getLongitude());
                 } catch (NullPointerException e){
 
                 }

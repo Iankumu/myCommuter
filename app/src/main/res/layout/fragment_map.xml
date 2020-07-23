@@ -36,6 +36,18 @@
         android:foreground="@drawable/btn_marker"
         android:foregroundGravity="center"/>
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/btnStyleSelector"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:borderWidth="0dp"
+        android:layout_toEndOf="@id/btnShowMarker"
+        android:layout_marginTop="15dp"
+        android:layout_marginStart="5dp"
+        android:backgroundTint="@color/colorPrimary"
+        android:foreground="@drawable/mapstyles"
+        android:foregroundGravity="center"/>
+
     <Button
         android:id="@+id/select_location_button"
         android:layout_width="wrap_content"
