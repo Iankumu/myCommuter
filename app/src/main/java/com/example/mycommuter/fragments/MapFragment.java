@@ -9,6 +9,7 @@ import android.location.Location;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
@@ -20,6 +21,7 @@ import retrofit2.Callback;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -101,14 +103,13 @@ import static com.mapbox.mapboxsdk.style.layers.PropertyFactory.visibility;
 
 
 public class MapFragment extends Fragment implements PermissionsListener {
-    private String destinationLatitude, destinationLongitude;
 
     private MapView mapView;
     private MapboxMap mapboxMap;
     private PermissionsManager permissionsManager;
     private ImageView hoveringMarker;
     private Button selectLocationButton, cancelSearchbarDestination, btnSimulate;
-    private FloatingActionButton btnSearchLocation, btnMarker;
+    private FloatingActionButton btnSearchLocation, btnMarker, btnStyle;
     private Layer droppedMarkerLayer, droppedSearchBarMarkerLayer;
     private DirectionsRoute currentRoute;
 
@@ -149,6 +150,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
         btnSearchLocation = view.findViewById(R.id.btnSearchLocation);
         btnMarker = view.findViewById(R.id.btnShowMarker);
+        btnStyle = view.findViewById(R.id.btnStyleSelector);
         selectLocationButton = view.findViewById(R.id.select_location_button);
         cancelSearchbarDestination = view.findViewById(R.id.cancel_search_bar_destination);
         btnSimulate = view.findViewById(R.id.simulateRoute);
@@ -189,7 +191,17 @@ public class MapFragment extends Fragment implements PermissionsListener {
             @Override
             public void onMapReady(@NonNull final MapboxMap mapboxMap) {
                 MapFragment.this.mapboxMap = mapboxMap;
-                mapboxMap.setStyle(new Style.Builder().fromUri("mapbox://styles/brayo333/ck9i2acpk1lgg1iqwhfr15mu7"), new Style.OnStyleLoaded() {
+
+                String checkMapStyle = saveSharedPref.setMapStyle(getActivity().getApplicationContext());
+
+                String mapStyle;
+                if (checkMapStyle!=null){
+                    mapStyle = checkMapStyle;
+                } else {
+                    mapStyle = Style.MAPBOX_STREETS;
+                }
+
+                mapboxMap.setStyle(mapStyle, new Style.OnStyleLoaded() {
                     @Override
                     public void onStyleLoaded(@NonNull final Style style) {
                         enableLocationComponent(style);
@@ -205,6 +217,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                             initDottedLineSourceAndLayer(style);
                             initDottedLineSourceAndLayer2(style);
 
+                            btnStyle.setVisibility(View.GONE);
                             btnSimulate.setVisibility(View.VISIBLE);
                             cancelSearchbarDestination.setVisibility(View.VISIBLE);
 
@@ -252,6 +265,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                         initDottedLineSourceAndLayer(style);
                                         initDottedLineSourceAndLayer2(style);
 
+                                        btnStyle.setVisibility(View.GONE);
                                         selectLocationButton.setVisibility(View.VISIBLE);
                                         hoveringMarker = new ImageView(getActivity().getApplicationContext());
                                         hoveringMarker.setImageResource(R.drawable.red_marker);
@@ -314,6 +328,8 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                         if (hoveringMarker.getVisibility() == View.VISIBLE) {
                                             markerIsShown[0] = false;
 
+                                            new saveSharedPref().storeDestination(getActivity().getApplicationContext(), null, null);
+
                                             refreshFragment();
                                         }
                                     }
@@ -324,6 +340,43 @@ public class MapFragment extends Fragment implements PermissionsListener {
                             }
                         });
 
+                        btnStyle.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                PopupMenu popup = new PopupMenu(getActivity(), btnStyle);
+                                popup.getMenuInflater().inflate(R.menu.map_styles_menu, popup.getMenu());
+                                popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                                    @Override
+                                    public boolean onMenuItemClick(MenuItem item) {
+                                        switch (item.getItemId()) {
+                                            case R.id.street_style:
+                                                new saveSharedPref().storeMapStyle(getActivity().getApplicationContext(), Style.MAPBOX_STREETS);
+                                                refreshFragment();
+                                                return true;
+
+                                            case R.id.light_style:
+                                                new saveSharedPref().storeMapStyle(getActivity().getApplicationContext(), Style.LIGHT);
+                                                refreshFragment();
+                                                return true;
+
+                                            case R.id.dark_style:
+                                                new saveSharedPref().storeMapStyle(getActivity().getApplicationContext(), Style.DARK);
+                                                refreshFragment();
+                                                return true;
+
+                                            case R.id.satellite_style:
+                                                new saveSharedPref().storeMapStyle(getActivity().getApplicationContext(), Style.SATELLITE_STREETS);
+                                                refreshFragment();
+                                                return true;
+
+                                            default:
+                                                return true;
+                                        }
+                                    }
+                                });
+                                popup.show();
+                            }
+                        });
 
                     }
                 });
@@ -677,6 +730,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
                 getFragmentManager().popBackStack();
 
+                btnStyle.setVisibility(View.GONE);
                 btnSimulate.setVisibility(View.VISIBLE);
                 cancelSearchbarDestination.setVisibility(View.VISIBLE);
 

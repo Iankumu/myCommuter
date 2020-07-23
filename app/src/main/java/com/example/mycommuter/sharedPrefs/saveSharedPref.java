@@ -39,4 +39,14 @@ public class saveSharedPref {
     public static String retrieveDestination(Context context, String tag){
         return getPreferences(context).getString(tag, null);
     }
+
+    public void storeMapStyle(Context context, String style) {
+        SharedPreferences.Editor editor = getPreferences(context).edit();
+        editor.putString("MapStyle", style);
+        editor.apply();
+    }
+
+    public static String setMapStyle(Context context) {
+        return getPreferences(context).getString("MapStyle", null);
+    }
 }
