@@ -1,5 +1,6 @@
 package com.example.mycommuter.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -45,6 +46,8 @@ import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
+
 /**
  * A simple {@link Fragment} subclass.
  */
@@ -64,6 +67,7 @@ public class TodoFragment extends Fragment {
     private ShimmerFrameLayout shimmerFrameLayout;
     public boolean isContextModeEnabled = false;
     StaggeredGridLayoutManager staggeredGridLayoutManager;
+    private int call = 0;
 
     public TodoFragment() {
         // Required empty public constructor
@@ -81,6 +85,8 @@ public class TodoFragment extends Fragment {
         contextualtoolbar = view.findViewById(R.id.contextualToolbar);
         recyclerView = view.findViewById(R.id.myListView);
         toolbar = view.findViewById(R.id.tasktoolbar);
+        initRecyclerView();
+
 
         setShimmer(true);
         return view;
@@ -89,9 +95,77 @@ public class TodoFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initRecyclerView();
 
+        // TODO: Use the ViewModel
+
+        toolbar.setOnMenuItemClickListener(this::onOptionsItemSelected);
+        recyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getActivity(),
+                        new RecyclerItemClickListener.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+
+                                tasks = listinit.get(position);
+                                Intent dintent = new Intent(getActivity(), TaskDetail.class);
+
+                                dintent.putExtra("task", tasks);
+                                dintent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+                                startActivity(dintent);
+
+
+                            }
+                        }));
+    }
+
+
+    public void initRecyclerView() {
+        listinit = new ArrayList<>();
+        Log.e(TAG, "initRecyclerView: " + listinit);
+        staggeredGridLayoutManager = new StaggeredGridLayoutManager(1, LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(staggeredGridLayoutManager);
+
+        recyclerView.setHasFixedSize(true);
+
+
+        recyclerView.setAdapter(new TaskAdapter(getContext(), listinit));
+
+    }
+
+    @Override
+    public void onDetach() {
+        listinit.clear();
+        super.onDetach();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        listinit.clear();
+        super.onAttach(context);
+    }
+
+    public void setShimmer(boolean shimmer) {
+        if (shimmer) {
+            shimmerFrameLayout.startShimmer();
+        } else {
+
+            shimmerFrameLayout.stopShimmer();
+            shimmerFrameLayout.setVisibility(View.GONE);
+        }
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        listinit = new ArrayList<>();
+
+        Log.e(TAG, "onViewCreated: " + listinit);
+        if (listinit.isEmpty()) {
+            listinit.clear();
+        }
+        listinit.clear();
         homeActivityViewModel = new ViewModelProvider(this).get(HomeActivityViewModel.class);
+
         homeActivityViewModel.init();
         homeActivityViewModel.getTasks().observe(getViewLifecycleOwner(), new Observer<List<Tasks>>() {
             @Override
@@ -120,50 +194,6 @@ public class TodoFragment extends Fragment {
                 }
             }
         });
-        // TODO: Use the ViewModel
-
-        toolbar.setOnMenuItemClickListener(this::onOptionsItemSelected);
-        recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getActivity(),
-                        new RecyclerItemClickListener.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(View view, int position) {
-
-                                tasks = listinit.get(position);
-                                Intent dintent = new Intent(getActivity(), TaskDetail.class);
-
-                                dintent.putExtra("task", tasks);
-
-                                startActivity(dintent);
-
-
-                            }
-                        }));
-    }
-
-
-    public void initRecyclerView() {
-        Log.e(TAG, "initRecyclerView: " + listinit);
-        staggeredGridLayoutManager = new StaggeredGridLayoutManager(1, LinearLayoutManager.VERTICAL);
-        recyclerView.setLayoutManager(staggeredGridLayoutManager);
-//        layoutManager = new LinearLayoutManager(getContext());
-//        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setHasFixedSize(true);
-//        adapter = new TaskAdapter(getContext(), listinit);
-
-        recyclerView.setAdapter(new TaskAdapter(getContext(), listinit));
-
-    }
-
-    public void setShimmer(boolean shimmer) {
-        if (shimmer) {
-            shimmerFrameLayout.startShimmer();
-        } else {
-
-            shimmerFrameLayout.stopShimmer();
-            shimmerFrameLayout.setVisibility(View.GONE);
-        }
-
     }
 
     @Override
@@ -185,7 +215,8 @@ public class TodoFragment extends Fragment {
 
     @Override
     public void onResume() {
-        listinit.clear();
+
+
         super.onResume();
 
     }
@@ -201,7 +232,7 @@ public class TodoFragment extends Fragment {
     @Override
     public void onStop() {
         setShimmer(false);
-        listinit.clear();
+
         super.onStop();
     }
 

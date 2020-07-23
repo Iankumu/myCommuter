@@ -90,9 +90,7 @@ public class LoginActivity extends AppCompatActivity {
 
         loginActivityModelView = new ViewModelProvider(this, new LoginViewHolderModelFactory(getApplication()))
                 .get(LoginActivityModelView.class);
-//        loginActivityModelView=new ViewModelProvider(this).get(LoginActivityModelView.class);
 
-//        loginActivityModelView = new ViewModelProvider(this, ViewModelProvider.AndroidViewModelFactory.getInstance(this.getApplication())).get(LoginActivityModelView.class);
 
         binding = DataBindingUtil.setContentView(LoginActivity.this, R.layout.activity_login);
         binding.setLifecycleOwner(this);

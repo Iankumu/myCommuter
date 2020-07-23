@@ -79,10 +79,11 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         View view = inflater.inflate(R.layout.cardviewer, parent, false);
         MyViewHolder myviewHolder = new MyViewHolder(view);
-
+        myviewHolder.setIsRecyclable(false);
         return myviewHolder;
     }
 
@@ -103,7 +104,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> 
             e.printStackTrace();
         }
         holder.due.setText(myDate.toString());
-
 
 
     }

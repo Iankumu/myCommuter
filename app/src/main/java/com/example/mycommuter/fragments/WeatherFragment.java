@@ -1,9 +1,11 @@
 package com.example.mycommuter.fragments;
 
+import android.content.Context;
 import android.content.Intent;
 import android.icu.lang.UCharacter;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
@@ -94,6 +96,37 @@ public class WeatherFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        initRecyclerView(listinit);
+        weatherset(new CurrentWeather() {
+            @Override
+            public void getCurrentWeather(Weather weather) {
+                weatherimg.setBackgroundResource(IconProvider.getImageIcon(weather.getMain()));
+                city.setText(weather.getCity());
+                temp.setText(weather.getTemp());
+                feelslike.setText(weather.getFeels_like());
+                description.setText(weather.getDescription());
+            }
+        });
+
+        recyclerView.addOnItemTouchListener(
+                new RecyclerItemClickListener(getActivity(),
+                        new RecyclerItemClickListener.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(View view, int position) {
+
+                                weather = listinit.get(position);
+
+
+
+                            }
+                        }));
+
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         forecastActivityViewModel = new ViewModelProvider(this).get(ForecastActivityViewModel.class);
 
         forecastActivityViewModel.getWeather().observe(getViewLifecycleOwner(), new Observer<List<Weather>>() {
@@ -122,31 +155,6 @@ public class WeatherFragment extends Fragment {
                 }
             }
         });
-        initRecyclerView(listinit);
-        weatherset(new CurrentWeather() {
-            @Override
-            public void getCurrentWeather(Weather weather) {
-                weatherimg.setBackgroundResource(IconProvider.getImageIcon(weather.getMain()));
-                city.setText(weather.getCity());
-                temp.setText(weather.getTemp());
-                feelslike.setText(weather.getFeels_like());
-                description.setText(weather.getDescription());
-            }
-        });
-
-        recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getActivity(),
-                        new RecyclerItemClickListener.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(View view, int position) {
-
-                                weather = listinit.get(position);
-
-
-
-                            }
-                        }));
-
     }
 
     public void initRecyclerView(List<Weather> weather) {
@@ -160,6 +168,17 @@ public class WeatherFragment extends Fragment {
 
         recyclerView.setAdapter(weatherAdapter);
 
+    }
+    @Override
+    public void onDetach() {
+        listinit.clear();
+        super.onDetach();
+    }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        listinit.clear();
+        super.onAttach(context);
     }
 
     public void weatherset(CurrentWeather currentWeather) {
