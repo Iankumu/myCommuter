@@ -431,102 +431,106 @@ public class MapFragment extends Fragment implements PermissionsListener {
     }
 
     private void getRequest(@NonNull Style loadedMapStyle) {
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
-        String token = saveSharedPref.getToken(getActivity().getApplicationContext());
-        JsonObjectRequest objectRequest = new JsonObjectRequest(
-                Request.Method.GET,
-                Navigation_url,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray routes = response.getJSONArray("routes");
-                            Log.wtf(LOG_TAG_Code + "\tNo. of routes", String.valueOf(routes.length()));
+        try {
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+            String token = saveSharedPref.getToken(getActivity().getApplicationContext());
+            JsonObjectRequest objectRequest = new JsonObjectRequest(
+                    Request.Method.GET,
+                    Navigation_url,
+                    null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                JSONArray routes = response.getJSONArray("routes");
+                                Log.wtf(LOG_TAG_Code + "\tNo. of routes", String.valueOf(routes.length()));
 
-                            if (routes.length() == 2){
-                                JSONObject secondroute = routes.getJSONObject(1);
+                                if (routes.length() == 2) {
+                                    JSONObject secondroute = routes.getJSONObject(1);
 
-                                String geometry2 = secondroute.getString("geometry");
-                                Log.wtf(LOG_TAG_Code, String.valueOf(geometry2));
+                                    String geometry2 = secondroute.getString("geometry");
+                                    Log.wtf(LOG_TAG_Code, String.valueOf(geometry2));
 
-                                drawNavigationPolylineRoute2(secondroute, loadedMapStyle);
+                                    drawNavigationPolylineRoute2(secondroute, loadedMapStyle);
 
+                                }
+
+                                JSONObject firstroute = routes.getJSONObject(0);
+
+
+                                String geometry = firstroute.getString("geometry");
+                                Log.wtf(LOG_TAG_Code, String.valueOf(geometry));
+
+                                drawNavigationPolylineRoute(firstroute, loadedMapStyle);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
                             }
 
-                            JSONObject firstroute = routes.getJSONObject(0);
-
-
-                            String geometry = firstroute.getString("geometry");
-                            Log.wtf(LOG_TAG_Code, String.valueOf(geometry));
-
-                            drawNavigationPolylineRoute(firstroute, loadedMapStyle);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
                         }
+                    },
+                    new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                        }
+                    }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", "Bearer " + token);
+                    return headers;
+                }
+            };
 
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                    }
-                }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String> ();
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
-            }
-        };
-
-        requestQueue.add(objectRequest);
+            requestQueue.add(objectRequest);
+        }catch (NullPointerException e){}
 
     }
     //get destination coordinates
     private void getCoordinatesRequest(Navigation navigation) {
-        String token = saveSharedPref.getToken(getActivity().getApplicationContext());
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
-        JsonObjectRequest objectRequest = new JsonObjectRequest(
-                Request.Method.GET,
-                coordinates,
-                null,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            JSONArray jo = response.getJSONArray("data");
-                            String curlat = (String) jo.get(0);
-                            String curlong = (String) jo.get(1);
-                            String destlat = (String) jo.get(2);
-                            String destlong = (String) jo.get(3);
+        try {
+            String token = saveSharedPref.getToken(getActivity().getApplicationContext());
+            RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
+            JsonObjectRequest objectRequest = new JsonObjectRequest(
+                    Request.Method.GET,
+                    coordinates,
+                    null,
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            try {
+                                JSONArray jo = response.getJSONArray("data");
+                                String curlat = (String) jo.get(0);
+                                String curlong = (String) jo.get(1);
+                                String destlat = (String) jo.get(2);
+                                String destlong = (String) jo.get(3);
 
-                            LocationModel locationModel = new LocationModel(curlat,curlong,destlat,destlong);
-                            navigation.getCoordinates(locationModel);
+                                LocationModel locationModel = new LocationModel(curlat, curlong, destlat, destlong);
+                                navigation.getCoordinates(locationModel);
 //                            Log.d("Cooridinates", "CurrentLatitude:"+String.valueOf(curlat));
 //                            Log.d("Cooridinates", "CurrentLongitude:"+String.valueOf(curlong));
 //                            Log.d("Cooridinates", "DestinationLatitude:"+String.valueOf(destlat));
 //                            Log.d("Cooridinates","DestinationLongitude:"+ String.valueOf(destlong));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                // do stuff here
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<String, String> ();
-                headers.put("Authorization", "Bearer " + token);
-                return headers;
-            }
-        };
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    // do stuff here
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Authorization", "Bearer " + token);
+                    return headers;
+                }
+            };
 
-        requestQueue.add(objectRequest);
+            requestQueue.add(objectRequest);
+        }catch (NullPointerException e){}
 
 
     }
