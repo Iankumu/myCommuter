@@ -62,31 +62,7 @@ android:layout_weight="2"
 
 
 
-    <Button
-        android:id="@+id/update"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
 
-        android:paddingStart="70dp"
-        android:paddingEnd="70dp"
-        android:background="@drawable/btn_bg"
-        android:onClick="Update"
 
-        android:text="Update" />
 
-    <androidx.appcompat.widget.AppCompatButton
-    android:id="@+id/delete"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center_horizontal"
-    android:layout_marginTop="30dp"
-
-    android:paddingStart="70dp"
-    android:paddingEnd="70dp"
-    android:background="@android:color/holo_red_dark"
-    android:onClick="delete"
-
-    android:text="Delete" />
 </LinearLayout>

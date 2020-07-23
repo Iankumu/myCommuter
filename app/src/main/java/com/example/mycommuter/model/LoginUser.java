@@ -47,4 +47,12 @@ public class LoginUser {
         else
             return -1;
     }
+    public int isEmailValid(){
+        if (TextUtils.isEmpty(getEmailAddress()))
+            return 0;
+        else if (!Patterns.EMAIL_ADDRESS.matcher(getEmailAddress()).matches())
+            return 1;
+        else
+            return -1;
+    }
 }

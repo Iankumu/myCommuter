@@ -70,6 +70,14 @@ public interface theCommuterApiendpoints {
             "Accept: application/json",
 
     })
+    @FormUrlEncoded
+    @POST("api/password/requestpassreset")
+    Call<JsonObject> ResetEmail(
+            @Field("email") String emailAddress);
+    @Headers({
+            "Accept: application/json",
+
+    })
     @GET("api/tasks")
     Call<Tasks> getTasks(
             @Header("Authorization") String authorization);

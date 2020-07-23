@@ -80,7 +80,27 @@
                 android:theme="@style/MyEditTextTheme"
                 app:addTextChangedListener="@{LoginViewModel.getPasswordWatcher}"
                 />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:orientation="horizontal">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Forgot password?"
+                    android:textColor="@android:color/white" />
+
+                <androidx.appcompat.widget.AppCompatButton
+                    style="?android:attr/borderlessButtonStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:onClick="@{LoginViewModel::launchPasswordReset}"
+                    android:text="Reset"
+                    android:textColor="@color/colorPrimaryDark" />
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -88,16 +108,7 @@
                 android:layout_marginTop="10dp"
                 android:orientation="horizontal">
 
-                <Switch
-                    android:id="@+id/switch1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:checked="false"
-                    android:text="Remember me"
-                    android:theme="@style/Myswitch"
 
-
-                    />
 
 
             </LinearLayout>

@@ -41,16 +41,16 @@ import static android.content.ContentValues.TAG;
 
 public class TaskDetail extends AppCompatActivity {
     TextView title, due, description;
-    Button deletebtn, editbtn;
+
     Tasks tasksdetail;
-    Toolbar  contextualtoolbar;
+    Toolbar contextualtoolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_task_detail);
         contextualtoolbar = findViewById(R.id.contextualToolbar);
-setSupportActionBar(contextualtoolbar);
+        setSupportActionBar(contextualtoolbar);
         title = findViewById(R.id.detailtitle);
         due = findViewById(R.id.detaildue);
         description = findViewById(R.id.detaildescription);
@@ -111,6 +111,14 @@ setSupportActionBar(contextualtoolbar);
         // Showing Alert Dialog
         alertDialog.show();
     }
+    @Override
+    public void onBackPressed() {
+        Log.d("CDA", "onBackPressed Called");
+
+        Intent dintent = new Intent(TaskDetail.this, BottomNavigationActivity.class);
+        startActivity(dintent);
+
+    }
 
     private void deleteAPIcall(ProfileUpdateCallback profileUpdateCallback) {
         final theCommuterApiendpoints apiService = ApiClient.getClient().create(theCommuterApiendpoints.class);
@@ -162,7 +170,7 @@ setSupportActionBar(contextualtoolbar);
         int id = item.getItemId();
         switch (id) {
             case R.id.delete_id:
-                Log.e(TAG, "onOptionsItemSelecteddelete " );
+                Log.e(TAG, "onOptionsItemSelecteddelete ");
                 showDeletePromptDialog();
                 break;
             case R.id.edit_id:
@@ -221,11 +229,11 @@ setSupportActionBar(contextualtoolbar);
 
     private void UpdateApiCall(ProfileUpdateCallback profileUpdateCallback) {
         final theCommuterApiendpoints apiService = ApiClient.getClient().create(theCommuterApiendpoints.class);
-        String titletxt=title.getText().toString().trim();
-        String descriptiontxt=description.getText().toString().trim();
-        String duetext=due.getText().toString().trim();
+        String titletxt = title.getText().toString().trim();
+        String descriptiontxt = description.getText().toString().trim();
+        String duetext = due.getText().toString().trim();
         String token = saveSharedPref.getToken(TaskDetail.this);
-        Call<JsonObject> call = apiService.updateTask(tasksdetail.getId(),titletxt,descriptiontxt,duetext, "Bearer " + token);
+        Call<JsonObject> call = apiService.updateTask(tasksdetail.getId(), titletxt, descriptiontxt, duetext, "Bearer " + token);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
@@ -269,7 +277,7 @@ setSupportActionBar(contextualtoolbar);
             @Override
             public void onPositiveButtonClick(Object selection) {
 
-               due.setText(materialDatePicker.getHeaderText());
+                due.setText(materialDatePicker.getHeaderText());
                 Toasty.info(TaskDetail.this, materialDatePicker.getHeaderText()).show();
             }
         });

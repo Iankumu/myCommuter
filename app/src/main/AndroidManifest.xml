@@ -13,6 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".PasswordResetActivity"></activity>
         <activity android:name=".NewTaskActivity" />
         <activity android:name=".TaskDetail" />
         <activity

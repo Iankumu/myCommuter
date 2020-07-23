@@ -85,7 +85,7 @@ public class WeatherFragment extends Fragment {
         recyclerView = view.findViewById(R.id.myweatherRe);
         weatherimg = view.findViewById(R.id.WeatherCardWeatherIcon);
         temp = view.findViewById(R.id.WeatherCardCurrentTemp);
-        feelslike = view.findViewById(R.id.WeatherCardfeelsLike);
+
         description = view.findViewById(R.id.weatherCardWeatherDescription);
         city = view.findViewById(R.id.WeatherCardCityName);
 
@@ -103,8 +103,8 @@ public class WeatherFragment extends Fragment {
             public void getCurrentWeather(Weather weather) {
                 weatherimg.setBackgroundResource(IconProvider.getImageIcon(weather.getMain()));
                 city.setText(weather.getCity());
-                temp.setText(weather.getTemp());
-                feelslike.setText(weather.getFeels_like());
+                temp.setText(weather.getTemp()+"°");
+
                 description.setText(weather.getDescription());
             }
         });
