@@ -3,6 +3,7 @@ package com.example.mycommuter;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 
@@ -10,6 +11,7 @@ import com.example.mycommuter.fragments.MapFragment;
 import com.example.mycommuter.fragments.ProfileFragment;
 import com.example.mycommuter.fragments.TodoFragment;
 import com.example.mycommuter.fragments.WeatherFragment;
+import com.example.mycommuter.sharedPrefs.saveSharedPref;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class BottomNavigationActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -17,6 +19,11 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+        if (!saveSharedPref.getLoggedStatus(getApplicationContext())) {
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bottom_navigation);
         bottomNavigationView = findViewById(R.id.bottom_nav);
@@ -26,21 +33,7 @@ public class BottomNavigationActivity extends AppCompatActivity implements Botto
             bottomNavigationView.setSelectedItemId(R.id.maps_id);
 
         }
-//        if (getIntent().getExtras().getString("frgToLoad") != null) {
-//            String intentFragment = getIntent().getExtras().getString("frgToLoad");
-//
-//            switch (intentFragment) {
-//                case "todoFragment":
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.frag_container, new TodoFragment()).commit();
-//                    break;
-//                case "profilefragment":
-//                    getSupportFragmentManager().beginTransaction().replace(R.id.frag_container, new ProfileFragment()).commit();
-//                    break;
-//                case "mapFragment":
-//                    // Load corresponding fragment
-//                    break;
-//            }
-//        }
+
     }
 
     @Override

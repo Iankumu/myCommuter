@@ -73,10 +73,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 //        getActionBar().hide();
-        if (saveSharedPref.getLoggedStatus(getApplicationContext())) {
-            Intent intent = new Intent(getApplicationContext(), BottomNavigationActivity.class);
-            startActivity(intent);
-        }
+
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
