@@ -32,7 +32,7 @@
                 android:layout_height="294dp"
 
                 android:adjustViewBounds="true"
-                android:background="@drawable/prof"
+                android:background="@color/shimmer_color"
                 android:contentDescription="avatar"
 
                 android:fitsSystemWindows="true"
@@ -56,7 +56,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
 
-        android:src="@drawable/ic_create_24px"
+        android:background="@color/shimmer_color"
         app:fabSize="normal"
         app:layout_anchor="@id/appbar_layout"
         app:layout_anchorGravity="top|start" />
@@ -75,30 +75,50 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <com.facebook.shimmer.ShimmerFrameLayout
 
-                android:id="@+id/shimmerframelay"
+            <View xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
-                <LinearLayout
+                android:layout_height="10dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp" />
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:padding="10dp">
+
+                <ImageView
+                    android:id="@+id/usercon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="5dp"
+                    android:layout_marginRight="5dp"
+                    android:background="@color/shimmer_color" />
+
+                <TextView
+                    android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-
-                    <include layout="@layout/profshimmer" />
-
-                </LinearLayout>
-            </com.facebook.shimmer.ShimmerFrameLayout>
+                    android:layout_marginStart="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toEndOf="@id/usercon"
+                    android:layout_toRightOf="@id/usercon"
+                    android:background="@color/shimmer_color"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                    android:textColor="#212121" />
+            </RelativeLayout>
 
             <View xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/view1"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+
+                android:layout_height="10dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:background="#B6B6B6" />
+                android:background="@color/shimmer_color" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -108,7 +128,7 @@
                 android:padding="10dp">
 
                 <ImageView
-                    android:id="@+id/usericon"
+                    android:id="@+id/emalicon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -116,73 +136,36 @@
                     android:layout_marginRight="5dp" />
 
                 <TextView
-                    android:id="@+id/usersusername"
-                    android:layout_width="wrap_content"
+                    android:id="@+id/usesremail"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:layout_marginLeft="5dp"
-                    android:layout_toEndOf="@id/usericon"
-                    android:layout_toRightOf="@id/usericon"
-
-                    android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                    android:textColor="#212121" />
-            </RelativeLayout>
-
-            <View xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/view2"
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:background="#B6B6B6" />
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:padding="10dp">
-
-                <ImageView
-                    android:id="@+id/emailicon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginRight="5dp" />
-
-                <TextView
-                    android:id="@+id/useremail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_toEndOf="@id/emailicon"
-                    android:layout_toRightOf="@id/emailicon"
-
+                    android:layout_toEndOf="@id/emalicon"
+                    android:layout_toRightOf="@id/emalicon"
+                    android:background="@color/shimmer_color"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     android:textColor="#212121" />
             </RelativeLayout>
 
 
             <View xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/view3"
                 android:layout_width="match_parent"
-                android:layout_height="1dp"
+
+                android:layout_height="10dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                android:background="#B6B6B6" />
+                android:background="@color/shimmer_color" />
 
-            <Button
+            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/logoutbtn"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:background="@drawable/btn_bg"
+                android:background="@color/shimmer_color"
 
 
-                android:paddingHorizontal="40dp"
-                android:text="Logout button" />
+                android:paddingHorizontal="150dp" />
 
         </LinearLayout>
 

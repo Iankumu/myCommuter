@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.mycommuter.BottomNavigationActivity;
@@ -24,6 +25,8 @@ import com.example.mycommuter.interfaces.UserProfile;
 import com.example.mycommuter.model.User;
 import com.example.mycommuter.model.Weather;
 import com.example.mycommuter.sharedPrefs.saveSharedPref;
+import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -49,7 +52,10 @@ public class ProfileFragment extends Fragment {
     Button button;
     TextView usernameTV, emailTv;
     FloatingActionButton floatingActionButton;
-
+    private ShimmerFrameLayout shimmerFrameLayout;
+    ImageView usericon,emailicon;
+    View view1,view2,view3;
+    AppBarLayout appBarLayout;
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -60,9 +66,16 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
-        usernameTV = view.findViewById(R.id.useremail);
-        emailTv = view.findViewById(R.id.usersusername);
+        emailTv = view.findViewById(R.id.useremail);
+        usernameTV = view.findViewById(R.id.usersusername);
         button = view.findViewById(R.id.logoutbtn);
+        appBarLayout=view.findViewById(R.id.appbar_layout);
+        usericon=view.findViewById(R.id.usericon);
+        view1=view.findViewById(R.id.view1);
+        view2=view.findViewById(R.id.view2);
+        view3=view.findViewById(R.id.view3);
+        emailicon=view.findViewById(R.id.emailicon);
+        shimmerFrameLayout = view.findViewById(R.id.shimmerframelay);
         floatingActionButton = view.findViewById(R.id.editprof);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,7 +85,7 @@ public class ProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
-
+        setShimmer(true);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -86,13 +99,34 @@ public class ProfileFragment extends Fragment {
         return view;
     }
 
+    public void setShimmer(boolean shimmer) {
+        if (shimmer) {
+            shimmerFrameLayout.startShimmer();
+            view1.setVisibility(View.GONE);
+            view3.setVisibility(View.GONE);
+            view2.setVisibility(View.GONE);
+            appBarLayout.setVisibility(View.GONE);
+            button.setVisibility(View.GONE);
+        } else {
 
+            view1.setVisibility(View.VISIBLE);
+            view3.setVisibility(View.VISIBLE);
+            view2.setVisibility(View.VISIBLE);
+            appBarLayout.setVisibility(View.VISIBLE);
+            shimmerFrameLayout.stopShimmer();
+            shimmerFrameLayout.setVisibility(View.GONE);
+        }
+
+    }
     @Override
     public void onStart() {
         super.onStart();
         profile(new UserProfile() {
             @Override
             public void getProfile(User user) {
+                setShimmer(false);
+                usericon.setBackgroundResource(R.drawable.ic_baseline_account_circle_24);
+                emailicon.setBackgroundResource(R.drawable.ic_baseline_email_24);
                 emailTv.setText(user.getEmailAddress());
                 usernameTV.setText(user.getUsername());
             }
@@ -105,30 +139,33 @@ public class ProfileFragment extends Fragment {
 
         String token = saveSharedPref.getToken(getContext());
         Call<JsonObject> call = apiService.getProfile("Bearer " + token);
-        call.enqueue(new Callback<JsonObject>()
-
-        {
+        call.enqueue(new Callback<JsonObject>() {
             @Override
-            public void onResponse (Call < JsonObject > call, Response< JsonObject > response){
+            public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
 
                 if (response.body() != null) {
-                    String data = new Gson().toJson(response.body());
+
 
                     JSONObject jo2 = null;
                     try {
 
-                    JsonObject object = response.body().get("data").getAsJsonObject();
-                        Log.e(TAG, "onResponseprof: "+object.get("2"));
-                        JsonElement obj=object.get("2");
-//                    JsonElement jsonElement = jsonArray.get(0);
-//                    JsonObject obj = new JsonParser().parse(String.valueOf(jsonElement)).getAsJsonObject();
-                    jo2 = new JSONObject(obj.toString());
-                    User user =new User();
+                        JsonObject obj = new JsonParser().parse(String.valueOf(response.body())).getAsJsonObject();
+
+
+                        JsonElement object = obj.get("data");
+                        JsonArray jsonArray = new JsonParser().parse(object.toString()).getAsJsonArray();
+
+                        JsonElement jsonElement = jsonArray.get(0);
+                        Log.e(TAG, "onResponseprof: " + jsonElement);
+                        JsonObject object1 = new JsonParser().parse(String.valueOf(jsonElement)).getAsJsonObject();
+                        jo2 = new JSONObject(object1.toString());
+                        User user = new User();
+
                         user.setEmailAddress(jo2.getString("email"));
                         user.setUsername(jo2.getString("name"));
                         userProfile.getProfile(user);
-                    } catch (JSONException e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -137,7 +174,7 @@ public class ProfileFragment extends Fragment {
             }
 
             @Override
-            public void onFailure (Call < JsonObject > call, Throwable t){
+            public void onFailure(Call<JsonObject> call, Throwable t) {
                 Log.d(TAG, "Registration failed");
                 System.out.println(t);
             }

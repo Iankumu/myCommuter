@@ -52,7 +52,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> 
         public TextView description;
         public TextView due;
         private MaterialCardView materialCardView;
-        private MaterialCheckBox materialCheckBox;
+
 
 
         public MyViewHolder(View v) {
