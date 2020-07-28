@@ -538,7 +538,6 @@ public class MapFragment extends Fragment implements PermissionsListener {
     }
 
 
-
     //drawing route 1
     private void drawNavigationPolylineRoute(final JSONObject route, @NonNull Style loadedMapStyle) {
         if (mapboxMap != null) {
