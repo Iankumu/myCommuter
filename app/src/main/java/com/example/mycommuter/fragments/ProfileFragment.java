@@ -94,6 +94,7 @@ public class ProfileFragment extends Fragment {
                 Intent intent = new Intent(getContext(), LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
+                Log.e(TAG, "onClick: logout" );
             }
         });
         return view;
@@ -107,6 +108,7 @@ public class ProfileFragment extends Fragment {
             view2.setVisibility(View.GONE);
             appBarLayout.setVisibility(View.GONE);
             button.setVisibility(View.GONE);
+
         } else {
             button.setVisibility(View.VISIBLE);
             view1.setVisibility(View.VISIBLE);
