@@ -55,7 +55,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
-
+        android:visibility="gone"
         android:src="@drawable/ic_create_24px"
         app:fabSize="normal"
         app:layout_anchor="@id/appbar_layout"
@@ -89,10 +89,14 @@
 
                     <include layout="@layout/profshimmer" />
 
+                    <include layout="@layout/placeholderlay" />
+
+
+
                 </LinearLayout>
             </com.facebook.shimmer.ShimmerFrameLayout>
 
-            <View xmlns:android="http://schemas.android.com/apk/res/android"
+            <View
                 android:id="@+id/view1"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
@@ -179,7 +183,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/btn_bg"
-
+                android:visibility="gone"
 
                 android:paddingHorizontal="40dp"
                 android:text="Logout button" />
