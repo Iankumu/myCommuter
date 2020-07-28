@@ -206,36 +206,38 @@ public class MapFragment extends Fragment implements PermissionsListener {
                     public void onStyleLoaded(@NonNull final Style style) {
                         enableLocationComponent(style);
 
-                        String storedLat = saveSharedPref.retrieveDestination(getActivity().getApplicationContext(), "Lat");
-                        String storedLong = saveSharedPref.retrieveDestination(getActivity().getApplicationContext(), "Long");
+                        try {
+                            String storedLat = saveSharedPref.retrieveDestination(getActivity().getApplicationContext(), "Lat");
+                            String storedLong = saveSharedPref.retrieveDestination(getActivity().getApplicationContext(), "Long");
 
-                        if (storedLat != null && storedLong != null){
-                            searchIsUsed[0] = true;
-                            markerIsShown[0] = false;
+                            if (storedLat != null && storedLong != null) {
+                                searchIsUsed[0] = true;
+                                markerIsShown[0] = false;
 
-                            initDroppedSearchBarMarker(style);
-                            initDottedLineSourceAndLayer(style);
-                            initDottedLineSourceAndLayer2(style);
+                                initDroppedSearchBarMarker(style);
+                                initDottedLineSourceAndLayer(style);
+                                initDottedLineSourceAndLayer2(style);
 
-                            btnStyle.setVisibility(View.GONE);
-                            btnSimulate.setVisibility(View.VISIBLE);
-                            cancelSearchbarDestination.setVisibility(View.VISIBLE);
+                                btnStyle.setVisibility(View.GONE);
+                                btnSimulate.setVisibility(View.VISIBLE);
+                                cancelSearchbarDestination.setVisibility(View.VISIBLE);
 
-                            if (style.getLayer(DROPPED_SEARCHBAR_MARKER_LAYER_ID) != null) {
-                                GeoJsonSource source = style.getSourceAs("dropped-searchbarmarker-source-id");
-                                if (source != null) {
-                                    source.setGeoJson(Point.fromLngLat(Double.valueOf(storedLong), Double.valueOf(storedLat)));
+                                if (style.getLayer(DROPPED_SEARCHBAR_MARKER_LAYER_ID) != null) {
+                                    GeoJsonSource source = style.getSourceAs("dropped-searchbarmarker-source-id");
+                                    if (source != null) {
+                                        source.setGeoJson(Point.fromLngLat(Double.valueOf(storedLong), Double.valueOf(storedLat)));
+                                    }
+                                    droppedSearchBarMarkerLayer = style.getLayer(DROPPED_SEARCHBAR_MARKER_LAYER_ID);
+                                    if (droppedSearchBarMarkerLayer != null) {
+                                        droppedSearchBarMarkerLayer.setProperties(visibility(VISIBLE));
+                                    }
                                 }
-                                droppedSearchBarMarkerLayer = style.getLayer(DROPPED_SEARCHBAR_MARKER_LAYER_ID);
-                                if (droppedSearchBarMarkerLayer != null) {
-                                    droppedSearchBarMarkerLayer.setProperties(visibility(VISIBLE));
-                                }
-                            }
 
 //                            Toast.makeText(getActivity().getApplicationContext(), "Destination" +
 //                                    storedLat + "\t" + storedLong, Toast.LENGTH_LONG).show();
-                            postDestinationRequest(storedLat, storedLong, style);
-                        }
+                                postDestinationRequest(storedLat, storedLong, style);
+                            }
+                        }catch (NullPointerException e){}
 
                         btnSearchLocation.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -777,32 +779,34 @@ public class MapFragment extends Fragment implements PermissionsListener {
     }
 
     private void enableLocationComponent(@NonNull Style loadedMapStyle) {
-        if (PermissionsManager.areLocationPermissionsGranted(getActivity().getApplicationContext())) {
-            LocationComponent locationComponent = mapboxMap.getLocationComponent();
-            locationComponent.activateLocationComponent(
-                    LocationComponentActivationOptions.builder(getActivity().getApplicationContext(), loadedMapStyle).build());
+        try {
+            if (PermissionsManager.areLocationPermissionsGranted(getActivity().getApplicationContext())) {
+                LocationComponent locationComponent = mapboxMap.getLocationComponent();
+                locationComponent.activateLocationComponent(
+                        LocationComponentActivationOptions.builder(getActivity().getApplicationContext(), loadedMapStyle).build());
 
-            if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                            != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                return;
+                if (ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED &&
+                        ActivityCompat.checkSelfPermission(getActivity().getApplicationContext(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                                != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    return;
+                }
+                locationComponent.setLocationComponentEnabled(true);
+                locationComponent.setCameraMode(CameraMode.TRACKING);
+                locationComponent.setRenderMode(RenderMode.COMPASS);
+                initLocationEngine();
+            } else {
+                permissionsManager = new PermissionsManager(this);
+                permissionsManager.requestLocationPermissions(getActivity());
             }
-            locationComponent.setLocationComponentEnabled(true);
-            locationComponent.setCameraMode(CameraMode.TRACKING);
-            locationComponent.setRenderMode(RenderMode.COMPASS);
-            initLocationEngine();
-        } else {
-            permissionsManager = new PermissionsManager(this);
-            permissionsManager.requestLocationPermissions(getActivity());
-        }
+        }catch(NullPointerException e){}
     }
 
     @SuppressLint("MissingPermission")
