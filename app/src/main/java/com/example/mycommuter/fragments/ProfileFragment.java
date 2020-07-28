@@ -108,7 +108,7 @@ public class ProfileFragment extends Fragment {
             appBarLayout.setVisibility(View.GONE);
             button.setVisibility(View.GONE);
         } else {
-
+            button.setVisibility(View.VISIBLE);
             view1.setVisibility(View.VISIBLE);
             view3.setVisibility(View.VISIBLE);
             view2.setVisibility(View.VISIBLE);

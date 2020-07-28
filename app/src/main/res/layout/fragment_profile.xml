@@ -183,7 +183,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:background="@drawable/btn_bg"
-                android:visibility="gone"
+
 
                 android:paddingHorizontal="40dp"
                 android:text="Logout button" />
