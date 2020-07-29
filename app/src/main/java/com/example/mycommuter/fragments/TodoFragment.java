@@ -20,23 +20,28 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.example.mycommuter.BottomNavigationActivity;
+import com.example.mycommuter.LoginActivity;
 import com.example.mycommuter.NewTaskActivity;
 import com.example.mycommuter.R;
 import com.example.mycommuter.TaskDetail;
 import com.example.mycommuter.adapter.RecyclerItemClickListener;
 import com.example.mycommuter.adapter.TaskAdapter;
 import com.example.mycommuter.model.Tasks;
+import com.example.mycommuter.sharedPrefs.saveSharedPref;
 import com.example.mycommuter.viewmodels.HomeActivityViewModel;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.datepicker.MaterialDatePicker;
@@ -209,14 +214,13 @@ public class TodoFragment extends Fragment {
         return super.onContextItemSelected(item);
     }
 
+
     public void displaymessage(String message) {
         Toasty.info(getContext(), message).show();
     }
 
     @Override
     public void onResume() {
-
-
         super.onResume();
 
     }
@@ -241,12 +245,40 @@ public class TodoFragment extends Fragment {
         int id = item.getItemId();
         switch (id) {
             case R.id.search:
+
+                search(item);
                 break;
             case R.id.add:
                 additem();
-
+            case R.id.logouttask:
+                logout();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void search(MenuItem menuItem) {
+        SearchView searchView = (SearchView) menuItem.getActionView();
+        searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                adapter.getFilter().filter(newText);
+                return false;
+            }
+        });
+
+    }
+
+    private void logout() {
+        saveSharedPref.setLoggedIn(getContext(), new Pair<>(false, ""));
+        Intent intent = new Intent(getContext(), LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 
     private void additem() {

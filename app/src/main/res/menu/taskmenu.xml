@@ -3,19 +3,20 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-    android:id="@+id/add"
-    android:icon="@drawable/ic_add_black_24dp"
-    android:orderInCategory="1"
-    android:title="Add Task"
-    app:showAsAction="always" />
+        android:id="@+id/add"
+        android:icon="@drawable/ic_add_black_24dp"
+        android:orderInCategory="1"
+        android:title="Add Task"
+        app:showAsAction="always" />
     <item
         android:id="@+id/search"
         android:icon="@drawable/ic_search_black_24dp"
         android:orderInCategory="0"
         android:title="Search Task"
-        app:showAsAction="always" />
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView" />
     <item
-        android:id="@+id/logout_frag"
+        android:id="@+id/logouttask"
         android:icon="@drawable/logout"
         android:title="logout" />
 </menu>

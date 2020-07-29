@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +26,7 @@ import com.google.android.material.checkbox.MaterialCheckBox;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,8 +35,9 @@ import es.dmoral.toasty.Toasty;
 import static android.content.ContentValues.TAG;
 
 
-public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> {
+public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> implements Filterable {
     private List<Tasks> tasks;
+    private List<Tasks> tasksSearch;
     Context context;
     TodoFragment todoFragment = new TodoFragment();
 
@@ -43,6 +47,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> 
     public TaskAdapter(Context context, List<Tasks> tasks) {
         this.context = context;
         this.tasks = tasks;
+        tasksSearch = new ArrayList<>(tasks);
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
@@ -52,7 +57,6 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> 
         public TextView description;
         public TextView due;
         private MaterialCardView materialCardView;
-
 
 
         public MyViewHolder(View v) {
@@ -126,4 +130,37 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> 
 
     }
 
+    @Override
+    public Filter getFilter() {
+        return filterResult;
+    }
+
+    private Filter filterResult = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            List<Tasks> filteredList = new ArrayList<>();
+            if (constraint == null || constraint.length() == 0) {
+                filteredList.addAll(tasksSearch);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+                for (Tasks task : tasksSearch) {
+                    if (task.getTitle().toLowerCase().contains(filterPattern)) {
+                        filteredList.add(task);
+                    }
+                }
+            }
+            FilterResults filterResults = new FilterResults();
+            filterResults.values = filteredList;
+
+            return filterResults;
+
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            tasks.clear();
+            tasks.addAll((List) results.values);
+            notifyDataSetChanged();
+        }
+    };
 }
