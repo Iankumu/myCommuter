@@ -271,6 +271,7 @@ public class TodoFragment extends Fragment {
                 return false;
             }
         });
+        menuItem.getIcon().setVisible(false,false);
 
     }
 

@@ -15,13 +15,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.example.mycommuter.LoginActivity;
 import com.example.mycommuter.R;
 
 import com.example.mycommuter.RestApi.ApiClient;
@@ -183,6 +186,7 @@ public class WeatherFragment extends Fragment {
 
     public void weatherset(CurrentWeather currentWeather) {
         String token = saveSharedPref.getToken(getContext());
+
         String stringlongitude = String.valueOf("36.8219");
         String stringLatitude = String.valueOf("1.2921");
 
@@ -245,6 +249,27 @@ public class WeatherFragment extends Fragment {
         });
 
 
+    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+        switch (id) {
+            case R.id.search1:
+
+//                search(item);
+                break;
+            case R.id.logout_frag:
+                logout();
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+    private void logout() {
+        saveSharedPref.setLoggedIn(getContext(), new Pair<>(false, ""));
+        Intent intent = new Intent(getContext(), LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
     }
 }
 
