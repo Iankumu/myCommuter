@@ -245,13 +245,14 @@ public class TodoFragment extends Fragment {
         int id = item.getItemId();
         switch (id) {
             case R.id.search:
-
                 search(item);
                 break;
             case R.id.add:
                 additem();
+                break;
             case R.id.logouttask:
                 logout();
+                break;
         }
         return super.onOptionsItemSelected(item);
     }

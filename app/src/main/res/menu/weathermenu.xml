@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:theme="@android:style/Theme.Holo.Light.DarkActionBar">
+
     <item
         android:id="@+id/search1"
         android:icon="@drawable/ic_search_black_24dp"
         android:orderInCategory="0"
-        android:title="Search Task"
-        app:showAsAction="always" />
+        android:title="Search "
+        app:actionViewClass="android.widget.SearchView"
+        app:showAsAction="ifRoom|collapseActionView"
+        android:theme="@android:style/Theme.Holo.Light.DarkActionBar"/>
     <item
         android:id="@+id/logout_frag"
         android:icon="@drawable/logout"

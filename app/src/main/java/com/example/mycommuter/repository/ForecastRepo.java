@@ -134,6 +134,7 @@ public class ForecastRepo {
                                     e.printStackTrace();
                                 }
                             }
+
                         weatherResultCallback.getWeather(arrayofWeather);
                     } catch (JSONException e) {
                         e.printStackTrace();

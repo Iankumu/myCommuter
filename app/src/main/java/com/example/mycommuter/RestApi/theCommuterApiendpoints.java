@@ -105,6 +105,17 @@ public interface theCommuterApiendpoints {
             "Accept: application/json"
 
     )
+    @FormUrlEncoded
+    @POST("api/searchWeather")
+    Call<JsonObject> getsearchWeather(
+            @Field("location") String location,
+
+            @Header("Authorization") String authorization);
+
+    @Headers(
+            "Accept: application/json"
+
+    )
     @GET("api/profile")
     Call<JsonObject> getProfile(
 

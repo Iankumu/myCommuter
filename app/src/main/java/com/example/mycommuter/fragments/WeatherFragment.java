@@ -1,5 +1,6 @@
 package com.example.mycommuter.fragments;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.icu.lang.UCharacter;
@@ -7,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -17,11 +19,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.example.mycommuter.LoginActivity;
@@ -73,7 +79,7 @@ public class WeatherFragment extends Fragment {
     private ForecastActivityViewModel forecastActivityViewModel;
     private ImageView weatherimg;
     private TextView temp, feelslike, description, city;
-
+    Toolbar toolbar;
     public WeatherFragment() {
 
     }
@@ -88,10 +94,10 @@ public class WeatherFragment extends Fragment {
         recyclerView = view.findViewById(R.id.myweatherRe);
         weatherimg = view.findViewById(R.id.WeatherCardWeatherIcon);
         temp = view.findViewById(R.id.WeatherCardCurrentTemp);
-
+toolbar=view.findViewById(R.id.wthtoolbar);
         description = view.findViewById(R.id.weatherCardWeatherDescription);
         city = view.findViewById(R.id.WeatherCardCityName);
-
+        toolbar.setOnMenuItemClickListener(this::onOptionsItemSelected);
 
         return view;
     }
@@ -99,6 +105,7 @@ public class WeatherFragment extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
 
         initRecyclerView(listinit);
         weatherset(new CurrentWeather() {
@@ -202,7 +209,7 @@ public class WeatherFragment extends Fragment {
             @Override
             public void onResponse(Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
 
-
+                Log.e(TAG, "weatherset: "+response.body() );
                 if (response.body() != null) {
 
 
@@ -255,8 +262,8 @@ public class WeatherFragment extends Fragment {
         int id = item.getItemId();
         switch (id) {
             case R.id.search1:
-
-//                search(item);
+                Log.e(TAG, "onOptionsItemSelected: clicked" );
+                search(item);
                 break;
             case R.id.logout_frag:
                 logout();
@@ -264,6 +271,116 @@ public class WeatherFragment extends Fragment {
 
         }
         return super.onOptionsItemSelected(item);
+    }
+
+//    @Override
+//    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+//        super.onCreateOptionsMenu(menu, inflater);
+//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
+//    }
+
+    private void search(MenuItem item) {
+        SearchView searchView = (SearchView) item.getActionView();
+
+        searchView.setQueryHint("search ...");
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if(query.length()>3){
+                    callSearch(query);
+                }
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                return false;
+            }
+        });
+        item.getIcon().setVisible(false,false);
+
+    }
+
+    private void callSearch(String query) {
+        loadSearch(new CurrentWeather() {
+            @Override
+            public void getCurrentWeather(Weather weather) {
+                weatherimg.setBackgroundResource(IconProvider.getImageIcon(weather.getMain()));
+                city.setText(weather.getCity());
+                temp.setText(weather.getTemp()+"°");
+
+                description.setText(weather.getDescription());
+            }
+        },query);
+    }
+
+    public void loadSearch(CurrentWeather currentWeather,String query) {
+        String token = saveSharedPref.getToken(getContext());
+
+
+
+
+        final theCommuterApiendpoints apiService = ApiClient.getClient().create(theCommuterApiendpoints.class);
+
+
+        Call<JsonObject> call = apiService.getsearchWeather(query, "Bearer " + token);
+
+
+        call.enqueue(new Callback<JsonObject>() {
+
+
+            @Override
+            public void onResponse(Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+                Log.e(TAG, "weatherset: "+response.body() );
+                if (response.body() != null) {
+
+
+                    String data = new Gson().toJson(response.body());
+
+                    JSONObject jo2 = null;
+                    try {
+                        JsonArray jsonArray = response.body().get("data").getAsJsonArray();
+
+                        JsonElement jsonElement = jsonArray.get(0);
+                        JsonObject obj = new JsonParser().parse(String.valueOf(jsonElement)).getAsJsonObject();
+
+                        jo2 = new JSONObject(obj.toString());
+
+                        Weather weather = new Weather();
+
+                        weather.setCity(jo2.getString("city"));
+                        weather.setDescription(jo2.getString("description"));
+                        weather.setFeels_like(jo2.getString("feels_like"));
+                        weather.setMain(jo2.getString("main"));
+                        weather.setTemp(jo2.getString("temp"));
+                        currentWeather.getCurrentWeather(weather);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+
+
+
+                } else {
+                    System.out.println("Weather body empty");
+
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+
+
+                t.printStackTrace();
+            }
+        });
+
+
     }
     private void logout() {
         saveSharedPref.setLoggedIn(getContext(), new Pair<>(false, ""));
