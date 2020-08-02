@@ -3,6 +3,7 @@ package com.example.mycommuter.repository;
 import android.content.Context;
 import android.util.JsonToken;
 import android.util.Log;
+import android.util.Pair;
 
 import androidx.lifecycle.MutableLiveData;
 
@@ -45,9 +46,10 @@ import static android.content.ContentValues.TAG;
 
 public class ForecastRepo {
     private List<Weather> arrayofWeather = new ArrayList<>();
+    Weather weatherc=new Weather();
     private static ForecastRepo instance;
     private Context context;
-//    GPSTracker gpsTracker = new GPSTracker(context);
+
     public ForecastRepo(Context context) {
         this.context = context;
     }
@@ -61,19 +63,35 @@ public class ForecastRepo {
         }
         return instance;
     }
+    public MutableLiveData <Pair<List,Weather>> getSearchWeather(String location) {
+        MutableLiveData <Pair <List,Weather>> weatherp=new MutableLiveData<>();
+        searchWeather(new WeatherResultCallback() {
+            @Override
+            public void getWeather(List<Weather> weathers, Weather weather) {
+                weatherp.setValue(new Pair<>(arrayofWeather,weatherc));
+//                data.setValue(arrayofWeather);
+                Log.e("data", "" + weatherp);
 
-    public MutableLiveData<List<Weather>> getWeather() {
-        MutableLiveData<List<Weather>> data = new MutableLiveData<>();
+            }
+        },location);
+
+        return weatherp;
+
+
+    }
+    public MutableLiveData <Pair<List,Weather>> getWeather() {
+        MutableLiveData <Pair <List,Weather>> weatherp=new MutableLiveData<>();
         setWeather(new WeatherResultCallback() {
             @Override
-            public void getWeather(List<Weather> weather) {
-                data.setValue(arrayofWeather);
-                Log.e("data", "" + data);
+            public void getWeather(List<Weather> weathers, Weather weather) {
+            weatherp.setValue(new Pair<>(arrayofWeather,weatherc));
+//                data.setValue(arrayofWeather);
+                Log.e("data", "" + weatherp);
 
             }
         });
 
-        return data;
+        return weatherp;
 
 
     }
@@ -87,7 +105,7 @@ public class ForecastRepo {
         final theCommuterApiendpoints apiService = ApiClient.getClient().create(theCommuterApiendpoints.class);
 
 
-        Call<JsonObject> call = apiService.getWeather(stringlongitude,stringLatitude,"Bearer " + token);
+        Call<JsonObject> call = apiService.getCurrentWeather(stringlongitude,stringLatitude,"Bearer " + token);
 
 
         call.enqueue(new Callback<JsonObject>() {
@@ -113,8 +131,8 @@ public class ForecastRepo {
                     JSONArray datas = null;
                     try {
                         datas = jsonObject.getJSONArray("data");
-                        Log.e(TAG, "onResponse: "+datas);
-                        for (int i = 0; i < datas.length(); i++) {
+
+                        for (int i = 1; i < datas.length(); i++) {
 
                                 try {
                                     JSONObject jo2 = datas.getJSONObject(i);
@@ -134,8 +152,18 @@ public class ForecastRepo {
                                     e.printStackTrace();
                                 }
                             }
+                        JSONObject jo3=datas.getJSONObject(0);
 
-                        weatherResultCallback.getWeather(arrayofWeather);
+
+                        weatherc.setCity(jo3.getString("city"));
+                        weatherc.setDescription(jo3.getString("description"));
+                        weatherc.setFeels_like(jo3.getString("feels_like"));
+                        weatherc.setMain(jo3.getString("main"));
+                        weatherc.setTemp(jo3.getString("temp"));
+
+
+
+                        weatherResultCallback.getWeather(arrayofWeather,weatherc);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -143,7 +171,7 @@ public class ForecastRepo {
 
                 } else {
                     System.out.println("Weather body empty");
-
+                    Log.e(TAG, "Weather body empty");
                 }
             }
 
@@ -151,7 +179,95 @@ public class ForecastRepo {
             public void onFailure(Call<JsonObject> call, Throwable t) {
 
 
-                Log.d(TAG, "weather request failed");
+                Log.e(TAG, "weather request failed");
+                t.printStackTrace();
+            }
+        });
+
+
+    }
+    public void searchWeather(WeatherResultCallback weatherResultCallback, String location) {
+        String token = saveSharedPref.getToken(context);
+
+        Log.e(TAG, "setweather: " + token);
+        final theCommuterApiendpoints apiService = ApiClient.getClient().create(theCommuterApiendpoints.class);
+
+
+        Call<JsonObject> call = apiService.getsearchWeather(location,"Bearer " + token);
+
+
+        call.enqueue(new Callback<JsonObject>() {
+
+
+            @Override
+            public void onResponse(Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
+
+
+                if (response.body() != null) {
+
+
+
+                    String data = new Gson().toJson(response.body());
+
+                    JSONObject jsonObject = null;
+                    try {
+                        jsonObject = new JSONObject(String.valueOf(response.body()));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    JSONArray datas = null;
+                    try {
+                        datas = jsonObject.getJSONArray("data");
+
+                        for (int i = 1; i < datas.length(); i++) {
+
+                            try {
+                                JSONObject jo2 = datas.getJSONObject(i);
+
+                                Log.w(TAG, "Response: " + jo2);
+                                Weather weather = new Weather();
+
+                                weather.setDate(jo2.getString("date"));
+                                weather.setDescription(jo2.getString("description"));
+                                weather.setFeels_like(jo2.getString("feels_like"));
+                                weather.setMain(jo2.getString("main"));
+                                weather.setTemp(jo2.getString("temp"));
+
+                                arrayofWeather.add(weather);
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        JSONObject jo3=datas.getJSONObject(0);
+
+
+                        weatherc.setCity(jo3.getString("city"));
+                        weatherc.setDescription(jo3.getString("description"));
+                        weatherc.setFeels_like(jo3.getString("feels_like"));
+                        weatherc.setMain(jo3.getString("main"));
+                        weatherc.setTemp(jo3.getString("temp"));
+
+
+
+                        weatherResultCallback.getWeather(arrayofWeather,weatherc);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+
+                } else {
+                    System.out.println("Weather body empty");
+                    Log.e(TAG, "Weather body empty");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<JsonObject> call, Throwable t) {
+
+
+                Log.e(TAG, "weather request failed");
                 t.printStackTrace();
             }
         });

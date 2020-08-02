@@ -1,14 +1,19 @@
 package com.example.mycommuter.fragments;
 
+import android.Manifest;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.icu.lang.UCharacter;
+import android.location.Location;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -35,9 +40,11 @@ import com.example.mycommuter.R;
 
 import com.example.mycommuter.RestApi.ApiClient;
 import com.example.mycommuter.RestApi.theCommuterApiendpoints;
+import com.example.mycommuter.WeatherSearchActivity;
 import com.example.mycommuter.adapter.RecyclerItemClickListener;
 
 import com.example.mycommuter.adapter.WeatherAdapter;
+import com.example.mycommuter.databinding.FragmentWeatherBinding;
 import com.example.mycommuter.factory.ForecastViewHolderFactory;
 
 import com.example.mycommuter.interfaces.CurrentWeather;
@@ -47,6 +54,9 @@ import com.example.mycommuter.sharedPrefs.saveSharedPref;
 import com.example.mycommuter.utils.IconProvider;
 import com.example.mycommuter.viewmodels.ForecastActivityViewModel;
 import com.example.mycommuter.viewmodels.HomeActivityViewModel;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -80,6 +90,9 @@ public class WeatherFragment extends Fragment {
     private ImageView weatherimg;
     private TextView temp, feelslike, description, city;
     Toolbar toolbar;
+    FragmentWeatherBinding fragmentWeatherBinding;
+    private FusedLocationProviderClient fusedLocationClient;
+
     public WeatherFragment() {
 
     }
@@ -89,14 +102,13 @@ public class WeatherFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_weather, container, false);
+        fragmentWeatherBinding = fragmentWeatherBinding.inflate(inflater, container, false);
+        View view = fragmentWeatherBinding.getRoot();
         linearLayout = view.findViewById(R.id.linearcard);
         recyclerView = view.findViewById(R.id.myweatherRe);
-        weatherimg = view.findViewById(R.id.WeatherCardWeatherIcon);
-        temp = view.findViewById(R.id.WeatherCardCurrentTemp);
-toolbar=view.findViewById(R.id.wthtoolbar);
-        description = view.findViewById(R.id.weatherCardWeatherDescription);
-        city = view.findViewById(R.id.WeatherCardCityName);
+
+        toolbar = view.findViewById(R.id.wthtoolbar);
+
         toolbar.setOnMenuItemClickListener(this::onOptionsItemSelected);
 
         return view;
@@ -106,65 +118,60 @@ toolbar=view.findViewById(R.id.wthtoolbar);
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-
         initRecyclerView(listinit);
-        weatherset(new CurrentWeather() {
-            @Override
-            public void getCurrentWeather(Weather weather) {
-                weatherimg.setBackgroundResource(IconProvider.getImageIcon(weather.getMain()));
-                city.setText(weather.getCity());
-                temp.setText(weather.getTemp()+"°");
 
-                description.setText(weather.getDescription());
+
+        forecastActivityViewModel = new ViewModelProvider(this).get(ForecastActivityViewModel.class);
+        forecastActivityViewModel.init();
+        forecastActivityViewModel.getCurrentWeather().observe(getViewLifecycleOwner(), new Observer<Pair<List, Weather>>() {
+            @Override
+            public void onChanged(Pair<List, Weather> listWeatherPair) {
+                Weather weather1 = listWeatherPair.second;
+                forecastActivityViewModel.city.setValue(weather1.getCity());
+                forecastActivityViewModel.description.setValue(weather1.getDescription());
+                forecastActivityViewModel.temp.setValue(weather1.getTemp() + "°");
+                forecastActivityViewModel.weathericon.setValue(weather1.getMain());
+                Log.e(TAG, "onChanged: " + weather1.getMain());
+                listinit = listWeatherPair.first;
+                initRecyclerView(listinit);
+                weatherAdapter.notifyDataSetChanged();
             }
         });
 
-        recyclerView.addOnItemTouchListener(
-                new RecyclerItemClickListener(getActivity(),
-                        new RecyclerItemClickListener.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(View view, int position) {
 
-                                weather = listinit.get(position);
+        fragmentWeatherBinding.setWeathermodel(forecastActivityViewModel);
+        fragmentWeatherBinding.setLifecycleOwner(getViewLifecycleOwner());
 
 
+    }
 
-                            }
-                        }));
+    public void getdeviceLocation() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        fusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                if (location != null) {
+                    // Logic to handle location object
+                }
+            }
+        });
 
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        forecastActivityViewModel = new ViewModelProvider(this).get(ForecastActivityViewModel.class);
 
-        forecastActivityViewModel.getWeather().observe(getViewLifecycleOwner(), new Observer<List<Weather>>() {
-
-            @Override
-            public void onChanged(@Nullable List<Weather> tasks) {
-
-                listinit = tasks;
-                initRecyclerView(listinit);
-
-
-                weatherAdapter.notifyDataSetChanged();
-
-
-            }
-        });
-        forecastActivityViewModel.getUpdate().observe(getViewLifecycleOwner(), new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-
-                if (aBoolean) {
-
-                } else {
-
-                    recyclerView.smoothScrollToPosition(forecastActivityViewModel.getWeather().getValue().size() - 1);
-                }
-            }
-        });
     }
 
     public void initRecyclerView(List<Weather> weather) {
@@ -179,6 +186,7 @@ toolbar=view.findViewById(R.id.wthtoolbar);
         recyclerView.setAdapter(weatherAdapter);
 
     }
+
     @Override
     public void onDetach() {
         listinit.clear();
@@ -191,78 +199,12 @@ toolbar=view.findViewById(R.id.wthtoolbar);
         super.onAttach(context);
     }
 
-    public void weatherset(CurrentWeather currentWeather) {
-        String token = saveSharedPref.getToken(getContext());
-
-        String stringlongitude = String.valueOf("36.8219");
-        String stringLatitude = String.valueOf("1.2921");
-
-        final theCommuterApiendpoints apiService = ApiClient.getClient().create(theCommuterApiendpoints.class);
-
-
-        Call<JsonObject> call = apiService.getCurrentWeather(stringlongitude, stringLatitude, "Bearer " + token);
-
-
-        call.enqueue(new Callback<JsonObject>() {
-
-
-            @Override
-            public void onResponse(Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
-
-                Log.e(TAG, "weatherset: "+response.body() );
-                if (response.body() != null) {
-
-
-                    String data = new Gson().toJson(response.body());
-
-                    JSONObject jo2 = null;
-                    try {
-                        JsonArray jsonArray = response.body().get("data").getAsJsonArray();
-
-                        JsonElement jsonElement = jsonArray.get(0);
-                        JsonObject obj = new JsonParser().parse(String.valueOf(jsonElement)).getAsJsonObject();
-
-                        jo2 = new JSONObject(obj.toString());
-
-                        Weather weather = new Weather();
-
-                        weather.setCity(jo2.getString("city"));
-                        weather.setDescription(jo2.getString("description"));
-                        weather.setFeels_like(jo2.getString("feels_like"));
-                        weather.setMain(jo2.getString("main"));
-                        weather.setTemp(jo2.getString("temp"));
-                        currentWeather.getCurrentWeather(weather);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-
-
-
-
-                } else {
-                    System.out.println("Weather body empty");
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-
-
-
-                t.printStackTrace();
-            }
-        });
-
-
-    }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int id = item.getItemId();
         switch (id) {
             case R.id.search1:
-                Log.e(TAG, "onOptionsItemSelected: clicked" );
+                Log.e(TAG, "onOptionsItemSelected: clicked");
                 search(item);
                 break;
             case R.id.logout_frag:
@@ -272,6 +214,7 @@ toolbar=view.findViewById(R.id.wthtoolbar);
         }
         return super.onOptionsItemSelected(item);
     }
+
 
 //    @Override
 //    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
@@ -287,8 +230,14 @@ toolbar=view.findViewById(R.id.wthtoolbar);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
-                if(query.length()>3){
-                    callSearch(query);
+                if (query.length() > 3) {
+//                    callSearch(query);
+
+
+                    Intent intent = new Intent(getContext(), WeatherSearchActivity.class);
+                    intent.putExtra("location", query);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                    startActivity(intent);
                 }
                 return true;
             }
@@ -299,7 +248,7 @@ toolbar=view.findViewById(R.id.wthtoolbar);
                 return false;
             }
         });
-        item.getIcon().setVisible(false,false);
+        item.getIcon().setVisible(false, false);
 
     }
 
@@ -309,17 +258,15 @@ toolbar=view.findViewById(R.id.wthtoolbar);
             public void getCurrentWeather(Weather weather) {
                 weatherimg.setBackgroundResource(IconProvider.getImageIcon(weather.getMain()));
                 city.setText(weather.getCity());
-                temp.setText(weather.getTemp()+"°");
+                temp.setText(weather.getTemp() + "°");
 
                 description.setText(weather.getDescription());
             }
-        },query);
+        }, query);
     }
 
-    public void loadSearch(CurrentWeather currentWeather,String query) {
+    public void loadSearch(CurrentWeather currentWeather, String query) {
         String token = saveSharedPref.getToken(getContext());
-
-
 
 
         final theCommuterApiendpoints apiService = ApiClient.getClient().create(theCommuterApiendpoints.class);
@@ -334,7 +281,7 @@ toolbar=view.findViewById(R.id.wthtoolbar);
             @Override
             public void onResponse(Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
 
-                Log.e(TAG, "weatherset: "+response.body() );
+                Log.e(TAG, "weatherset: " + response.body());
                 if (response.body() != null) {
 
 
@@ -362,9 +309,6 @@ toolbar=view.findViewById(R.id.wthtoolbar);
                     }
 
 
-
-
-
                 } else {
                     System.out.println("Weather body empty");
 
@@ -375,13 +319,13 @@ toolbar=view.findViewById(R.id.wthtoolbar);
             public void onFailure(Call<JsonObject> call, Throwable t) {
 
 
-
                 t.printStackTrace();
             }
         });
 
 
     }
+
     private void logout() {
         saveSharedPref.setLoggedIn(getContext(), new Pair<>(false, ""));
         Intent intent = new Intent(getContext(), LoginActivity.class);

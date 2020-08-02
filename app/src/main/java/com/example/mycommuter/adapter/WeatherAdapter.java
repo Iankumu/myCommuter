@@ -68,6 +68,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
     @Override
     public void onBindViewHolder(@NonNull WeatherAdapter.MyViewHolder holder, int position) {
 
+
         final Weather current_weather = weather.get(position);
 
         holder.cardView.setAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_scale_animation));

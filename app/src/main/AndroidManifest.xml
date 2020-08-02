@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.mycommuter">
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -13,21 +14,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".SplashScreen"><intent-filter>
-            <action android:name="android.intent.action.MAIN" />
+        <activity android:name=".WeatherSearchActivity"></activity>
+        <activity android:name=".SplashScreen">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
 
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter></activity>
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity android:name=".PasswordResetActivity" />
         <activity android:name=".NewTaskActivity" />
         <activity android:name=".TaskDetail" />
         <activity
             android:name=".EditProfile"
             android:parentActivityName=".BottomNavigationActivity" />
-        <activity android:name=".BottomNavigationActivity">
-
-        </activity>
-        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".BottomNavigationActivity"></activity>
+        <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity" />
     </application>
 

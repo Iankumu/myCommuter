@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -23,6 +24,8 @@ import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClic
 import java.util.List;
 
 import es.dmoral.toasty.Toasty;
+
+import static android.content.ContentValues.TAG;
 
 public class HomeActivityViewModel extends AndroidViewModel {
     private MutableLiveData<List<Tasks>> tasks;
@@ -45,6 +48,7 @@ public class HomeActivityViewModel extends AndroidViewModel {
         }
         tasksRepo = TasksRepo.getInstance(context);
         tasks = tasksRepo.getTasks();
+        Log.e(TAG, "init: "+tasks.getValue() );
     }
 
     public LiveData<List<Tasks>> getTasks() {

@@ -6,5 +6,5 @@ import com.example.mycommuter.model.Weather;
 import java.util.List;
 
 public interface WeatherResultCallback {
-    void getWeather(List<Weather> weather);
+    void getWeather(List<Weather> weathers,Weather weather);
 }
