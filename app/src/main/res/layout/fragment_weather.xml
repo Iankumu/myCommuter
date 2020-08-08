@@ -9,17 +9,17 @@
             type="com.example.mycommuter.viewmodels.ForecastActivityViewModel" />
     </data>
 
-    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+
         tools:context=".fragments.WeatherFragment">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/wthtoolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:layout_alignParentBottom="true"
+            android:layout_alignParentTop="true"
             android:background="?attr/colorPrimary"
             android:elevation="4dp"
             app:menu="@menu/weathermenu">
@@ -36,10 +36,40 @@
                 android:textStyle="" />
         </androidx.appcompat.widget.Toolbar>
 
-        <TextView
-
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmerframelay"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/wthtoolbar"
+       >
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="15dp"
+                android:background="@android:color/white"
+                android:orientation="vertical">
+
+                <include layout="@layout/placeholderlay" />
+
+                <include layout="@layout/placeholderlay" />
+
+                <include layout="@layout/placeholderlay" />
+
+                <include layout="@layout/placeholderlay" />
+
+                <include layout="@layout/placeholderlay" />
+
+                <include layout="@layout/placeholderlay" />
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <TextView
+            android:id="@+id/today"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/wthtoolbar"
 
             android:gravity="center_horizontal"
             android:text="Today"
@@ -47,13 +77,14 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardView"
+
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+android:layout_below="@+id/today"
             android:fitsSystemWindows="true"
 
             app:cardCornerRadius="24dp"
-            app:cardElevation="8dp"
+
             tools:visibility="invisible">
 
             <RelativeLayout
@@ -66,7 +97,7 @@
                     android:layout_width="124dp"
                     android:layout_height="124dp"
                     android:layout_marginStart="36dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="6dp"
                     app:imageresource="@{weathermodel.weathericon}"
                     tools:src="@drawable/ic_rainy_7" />
 
@@ -75,7 +106,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginTop="10dp"
+                    android:layout_marginTop="6dp"
                     android:layout_marginEnd="36dp"
 
 
@@ -88,21 +119,10 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/WeatherCardCurrentTemp"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="6dp"
 
                     android:text="@{weathermodel.description}"
                     android:textSize="23sp" />
-
-                <TextView
-                    android:id="@+id/textViewHumidityHeader"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/weatherCardWeatherDescription"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="16dp"
-
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
 
 
             </RelativeLayout>
@@ -110,22 +130,24 @@
 
 
         <TextView
-
+android:layout_below="@+id/cardView"
+            android:id="@+id/forecast"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="6dp"
             android:gravity="center_horizontal"
             android:text=" 7 Day Forecast"
             android:textSize="30sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/myweatherRe"
+            android:layout_below="@+id/forecast"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
 
 
             android:layout_weight="2" />
 
-    </LinearLayout>
+    </RelativeLayout>
 </layout>

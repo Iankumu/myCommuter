@@ -9,19 +9,21 @@
             type="com.example.mycommuter.viewmodels.ForecastActivityViewModel" />
     </data>
 
-    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/rellay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
+
         tools:context=".WeatherSearchActivity">
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/wthtoolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
             android:background="?attr/colorPrimary"
             android:elevation="4dp"
+
             app:menu="@menu/weathermenu">
 
             <TextView
@@ -33,14 +35,41 @@
                 android:text="@{weathermodel.city}"
                 android:textColor="@color/mapbox_plugins_white"
                 android:textSize="30sp"
+
                 android:textStyle="" />
         </androidx.appcompat.widget.Toolbar>
+        <com.facebook.shimmer.ShimmerFrameLayout
+android:layout_below="@+id/wthtoolbar"
+            android:id="@+id/shimmerframelay"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_margin="15dp"
+                android:background="@android:color/white"
+                android:orientation="vertical">
+
+                <include layout="@layout/placeholderlay" />
+
+                <include layout="@layout/placeholderlay" />
+
+                <include layout="@layout/placeholderlay" />
+
+                <include layout="@layout/placeholderlay" />
+
+                <include layout="@layout/placeholderlay" />
+
+                <include layout="@layout/placeholderlay" />
+            </LinearLayout>
+        </com.facebook.shimmer.ShimmerFrameLayout>
         <TextView
-
+            android:id="@+id/today"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
+            android:layout_below="@+id/wthtoolbar"
             android:gravity="center_horizontal"
             android:text="Today"
             android:textSize="30sp" />
@@ -49,15 +78,17 @@
             android:id="@+id/cardView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@+id/today"
 
             android:fitsSystemWindows="true"
 
             app:cardCornerRadius="24dp"
-            app:cardElevation="8dp"
+
             tools:visibility="invisible">
 
             <RelativeLayout
                 android:id="@+id/rootView"
+
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
@@ -88,21 +119,12 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/WeatherCardCurrentTemp"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="8dp"
+
 
                     android:text="@{weathermodel.description}"
                     android:textSize="23sp" />
 
-                <TextView
-                    android:id="@+id/textViewHumidityHeader"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@id/weatherCardWeatherDescription"
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="16dp"
 
-                    android:textSize="19sp"
-                    android:textStyle="bold" />
 
 
             </RelativeLayout>
@@ -110,22 +132,24 @@
 
 
         <TextView
-
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_below="@+id/cardView"
+            android:layout_marginTop="5dp"
+            android:id="@+id/forecast"
             android:gravity="center_horizontal"
             android:text=" 7 Day Forecast"
             android:textSize="30sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/myweatherRe1"
+            android:layout_below="@+id/forecast"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
 
 
             android:layout_weight="2" />
 
-    </LinearLayout>
+    </RelativeLayout>
 </layout>

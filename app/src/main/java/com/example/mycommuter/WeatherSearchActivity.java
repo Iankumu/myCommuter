@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
+import android.view.View;
 import android.widget.LinearLayout;
 
 import com.example.mycommuter.adapter.WeatherAdapter;
@@ -21,6 +22,7 @@ import com.example.mycommuter.factory.SearchWeatherFactory;
 import com.example.mycommuter.model.Weather;
 import com.example.mycommuter.viewmodels.ForecastActivityViewModel;
 import com.example.mycommuter.viewmodels.NewTaskViewModel;
+import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,7 @@ public class WeatherSearchActivity extends AppCompatActivity {
     private WeatherAdapter weatherAdapter;
     private LinearLayout linearLayout;
     private String locationSearch;
+    private ShimmerFrameLayout shimmerFrameLayout;
     ActivityWeatherSearchBinding activityWeatherSearchBinding;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +44,11 @@ public class WeatherSearchActivity extends AppCompatActivity {
        activityWeatherSearchBinding= DataBindingUtil.setContentView(this,R.layout.activity_weather_search);
        activityWeatherSearchBinding.getRoot();
 
-
+        shimmerFrameLayout =findViewById(R.id.shimmerframelay);
         linearLayout = findViewById(R.id.linearcard);
         recyclerView = findViewById(R.id.myweatherRe1);
         initRecyclerView(listinit);
+        setShimmer(true);
 //        forecastActivityViewModel = new ViewModelProvider(this).get(ForecastActivityViewModel.class);
 //        forecastActivityViewModel.init();
         Intent intent = getIntent();
@@ -55,6 +59,7 @@ public class WeatherSearchActivity extends AppCompatActivity {
         forecastActivityViewModel.Search(locationSearch).observe(this, new Observer<Pair<List, Weather>>() {
             @Override
             public void onChanged(Pair<List, Weather> listWeatherPair) {
+                setShimmer(false);
                 Weather weather1 = listWeatherPair.second;
                 forecastActivityViewModel.city.setValue(weather1.getCity());
                 forecastActivityViewModel.description.setValue(weather1.getDescription());
@@ -73,7 +78,16 @@ public class WeatherSearchActivity extends AppCompatActivity {
 
 
     }
+    public void setShimmer(boolean shimmer) {
+        if (shimmer) {
+            shimmerFrameLayout.startShimmer();
+        } else {
 
+            shimmerFrameLayout.stopShimmer();
+            shimmerFrameLayout.setVisibility(View.GONE);
+        }
+
+    }
     public void initRecyclerView(List<Weather> weather) {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);

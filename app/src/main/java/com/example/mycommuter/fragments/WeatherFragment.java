@@ -54,6 +54,7 @@ import com.example.mycommuter.sharedPrefs.saveSharedPref;
 import com.example.mycommuter.utils.IconProvider;
 import com.example.mycommuter.viewmodels.ForecastActivityViewModel;
 import com.example.mycommuter.viewmodels.HomeActivityViewModel;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -86,9 +87,9 @@ public class WeatherFragment extends Fragment {
     private RecyclerView recyclerView;
     private List<Weather> listinit = new ArrayList<>();
     private LinearLayout linearLayout;
+    private ShimmerFrameLayout shimmerFrameLayout;
     private ForecastActivityViewModel forecastActivityViewModel;
-    private ImageView weatherimg;
-    private TextView temp, feelslike, description, city;
+
     Toolbar toolbar;
     FragmentWeatherBinding fragmentWeatherBinding;
     private FusedLocationProviderClient fusedLocationClient;
@@ -106,11 +107,11 @@ public class WeatherFragment extends Fragment {
         View view = fragmentWeatherBinding.getRoot();
         linearLayout = view.findViewById(R.id.linearcard);
         recyclerView = view.findViewById(R.id.myweatherRe);
-
+        shimmerFrameLayout = view.findViewById(R.id.shimmerframelay);
         toolbar = view.findViewById(R.id.wthtoolbar);
 
         toolbar.setOnMenuItemClickListener(this::onOptionsItemSelected);
-
+        setShimmer(true);
         return view;
     }
 
@@ -126,6 +127,7 @@ public class WeatherFragment extends Fragment {
         forecastActivityViewModel.getCurrentWeather().observe(getViewLifecycleOwner(), new Observer<Pair<List, Weather>>() {
             @Override
             public void onChanged(Pair<List, Weather> listWeatherPair) {
+                setShimmer(false);
                 Weather weather1 = listWeatherPair.second;
                 forecastActivityViewModel.city.setValue(weather1.getCity());
                 forecastActivityViewModel.description.setValue(weather1.getDescription());
@@ -144,7 +146,16 @@ public class WeatherFragment extends Fragment {
 
 
     }
+    public void setShimmer(boolean shimmer) {
+        if (shimmer) {
+            shimmerFrameLayout.startShimmer();
+        } else {
 
+            shimmerFrameLayout.stopShimmer();
+            shimmerFrameLayout.setVisibility(View.GONE);
+        }
+
+    }
     public void getdeviceLocation() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -216,12 +227,7 @@ public class WeatherFragment extends Fragment {
     }
 
 
-//    @Override
-//    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-//        super.onCreateOptionsMenu(menu, inflater);
-//        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-//        SearchView searchView = (SearchView) menu.findItem(R.id.menu_search).getActionView();
-//    }
+
 
     private void search(MenuItem item) {
         SearchView searchView = (SearchView) item.getActionView();
@@ -231,7 +237,6 @@ public class WeatherFragment extends Fragment {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 if (query.length() > 3) {
-//                    callSearch(query);
 
 
                     Intent intent = new Intent(getContext(), WeatherSearchActivity.class);
@@ -252,79 +257,8 @@ public class WeatherFragment extends Fragment {
 
     }
 
-    private void callSearch(String query) {
-        loadSearch(new CurrentWeather() {
-            @Override
-            public void getCurrentWeather(Weather weather) {
-                weatherimg.setBackgroundResource(IconProvider.getImageIcon(weather.getMain()));
-                city.setText(weather.getCity());
-                temp.setText(weather.getTemp() + "°");
-
-                description.setText(weather.getDescription());
-            }
-        }, query);
-    }
-
-    public void loadSearch(CurrentWeather currentWeather, String query) {
-        String token = saveSharedPref.getToken(getContext());
 
 
-        final theCommuterApiendpoints apiService = ApiClient.getClient().create(theCommuterApiendpoints.class);
-
-
-        Call<JsonObject> call = apiService.getsearchWeather(query, "Bearer " + token);
-
-
-        call.enqueue(new Callback<JsonObject>() {
-
-
-            @Override
-            public void onResponse(Call<JsonObject> call, retrofit2.Response<JsonObject> response) {
-
-                Log.e(TAG, "weatherset: " + response.body());
-                if (response.body() != null) {
-
-
-                    String data = new Gson().toJson(response.body());
-
-                    JSONObject jo2 = null;
-                    try {
-                        JsonArray jsonArray = response.body().get("data").getAsJsonArray();
-
-                        JsonElement jsonElement = jsonArray.get(0);
-                        JsonObject obj = new JsonParser().parse(String.valueOf(jsonElement)).getAsJsonObject();
-
-                        jo2 = new JSONObject(obj.toString());
-
-                        Weather weather = new Weather();
-
-                        weather.setCity(jo2.getString("city"));
-                        weather.setDescription(jo2.getString("description"));
-                        weather.setFeels_like(jo2.getString("feels_like"));
-                        weather.setMain(jo2.getString("main"));
-                        weather.setTemp(jo2.getString("temp"));
-                        currentWeather.getCurrentWeather(weather);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-
-                } else {
-                    System.out.println("Weather body empty");
-
-                }
-            }
-
-            @Override
-            public void onFailure(Call<JsonObject> call, Throwable t) {
-
-
-                t.printStackTrace();
-            }
-        });
-
-
-    }
 
     private void logout() {
         saveSharedPref.setLoggedIn(getContext(), new Pair<>(false, ""));

@@ -131,6 +131,7 @@ public class TaskDetail extends AppCompatActivity {
 
 
                 if (response.body() != null) {
+                    Log.e(TAG, "onResponsesuccessdelete: " + response.body());
                     String data = new Gson().toJson(response.body());
 
                     JSONObject jo2 = null;
@@ -241,7 +242,7 @@ public class TaskDetail extends AppCompatActivity {
 
                 if (response.body() != null) {
                     String data = new Gson().toJson(response.body());
-
+                    Log.e(TAG, "onResponsesuccessupdate: " + response.body());
                     JSONObject jo2 = null;
                     try {
                         profileUpdateCallback.onSuccess(response.body().toString());
