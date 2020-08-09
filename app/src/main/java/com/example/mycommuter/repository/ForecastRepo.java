@@ -1,10 +1,15 @@
 package com.example.mycommuter.repository;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Location;
 import android.util.JsonToken;
 import android.util.Log;
 import android.util.Pair;
 
+import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.MutableLiveData;
 
 import com.android.volley.AuthFailureError;
@@ -18,11 +23,15 @@ import com.android.volley.toolbox.Volley;
 import com.example.mycommuter.RestApi.ApiClient;
 import com.example.mycommuter.RestApi.theCommuterApiendpoints;
 import com.example.mycommuter.common.GPSTracker;
+import com.example.mycommuter.fragments.WeatherFragment;
 import com.example.mycommuter.interfaces.TaskInterface;
 import com.example.mycommuter.interfaces.WeatherResultCallback;
 import com.example.mycommuter.model.Tasks;
 import com.example.mycommuter.model.Weather;
 import com.example.mycommuter.sharedPrefs.saveSharedPref;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -79,9 +88,9 @@ public class ForecastRepo {
 
 
     }
-    public MutableLiveData <Pair<List,Weather>> getWeather() {
+    public MutableLiveData <Pair<List,Weather>> getWeather(Map<String, Double> coord) {
         MutableLiveData <Pair <List,Weather>> weatherp=new MutableLiveData<>();
-        setWeather(new WeatherResultCallback() {
+        setWeather(coord,new WeatherResultCallback() {
             @Override
             public void getWeather(List<Weather> weathers, Weather weather) {
             weatherp.setValue(new Pair<>(arrayofWeather,weatherc));
@@ -97,15 +106,19 @@ public class ForecastRepo {
     }
 
     //data retrieval from api
-    public void setWeather(WeatherResultCallback weatherResultCallback) {
+    public void setWeather(  Map<String, Double> coord,WeatherResultCallback weatherResultCallback) {
         String token = saveSharedPref.getToken(context);
-        String stringlongitude = String.valueOf("36.8219");
-        String stringLatitude = String.valueOf("1.2921");
-        Log.e(TAG, "setweather: " + token);
+
+
+        WeatherFragment weatherFragment=new WeatherFragment();
+
+
+            Log.e(TAG, "setweathercoord " + coord.get("latitude"));
+
         final theCommuterApiendpoints apiService = ApiClient.getClient().create(theCommuterApiendpoints.class);
 
 
-        Call<JsonObject> call = apiService.getCurrentWeather(stringlongitude,stringLatitude,"Bearer " + token);
+        Call<JsonObject> call = apiService.getCurrentWeather(coord.get("longitude"),coord.get("latitude"),"Bearer " + token);
 
 
         call.enqueue(new Callback<JsonObject>() {
@@ -186,6 +199,8 @@ public class ForecastRepo {
 
 
     }
+
+
     public void searchWeather(WeatherResultCallback weatherResultCallback, String location) {
         String token = saveSharedPref.getToken(context);
 

@@ -21,7 +21,9 @@ import com.example.mycommuter.repository.ForecastRepo;
 import com.example.mycommuter.utils.IconProvider;
 import com.example.mycommuter.utils.myPairs;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -57,12 +59,13 @@ public class ForecastActivityViewModel extends AndroidViewModel {
         return forecastRepo.getSearchWeather(location);
     }
 
-    public void init() {
+    public void init( Map<String, Double> coord) {
         if (wth != null) {
             return;
         }
+        Log.e(TAG, "initcoord"+coord );
         forecastRepo = ForecastRepo.getInstance(context);
-        wth = forecastRepo.getWeather();
+        wth = forecastRepo.getWeather(coord);
     }
 
 

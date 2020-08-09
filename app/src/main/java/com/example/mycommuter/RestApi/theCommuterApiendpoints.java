@@ -97,8 +97,8 @@ public interface theCommuterApiendpoints {
     @FormUrlEncoded
     @POST("api/currentWeather")
     Call<JsonObject> getCurrentWeather(
-            @Field("longitude") String longitude,
-            @Field("latitude") String latitude,
+            @Field("longitude") double longitude,
+            @Field("latitude") double latitude,
             @Header("Authorization") String authorization);
 
     @Headers(

@@ -15,6 +15,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -48,6 +49,7 @@ import com.example.mycommuter.databinding.FragmentWeatherBinding;
 import com.example.mycommuter.factory.ForecastViewHolderFactory;
 
 import com.example.mycommuter.interfaces.CurrentWeather;
+import com.example.mycommuter.interfaces.DeviceCoord;
 import com.example.mycommuter.interfaces.WeatherResultCallback;
 import com.example.mycommuter.model.Weather;
 import com.example.mycommuter.sharedPrefs.saveSharedPref;
@@ -58,18 +60,11 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -122,11 +117,19 @@ public class WeatherFragment extends Fragment {
         initRecyclerView(listinit);
 
 
+        getloc();
+
+
+
+
+    }
+    public void getData(Map<String, Double> coord){
         forecastActivityViewModel = new ViewModelProvider(this).get(ForecastActivityViewModel.class);
-        forecastActivityViewModel.init();
+        forecastActivityViewModel.init(coord);
         forecastActivityViewModel.getCurrentWeather().observe(getViewLifecycleOwner(), new Observer<Pair<List, Weather>>() {
             @Override
             public void onChanged(Pair<List, Weather> listWeatherPair) {
+
                 setShimmer(false);
                 Weather weather1 = listWeatherPair.second;
                 forecastActivityViewModel.city.setValue(weather1.getCity());
@@ -140,10 +143,8 @@ public class WeatherFragment extends Fragment {
             }
         });
 
-
         fragmentWeatherBinding.setWeathermodel(forecastActivityViewModel);
         fragmentWeatherBinding.setLifecycleOwner(getViewLifecycleOwner());
-
 
     }
     public void setShimmer(boolean shimmer) {
@@ -156,7 +157,23 @@ public class WeatherFragment extends Fragment {
         }
 
     }
-    public void getdeviceLocation() {
+    public void getloc(){
+        MutableLiveData< Map<String, Double>> coordi=new MutableLiveData<>();
+
+        getdeviceLocation(new DeviceCoord() {
+            @Override
+            public void getCoordinates(Map<String, Double> coord) {
+                Log.e(TAG, "getloc: "+coord );
+                coordi.setValue(coord);
+            getData(coord);}
+        });
+
+
+    }
+
+    public void getdeviceLocation(DeviceCoord deviceCoord) {
+        Map<String, Double> coord = new HashMap<String, Double>();
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(getActivity());
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -166,16 +183,21 @@ public class WeatherFragment extends Fragment {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
-            return;
+
         }
         fusedLocationClient.getLastLocation().addOnSuccessListener(getActivity(), new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {
                 if (location != null) {
-                    // Logic to handle location object
-                }
+                    double lat=location.getLatitude();
+                    double lon=location.getLongitude();
+                    coord.put("latitude", lat);
+                    coord.put("longitude",lon);
+                    Log.e(TAG, "coordi "+coord );
+                    deviceCoord.getCoordinates(coord);
             }
-        });
+        }});
+
 
     }
 
