@@ -16,7 +16,7 @@
         android:title="Search Task"
         app:actionViewClass="android.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView"
-        android:theme="@android:style/Theme.Holo.Light.DarkActionBar"/>
+        android:theme="@android:style/Theme.Holo.Light.DarkActionBar" />
     <item
         android:id="@+id/logouttask"
         android:icon="@drawable/logout"

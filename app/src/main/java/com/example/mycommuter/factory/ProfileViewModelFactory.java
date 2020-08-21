@@ -11,15 +11,16 @@ import com.example.mycommuter.viewmodels.ProfileViewModel;
 
 public class ProfileViewModelFactory extends ViewModelProvider.AndroidViewModelFactory {
 
-   private Application application;
+    private Application application;
 
     public ProfileViewModelFactory(@NonNull Application application) {
         super(application);
         this.application = application;
     }
+
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return(T) new ProfileViewModel(application);
+        return (T) new ProfileViewModel(application);
     }
 }

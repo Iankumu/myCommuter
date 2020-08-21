@@ -53,7 +53,7 @@ public class ProfileViewModel extends AndroidViewModel {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.e(TAG, "onProfileUpdateClick: "+s);
+                Log.e(TAG, "onProfileUpdateClick: " + s);
             }
 
             @Override
@@ -70,7 +70,7 @@ public class ProfileViewModel extends AndroidViewModel {
             profileUpdateCallback.onError("Your must enter a task");
         } else {
             username.setValue(user.getUsername());
-            Log.e(TAG, "onProfileUpdateClick: "+user.getUsername() );
+            Log.e(TAG, "onProfileUpdateClick: " + user.getUsername());
             setProfileUpdate();
 
         }

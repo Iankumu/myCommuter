@@ -43,12 +43,12 @@ public class HomeActivityViewModel extends AndroidViewModel {
     }
 
     public void init() {
-        if(tasks!=null){
+        if (tasks != null) {
             return;
         }
         tasksRepo = TasksRepo.getInstance(context);
         tasks = tasksRepo.getTasks();
-        Log.e(TAG, "init: "+tasks.getValue() );
+        Log.e(TAG, "init: " + tasks.getValue());
     }
 
     public LiveData<List<Tasks>> getTasks() {

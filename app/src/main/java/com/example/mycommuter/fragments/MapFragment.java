@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 
@@ -120,12 +121,12 @@ public class MapFragment extends Fragment implements PermissionsListener {
     private static final String DROPPED_MARKER_LAYER_ID = "DROPPED_MARKER_LAYER_ID";
     private static final String DROPPED_SEARCHBAR_MARKER_LAYER_ID = "DROPPED_SEARCHBAR_MARKER_LAYER_ID";
 
-    private static final String LOG_TAG_Code ="Hashcode";
+    private static final String LOG_TAG_Code = "Hashcode";
 
-    public static String  Base_URL="https://radiant-lowlands-66469.herokuapp.com/";
-    public static String  URL = Base_URL+"api/location";
-    public static String Navigation_url = Base_URL+"api/navigation";
-    public static String coordinates = Base_URL+"api/coordinates";
+    public static String Base_URL = "https://radiant-lowlands-66469.herokuapp.com/";
+    public static String URL = Base_URL + "api/location";
+    public static String Navigation_url = Base_URL + "api/navigation";
+    public static String coordinates = Base_URL + "api/coordinates";
     private FeatureCollection dashedLineDirectionsFeatureCollection;
 
     //for route 1
@@ -140,7 +141,8 @@ public class MapFragment extends Fragment implements PermissionsListener {
 
     private MapFragmentLocationCallback callback = new MapFragmentLocationCallback(this);
 
-    public MapFragment() { }
+    public MapFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -157,7 +159,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
         btnSimulate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentRoute != null)   {
+                if (currentRoute != null) {
                     NavigationLauncherOptions options = NavigationLauncherOptions.builder()
                             .directionsRoute(currentRoute)
                             .shouldSimulateRoute(true)
@@ -195,7 +197,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                 String checkMapStyle = saveSharedPref.setMapStyle(getActivity().getApplicationContext());
 
                 String mapStyle;
-                if (checkMapStyle!=null){
+                if (checkMapStyle != null) {
                     mapStyle = checkMapStyle;
                 } else {
                     mapStyle = Style.MAPBOX_STREETS;
@@ -237,7 +239,8 @@ public class MapFragment extends Fragment implements PermissionsListener {
 //                                    storedLat + "\t" + storedLong, Toast.LENGTH_LONG).show();
                                 postDestinationRequest(storedLat, storedLong, style);
                             }
-                        }catch (NullPointerException e){}
+                        } catch (NullPointerException e) {
+                        }
 
                         btnSearchLocation.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -335,7 +338,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
                                             refreshFragment();
                                         }
                                     }
-                                } else{
+                                } else {
                                     Toast.makeText(getActivity().getApplicationContext(),
                                             "Unselect the search bar mode first by clicking on the cancel button at the bottom of the map", Toast.LENGTH_SHORT).show();
                                 }
@@ -389,7 +392,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
     }
 
     //destination coordinates to (routes from) api
-    private void postDestinationRequest(String destinationLatitude, String destinationLongitude,@NonNull Style loadedMapStyle) {
+    private void postDestinationRequest(String destinationLatitude, String destinationLongitude, @NonNull Style loadedMapStyle) {
 
         String token = saveSharedPref.getToken(getActivity().getApplicationContext());
         RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
@@ -408,23 +411,23 @@ public class MapFragment extends Fragment implements PermissionsListener {
             public void onErrorResponse(VolleyError error) {
 
             }
-        })
-        {
+        }) {
             //Overriding methods to pass data to the server
             @Override
-            protected Map<String,String> getParams(){
+            protected Map<String, String> getParams() {
                 //Creating a Map with key and value and send the data to the database
-                Map<String,String> params = new HashMap<String ,String>();
+                Map<String, String> params = new HashMap<String, String>();
                 params.put("destinationLatitude", destinationLatitude);
                 params.put("destinationLongitude", destinationLongitude);
                 return params;
 
             }
+
             @Override
-            public Map<String,String>getHeaders() throws AuthFailureError {
-                Map<String,String> params = new HashMap<String ,String>();
-                params.put("Application-Type","application/x-www-form-urlencoded");
-                params.put("Authorization", "Bearer " +token);
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Application-Type", "application/x-www-form-urlencoded");
+                params.put("Authorization", "Bearer " + token);
                 return params;
             }
         };
@@ -485,9 +488,11 @@ public class MapFragment extends Fragment implements PermissionsListener {
             };
 
             requestQueue.add(objectRequest);
-        }catch (NullPointerException e){}
+        } catch (NullPointerException e) {
+        }
 
     }
+
     //get destination coordinates
     private void getCoordinatesRequest(Navigation navigation) {
         try {
@@ -532,7 +537,8 @@ public class MapFragment extends Fragment implements PermissionsListener {
             };
 
             requestQueue.add(objectRequest);
-        }catch (NullPointerException e){}
+        } catch (NullPointerException e) {
+        }
 
 
     }
@@ -578,10 +584,10 @@ public class MapFragment extends Fragment implements PermissionsListener {
         getCoordinatesRequest(new Navigation() {
             @Override
             public void getCoordinates(LocationModel locationModel) {
-                double desLong =  Double.parseDouble(locationModel.getNav_dest_long());
+                double desLong = Double.parseDouble(locationModel.getNav_dest_long());
                 double desLat = Double.parseDouble(locationModel.getNav_dest_lat());
 
-                double oriLong =  Double.parseDouble(locationModel.getNav_current_long());
+                double oriLong = Double.parseDouble(locationModel.getNav_current_long());
                 double oriLat = Double.parseDouble(locationModel.getNav_current_lat());
 
                 Point destinationPoint = Point.fromLngLat(desLong, desLat);
@@ -663,8 +669,8 @@ public class MapFragment extends Fragment implements PermissionsListener {
                         DIRECTIONS_LAYER_ID, SOURCE_ID).withProperties(
                         lineWidth(4.5f),
                         lineColor(Color.GREEN),
-                        lineTranslate(new Float[] {0f, 4f}),
-                        lineDasharray(new Float[] {1.2f, 1.2f})
+                        lineTranslate(new Float[]{0f, 4f}),
+                        lineDasharray(new Float[]{1.2f, 1.2f})
                 ), LAYER_BELOW_ID);
     }
 
@@ -676,12 +682,12 @@ public class MapFragment extends Fragment implements PermissionsListener {
                         DIRECTIONS_LAYER_ID2, SOURCE_ID2).withProperties(
                         lineWidth(4.5f),
                         lineColor(Color.RED),
-                        lineTranslate(new Float[] {0f, 4f}),
-                        lineDasharray(new Float[] {1.2f, 1.2f})
+                        lineTranslate(new Float[]{0f, 4f}),
+                        lineDasharray(new Float[]{1.2f, 1.2f})
                 ), LAYER_BELOW_ID2);
     }
 
-    private void clearRoutes(@NonNull Style loadedMapStyle){
+    private void clearRoutes(@NonNull Style loadedMapStyle) {
         Layer route1 = loadedMapStyle.getLayer(DIRECTIONS_LAYER_ID);
         Layer route2 = loadedMapStyle.getLayer(DIRECTIONS_LAYER_ID2);
 
@@ -706,7 +712,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
     }
 
     //put marker from the searchbar mode
-    private void DropSearchBarDestinationMarker(Bundle savedInstanceState, Style style){
+    private void DropSearchBarDestinationMarker(Bundle savedInstanceState, Style style) {
         PlaceAutocompleteFragment autocompleteFragment;
         PlaceOptions placeOptions = PlaceOptions.builder()
                 .toolbarColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null))
@@ -805,7 +811,8 @@ public class MapFragment extends Fragment implements PermissionsListener {
                 permissionsManager = new PermissionsManager(this);
                 permissionsManager.requestLocationPermissions(getActivity());
             }
-        }catch(NullPointerException e){}
+        } catch (NullPointerException e) {
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -821,7 +828,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
     }
 
     //for frequent current location updates
-    private  class MapFragmentLocationCallback implements LocationEngineCallback<LocationEngineResult> {
+    private class MapFragmentLocationCallback implements LocationEngineCallback<LocationEngineResult> {
 
         private final WeakReference<MapFragment> mapFragmentWeakReference;
 
@@ -845,8 +852,8 @@ public class MapFragment extends Fragment implements PermissionsListener {
                     return;
                 }
 
-                Double latitude =result.getLastLocation().getLatitude();
-                Double longitude=result.getLastLocation().getLongitude();
+                Double latitude = result.getLastLocation().getLatitude();
+                Double longitude = result.getLastLocation().getLongitude();
 
                 final LocationModel locationModel = new LocationModel();
 
@@ -858,7 +865,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
 //                            locationModel.getLatitude() + "\t" +  locationModel.getLongitude(), Toast.LENGTH_SHORT).show();
 
                     postRequest(locationModel.getLatitude(), locationModel.getLongitude());
-                } catch (NullPointerException e){
+                } catch (NullPointerException e) {
 
                 }
 
@@ -868,7 +875,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
             }
         }
 
-        public  void postRequest(final String latitude, final String longitude){
+        public void postRequest(final String latitude, final String longitude) {
             String token = saveSharedPref.getToken(getActivity().getApplicationContext());
             RequestQueue requestQueue = Volley.newRequestQueue(getActivity().getApplicationContext());
             StringRequest objectRequest = new StringRequest(
@@ -885,22 +892,22 @@ public class MapFragment extends Fragment implements PermissionsListener {
                 public void onErrorResponse(VolleyError error) {
 
                 }
-            })
-            {
+            }) {
                 //Overriding methods to pass data to the server
                 @Override
-                protected Map<String,String> getParams(){
+                protected Map<String, String> getParams() {
                     //Creating a Map with key and value and send the data to the database
-                    Map<String,String> params = new HashMap<String ,String>();
+                    Map<String, String> params = new HashMap<String, String>();
                     params.put("latitude", latitude);
                     params.put("longitude", longitude);
                     return params;
                 }
+
                 @Override
-                public Map<String,String>getHeaders() throws AuthFailureError {
-                    Map<String,String> params = new HashMap<String ,String>();
-                    params.put("Application-Type","application/x-www-form-urlencoded");
-                    params.put("Authorization", "Bearer " +token);
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Application-Type", "application/x-www-form-urlencoded");
+                    params.put("Authorization", "Bearer " + token);
                     return params;
                 }
             };
@@ -947,7 +954,7 @@ public class MapFragment extends Fragment implements PermissionsListener {
         }
     }
 
-    private void refreshFragment(){
+    private void refreshFragment() {
         try {
             getActivity().getSupportFragmentManager().beginTransaction()
                     .replace(R.id.frag_container, MapFragment.class.newInstance()).commit();

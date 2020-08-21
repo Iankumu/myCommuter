@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public interface DeviceCoord {
-   void getCoordinates(Map<String, Double> coord);
+    void getCoordinates(Map<String, Double> coord);
 }
 
 

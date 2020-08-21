@@ -92,7 +92,6 @@
                     <include layout="@layout/placeholderlay" />
 
 
-
                 </LinearLayout>
             </com.facebook.shimmer.ShimmerFrameLayout>
 

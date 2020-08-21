@@ -53,9 +53,10 @@ public class ProfileFragment extends Fragment {
     TextView usernameTV, emailTv;
     FloatingActionButton floatingActionButton;
     private ShimmerFrameLayout shimmerFrameLayout;
-    ImageView usericon,emailicon;
-    View view1,view2,view3;
+    ImageView usericon, emailicon;
+    View view1, view2, view3;
     AppBarLayout appBarLayout;
+
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -69,12 +70,12 @@ public class ProfileFragment extends Fragment {
         emailTv = view.findViewById(R.id.useremail);
         usernameTV = view.findViewById(R.id.usersusername);
         button = view.findViewById(R.id.logoutbtn);
-        appBarLayout=view.findViewById(R.id.appbar_layout);
-        usericon=view.findViewById(R.id.usericon);
-        view1=view.findViewById(R.id.view1);
-        view2=view.findViewById(R.id.view2);
-        view3=view.findViewById(R.id.view3);
-        emailicon=view.findViewById(R.id.emailicon);
+        appBarLayout = view.findViewById(R.id.appbar_layout);
+        usericon = view.findViewById(R.id.usericon);
+        view1 = view.findViewById(R.id.view1);
+        view2 = view.findViewById(R.id.view2);
+        view3 = view.findViewById(R.id.view3);
+        emailicon = view.findViewById(R.id.emailicon);
         shimmerFrameLayout = view.findViewById(R.id.shimmerframelay);
         floatingActionButton = view.findViewById(R.id.editprof);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +95,7 @@ public class ProfileFragment extends Fragment {
                 Intent intent = new Intent(getContext(), LoginActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-           
+
             }
         });
         return view;
@@ -120,6 +121,7 @@ public class ProfileFragment extends Fragment {
         }
 
     }
+
     @Override
     public void onStart() {
         super.onStart();

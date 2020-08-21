@@ -50,7 +50,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
             this.description = (TextView) v.findViewById(R.id.textViewCardWeatherDescription);
             this.temp = (TextView) v.findViewById(R.id.textViewCardCurrentTemp);
             this.feelslike = v.findViewById(R.id.textViewCardfeelslike);
-            this.weatherimg=v.findViewById(R.id.imageViewCardWeatherIcon);
+            this.weatherimg = v.findViewById(R.id.imageViewCardWeatherIcon);
         }
     }
 
@@ -76,7 +76,7 @@ public class WeatherAdapter extends RecyclerView.Adapter<WeatherAdapter.MyViewHo
         holder.description.setText(current_weather.getDescription());
         holder.temp.setText(current_weather.getTemp());
         holder.feelslike.setText(current_weather.getFeels_like());
-        String cweather=current_weather.getMain();
+        String cweather = current_weather.getMain();
         holder.weatherimg.setBackgroundResource(IconProvider.getImageIcon(cweather));
 
 //        Picasso.get().load(IconProvider.getImageIcon(cweather)).into(holder.weatherimg);

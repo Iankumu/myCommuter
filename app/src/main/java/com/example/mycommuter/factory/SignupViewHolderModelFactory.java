@@ -28,12 +28,12 @@ public class SignupViewHolderModelFactory extends ViewModelProvider.AndroidViewM
         signupResultCallback = new SignupResultCallback() {
             @Override
             public void onSuccess(String message, String token) {
-                Toasty.success(application,message,Toasty.LENGTH_SHORT).show();
-        }
+                Toasty.success(application, message, Toasty.LENGTH_SHORT).show();
+            }
 
             @Override
             public void onError(String message) {
-                Toasty.error(application,message,Toasty.LENGTH_SHORT).show();
+                Toasty.error(application, message, Toasty.LENGTH_SHORT).show();
             }
         };
     }

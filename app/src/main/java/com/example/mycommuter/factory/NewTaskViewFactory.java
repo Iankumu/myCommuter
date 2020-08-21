@@ -19,14 +19,16 @@ public class NewTaskViewFactory extends ViewModelProvider.AndroidViewModelFactor
      */
     Application application;
     FragmentManager fragmentManager;
+
     public NewTaskViewFactory(@NonNull Application application, FragmentManager fragmentManager) {
         super(application);
-        this.application=application;
-        this.fragmentManager=fragmentManager;
+        this.application = application;
+        this.fragmentManager = fragmentManager;
     }
+
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return(T)new NewTaskViewModel(application,fragmentManager);
+        return (T) new NewTaskViewModel(application, fragmentManager);
     }
 }

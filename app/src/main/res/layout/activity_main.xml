@@ -119,7 +119,6 @@
                 android:textColor="#fff" />
 
 
-
             <Button
                 android:id="@+id/signup_btn"
                 android:layout_width="match_parent"

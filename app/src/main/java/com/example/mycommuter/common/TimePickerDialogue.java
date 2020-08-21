@@ -13,13 +13,14 @@ import java.sql.Time;
 import java.util.Calendar;
 
 public class TimePickerDialogue extends DialogFragment {
-    Calendar calendar=Calendar.getInstance();
-    int hour=calendar.get(Calendar.HOUR_OF_DAY);
-    int minute=calendar.get(Calendar.MINUTE);
+    Calendar calendar = Calendar.getInstance();
+    int hour = calendar.get(Calendar.HOUR_OF_DAY);
+    int minute = calendar.get(Calendar.MINUTE);
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
-        return new TimePickerDialog(getActivity(),(TimePickerDialog.OnTimeSetListener)getActivity(),hour,minute, DateFormat.is24HourFormat(getActivity()));
+        return new TimePickerDialog(getActivity(), (TimePickerDialog.OnTimeSetListener) getActivity(), hour, minute, DateFormat.is24HourFormat(getActivity()));
 
     }
 }

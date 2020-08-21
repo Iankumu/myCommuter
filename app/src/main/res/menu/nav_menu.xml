@@ -11,10 +11,10 @@
     <item
         android:id="@+id/weather_id"
         android:icon="@drawable/baseline_wb_cloudy_black_24dp"
-        android:title="Weather"/>
+        android:title="Weather" />
     <item
         android:id="@+id/account_id"
         android:icon="@drawable/baseline_account_circle_black_24dp"
-        android:title="Profile"/>
+        android:title="Profile" />
 
 </menu>

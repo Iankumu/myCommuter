@@ -12,14 +12,15 @@ import com.example.mycommuter.viewmodels.HomeActivityViewModel;
 import com.example.mycommuter.viewmodels.NewTaskViewModel;
 
 public class NewTaskActivity extends AppCompatActivity {
-NewTaskViewModel newTaskViewModel;
-  private  ActivityNewTaskBinding binding;
+    NewTaskViewModel newTaskViewModel;
+    private ActivityNewTaskBinding binding;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_task);
 
-        newTaskViewModel = new ViewModelProvider(this, new NewTaskViewFactory(getApplication(),getSupportFragmentManager()))
+        newTaskViewModel = new ViewModelProvider(this, new NewTaskViewFactory(getApplication(), getSupportFragmentManager()))
                 .get(NewTaskViewModel.class);
 //        loginActivityModelView=new ViewModelProvider(this).get(LoginActivityModelView.class);
 

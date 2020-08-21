@@ -15,13 +15,13 @@ public class HomeViewFactory extends ViewModelProvider.AndroidViewModelFactory {
 
     public HomeViewFactory(@NonNull Application application) {
         super(application);
-        this.application=application;
+        this.application = application;
 
     }
 
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return(T)new HomeActivityViewModel(application);
+        return (T) new HomeActivityViewModel(application);
     }
 }

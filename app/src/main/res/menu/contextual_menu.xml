@@ -5,10 +5,10 @@
         android:id="@+id/delete_id"
         android:icon="@drawable/ic_baseline_delete_24"
         android:title="Delete"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/edit_id"
         android:icon="@drawable/ic_baseline_update_24"
         android:title="Update"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 </menu>

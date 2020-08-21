@@ -14,8 +14,7 @@
     android:layout_marginBottom="4dp"
     android:foreground="?attr/selectableItemBackground"
     android:transitionName="weatherCardTransition"
-    app:cardElevation="2dp"
-    >
+    app:cardElevation="2dp">
 
     <RelativeLayout
         android:padding="10dp"
@@ -85,8 +84,7 @@
                 android:layout_marginEnd="26dp"
                 android:layout_weight="1"
                 android:text="45°"
-                android:textSize="18sp"
-            />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/textViewCardMinTemp"

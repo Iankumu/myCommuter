@@ -11,7 +11,7 @@
         android:id="@+id/mapView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        mapbox:mapbox_cameraZoom="15"/>
+        mapbox:mapbox_cameraZoom="15" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnSearchLocation"
@@ -22,7 +22,7 @@
         android:layout_marginStart="10dp"
         android:backgroundTint="@color/colorPrimary"
         android:foreground="@drawable/search_location"
-        android:foregroundGravity="center"/>
+        android:foregroundGravity="center" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnShowMarker"
@@ -34,7 +34,7 @@
         android:layout_marginStart="5dp"
         android:backgroundTint="@color/colorPrimary"
         android:foreground="@drawable/btn_marker"
-        android:foregroundGravity="center"/>
+        android:foregroundGravity="center" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btnStyleSelector"
@@ -63,7 +63,7 @@
         android:text="@string/simulate_route"
         android:textAllCaps="false"
         android:textColor="@color/colorAccent"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/select_location_button"
@@ -77,7 +77,7 @@
         android:text="Select Location"
         android:textAllCaps="false"
         android:textColor="@color/colorAccent"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/cancel_search_bar_destination"
@@ -91,6 +91,6 @@
         android:text="Cancel"
         android:textAllCaps="false"
         android:textColor="@color/colorAccent"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
 </RelativeLayout>

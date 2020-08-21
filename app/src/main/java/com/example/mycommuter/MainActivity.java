@@ -40,8 +40,9 @@ public class MainActivity extends AppCompatActivity {
     public static final String SHARED_PREF = "sharedPrefs";
 
     public static final String Verified = "VerifiedPref";
-ActivityMainBinding mainBinding;
-MainActivityViewModel mainActivityViewModel;
+    ActivityMainBinding mainBinding;
+    MainActivityViewModel mainActivityViewModel;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +59,6 @@ MainActivityViewModel mainActivityViewModel;
 
 
     }
-
-
 
 
 //        final theCommuterApiendpoints apiService = ApiClient.getClient().create(theCommuterApiendpoints.class);

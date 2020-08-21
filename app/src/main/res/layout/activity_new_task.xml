@@ -72,30 +72,25 @@
                 app:errorEnabled="true" />
 
 
-                <Button
-                    android:id="@+id/selectdate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
+            <Button
+                android:id="@+id/selectdate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
 
-                    android:layout_marginTop="30dp"
+                android:layout_marginTop="30dp"
 
-                    android:paddingStart="70dp"
-                    android:paddingEnd="70dp"
-                    android:background="@drawable/btn_bg"
-                    android:onClick="@{NewTaskViewModel::datePick}"
-                    android:fontFamily="@font/lato_lightitalic"
-
-
-                    android:padding="10dp"
-                    android:text="Pick Date"
-
-                    android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:paddingStart="70dp"
+                android:paddingEnd="70dp"
+                android:background="@drawable/btn_bg"
+                android:onClick="@{NewTaskViewModel::datePick}"
+                android:fontFamily="@font/lato_lightitalic"
 
 
+                android:padding="10dp"
+                android:text="Pick Date"
 
-
-
+                android:textAppearance="?android:attr/textAppearanceLarge" />
 
 
             <Button

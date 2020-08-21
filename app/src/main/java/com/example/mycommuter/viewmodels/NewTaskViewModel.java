@@ -26,7 +26,7 @@ import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClic
 
 import es.dmoral.toasty.Toasty;
 
-public class NewTaskViewModel extends AndroidViewModel  {
+public class NewTaskViewModel extends AndroidViewModel {
     FragmentManager fragmentManager;
     private Tasks tasksM;
     private uploadTrepo uploadtrepo;
@@ -107,19 +107,18 @@ public class NewTaskViewModel extends AndroidViewModel  {
                 Toasty.info(context, materialDatePicker.getHeaderText()).show();
             }
         });
-      materialDatePicker.addOnCancelListener(new DialogInterface.OnCancelListener() {
-          @Override
-          public void onCancel(DialogInterface dialog) {
-              dialog.dismiss();
-          }
-      });
+        materialDatePicker.addOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                dialog.dismiss();
+            }
+        });
     }
 //    public void timePick(String date) {
 //        TimePickerDialogue timePickerDialogue=new TimePickerDialogue();
 //        timePickerDialogue.show(fragmentManager,"timepicker");
 //
 //    }
-
 
 
     public void onPost(View view) {
@@ -137,7 +136,7 @@ public class NewTaskViewModel extends AndroidViewModel  {
 
     private void setTask() {
 
-        uploadtrepo = uploadTrepo.getInstance(context,fragmentManager, title, description, due);
+        uploadtrepo = uploadTrepo.getInstance(context, fragmentManager, title, description, due);
         uploadtrepo.postTask();
     }
 

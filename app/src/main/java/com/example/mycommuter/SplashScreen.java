@@ -19,11 +19,11 @@ public class SplashScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        Animation fadeout=new AlphaAnimation(1,0);
+        Animation fadeout = new AlphaAnimation(1, 0);
         fadeout.setInterpolator(new AccelerateInterpolator());
         fadeout.setStartOffset(600);
         fadeout.setDuration(1900);
-        ImageView imageView=findViewById(R.id.load);
+        ImageView imageView = findViewById(R.id.load);
         imageView.setAnimation(fadeout);
         new Handler().postDelayed(new Runnable() {
             @Override

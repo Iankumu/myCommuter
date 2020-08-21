@@ -4,28 +4,18 @@ import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 import android.util.Pair;
-import android.view.View;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.BindingAdapter;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 
 
 import com.example.mycommuter.model.Weather;
 import com.example.mycommuter.repository.ForecastRepo;
-import com.example.mycommuter.utils.IconProvider;
-import com.example.mycommuter.utils.myPairs;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import timber.log.Timber;
 
 import static android.content.ContentValues.TAG;
 
@@ -54,16 +44,16 @@ public class ForecastActivityViewModel extends AndroidViewModel {
 //    }
 
     public MutableLiveData<Pair<List, Weather>> Search(String location) {
-        Log.e(TAG, "Search: "+location );
+        Log.e(TAG, "Search: " + location);
         forecastRepo = ForecastRepo.getInstance(context);
         return forecastRepo.getSearchWeather(location);
     }
 
-    public void init( Map<String, Double> coord) {
+    public void init(Map<String, Double> coord) {
         if (wth != null) {
             return;
         }
-        Log.e(TAG, "initcoord"+coord );
+        Log.e(TAG, "initcoord" + coord);
         forecastRepo = ForecastRepo.getInstance(context);
         wth = forecastRepo.getWeather(coord);
     }

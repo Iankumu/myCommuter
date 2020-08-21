@@ -18,6 +18,7 @@ public class PasswordResetActivity extends AppCompatActivity {
 
     ActivityPasswordResetBinding binding;
     LinearLayout login;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +31,6 @@ public class PasswordResetActivity extends AppCompatActivity {
         binding = DataBindingUtil.setContentView(PasswordResetActivity.this, R.layout.activity_password_reset);
         binding.setLifecycleOwner(this);
 
-     binding.setLoginViewModel(loginActivityModelView);
+        binding.setLoginViewModel(loginActivityModelView);
     }
 }

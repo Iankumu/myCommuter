@@ -141,11 +141,13 @@ public class LoginActivityModelView extends AndroidViewModel {
 
         return loginRepo.getUser();
     }
-   public void launchPasswordReset(View view){
-       Intent intent = new Intent(context, PasswordResetActivity.class);
-       intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
-       context.startActivity(intent);
+
+    public void launchPasswordReset(View view) {
+        Intent intent = new Intent(context, PasswordResetActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+        context.startActivity(intent);
     }
+
     public void onResetClick(View view) {
         int error = loginUser.isValidlogin();
         if (error == 0) {
@@ -153,13 +155,13 @@ public class LoginActivityModelView extends AndroidViewModel {
         } else if (error == 1) {
             loginResultCallback.onError("Your must enter a Valid EmailAddress");
 
-        }else{
+        } else {
             EmailAddress.setValue(loginUser.getEmailAddress());
             sendResetEmail(new TaskupdateCallback() {
                 @Override
                 public void onSuccess(String message) {
 
-                    Toasty.success(context,message, Toast.LENGTH_LONG).show();
+                    Toasty.success(context, message, Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(context, LoginActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
                     context.startActivity(intent);
@@ -167,7 +169,7 @@ public class LoginActivityModelView extends AndroidViewModel {
 
                 @Override
                 public void onError(String message) {
-                    Toasty.error(context,message, Toast.LENGTH_LONG).show();
+                    Toasty.error(context, message, Toast.LENGTH_LONG).show();
                 }
             });
         }
@@ -187,7 +189,7 @@ public class LoginActivityModelView extends AndroidViewModel {
                 try {
 
 
-                    if (response.body()!=null) {
+                    if (response.body() != null) {
 //
                         taskupdateCallback.onSuccess("Password reset email sent");
                         Log.e(TAG, "onSuccess: Login complete");
@@ -198,7 +200,7 @@ public class LoginActivityModelView extends AndroidViewModel {
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    Log.e(TAG, "onResponselogin mans "+response.errorBody());
+                    Log.e(TAG, "onResponselogin mans " + response.errorBody());
                 }
 
             }

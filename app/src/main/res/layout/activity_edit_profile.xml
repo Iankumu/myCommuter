@@ -12,121 +12,122 @@
             type="com.example.mycommuter.viewmodels.ProfileViewModel" />
     </data>
 
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
 
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-
-
-    tools:context=".EditProfile">
-
-
-    <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/appbar_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fitsSystemWindows="true"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
-        <com.google.android.material.appbar.CollapsingToolbarLayout
-            android:id="@+id/collapsingtoolbarlayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true"
-            app:contentScrim="?attr/colorPrimary"
-            app:expandedTitleMarginEnd="104dp"
-            app:expandedTitleMarginStart="48dp"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-            <ImageView
-                android:id="@+id/useravatar"
-                android:layout_width="match_parent"
-                android:layout_height="294dp"
-
-                android:adjustViewBounds="true"
-                android:background="@drawable/prof"
-                android:contentDescription="avatar"
-
-                android:fitsSystemWindows="true"
-                android:scaleType="centerCrop"
-                app:layout_collapseMode="parallax" />
-
-
-            <androidx.appcompat.widget.Toolbar
-                android:id="@+id/editproftoolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                app:layout_collapseMode="pin" />
-        </com.google.android.material.appbar.CollapsingToolbarLayout>
-
-
-    </com.google.android.material.appbar.AppBarLayout>
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/uploadpic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add_a_photo_black_18dp"
-        app:fabSize="normal"
-        app:layout_anchor="@id/appbar_layout"
-        app:layout_anchorGravity="top|end" />
-
-
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipToPadding="false"
-        android:padding="10dp"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <LinearLayout
+
+        tools:context=".EditProfile">
+
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/appbar_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:fitsSystemWindows="true"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-            <EditText
+            <com.google.android.material.appbar.CollapsingToolbarLayout
+                android:id="@+id/collapsingtoolbarlayout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fitsSystemWindows="true"
+                app:contentScrim="?attr/colorPrimary"
+                app:expandedTitleMarginEnd="104dp"
+                app:expandedTitleMarginStart="48dp"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-                android:layout_width="wrap_content"
+                <ImageView
+                    android:id="@+id/useravatar"
+                    android:layout_width="match_parent"
+                    android:layout_height="294dp"
+
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/prof"
+                    android:contentDescription="avatar"
+
+                    android:fitsSystemWindows="true"
+                    android:scaleType="centerCrop"
+                    app:layout_collapseMode="parallax" />
+
+
+                <androidx.appcompat.widget.Toolbar
+                    android:id="@+id/editproftoolbar"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    app:layout_collapseMode="pin" />
+            </com.google.android.material.appbar.CollapsingToolbarLayout>
+
+
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/uploadpic"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_add_a_photo_black_18dp"
+            app:fabSize="normal"
+            app:layout_anchor="@id/appbar_layout"
+            app:layout_anchorGravity="top|end" />
+
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:padding="10dp"
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:paddingBottom="10dp"
-                app:addTextChangedListener="@{EditProfile.getNameOnTextChangeListener}"
-                android:text="Random Person"
-                android:textAppearance="?attr/textAppearanceHeadline1"
+                android:orientation="vertical">
 
-                android:textSize="20sp" />
+                <EditText
 
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingBottom="10dp"
+                    app:addTextChangedListener="@{EditProfile.getNameOnTextChangeListener}"
+                    android:text="Random Person"
+                    android:textAppearance="?attr/textAppearanceHeadline1"
 
-            <TextView
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="5dp"
-                android:gravity="center"
-                android:padding="8dp"
-                android:text="Lives in embakassi...more details to be added below"
-                android:textAppearance="?attr/textAppearanceHeadline3"
-                android:textColor="?android:attr/textColorSecondary"
-                android:textSize="15sp" />
-            <Button
-                android:id="@+id/update"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/btn_bg"
-                android:onClick="@{EditProfile::onProfileUpdateClick}"
-
-                android:paddingHorizontal="40dp"
-                android:text="Update profile" />
-
-        </LinearLayout>
+                    android:textSize="20sp" />
 
 
-    </androidx.core.widget.NestedScrollView>
+                <TextView
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginBottom="5dp"
+                    android:gravity="center"
+                    android:padding="8dp"
+                    android:text="Lives in embakassi...more details to be added below"
+                    android:textAppearance="?attr/textAppearanceHeadline3"
+                    android:textColor="?android:attr/textColorSecondary"
+                    android:textSize="15sp" />
+
+                <Button
+                    android:id="@+id/update"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/btn_bg"
+                    android:onClick="@{EditProfile::onProfileUpdateClick}"
+
+                    android:paddingHorizontal="40dp"
+                    android:text="Update profile" />
+
+            </LinearLayout>
 
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+        </androidx.core.widget.NestedScrollView>
+
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

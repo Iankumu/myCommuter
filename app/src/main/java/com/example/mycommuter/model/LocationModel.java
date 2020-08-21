@@ -4,7 +4,8 @@ public class LocationModel {
 
     private String latitude, longitude, nav_current_lat, nav_current_long, nav_dest_lat, nav_dest_long;
 
-    public LocationModel() { }
+    public LocationModel() {
+    }
 
     public LocationModel(String latitude, String longitude) {
         this.latitude = latitude;
@@ -26,15 +27,27 @@ public class LocationModel {
         return longitude;
     }
 
-    public void setLatitude(String latitude) { this.latitude = latitude; }
+    public void setLatitude(String latitude) {
+        this.latitude = latitude;
+    }
 
-    public void setLongitude(String longitude) { this.longitude = longitude; }
+    public void setLongitude(String longitude) {
+        this.longitude = longitude;
+    }
 
-    public String getNav_current_lat() { return nav_current_lat;}
+    public String getNav_current_lat() {
+        return nav_current_lat;
+    }
 
-    public String getNav_current_long() { return nav_current_long;}
+    public String getNav_current_long() {
+        return nav_current_long;
+    }
 
-    public String getNav_dest_lat() { return nav_dest_lat; }
+    public String getNav_dest_lat() {
+        return nav_dest_lat;
+    }
 
-    public String getNav_dest_long() { return nav_dest_long; }
+    public String getNav_dest_long() {
+        return nav_dest_long;
+    }
 }

@@ -10,7 +10,7 @@ import com.example.mycommuter.LoginActivity;
 import com.example.mycommuter.interfaces.LoginResultCallback;
 import com.example.mycommuter.viewmodels.LoginActivityModelView;
 
-public class LoginViewHolderModelFactory extends ViewModelProvider.AndroidViewModelFactory  {
+public class LoginViewHolderModelFactory extends ViewModelProvider.AndroidViewModelFactory {
 
     Application application;
     LoginResultCallback loginResultCallback;
@@ -21,10 +21,9 @@ public class LoginViewHolderModelFactory extends ViewModelProvider.AndroidViewMo
     }
 
 
-
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return(T)new LoginActivityModelView(application,loginResultCallback);
+        return (T) new LoginActivityModelView(application, loginResultCallback);
     }
 }

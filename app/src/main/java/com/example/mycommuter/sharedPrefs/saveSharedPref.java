@@ -25,6 +25,7 @@ public class saveSharedPref {
     public static boolean getLoggedStatus(Context context) {
         return getPreferences(context).getBoolean(LOGGED_IN_PREF, false);
     }
+
     public static String getToken(Context context) {
         return getPreferences(context).getString("token", null);
     }
@@ -36,7 +37,7 @@ public class saveSharedPref {
         mEditor.apply();
     }
 
-    public static String retrieveDestination(Context context, String tag){
+    public static String retrieveDestination(Context context, String tag) {
         return getPreferences(context).getString(tag, null);
     }
 

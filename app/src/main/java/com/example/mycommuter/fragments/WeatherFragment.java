@@ -12,6 +12,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
@@ -60,6 +61,7 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.card.MaterialCardView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,6 +81,8 @@ public class WeatherFragment extends Fragment {
     private WeatherAdapter weatherAdapter;
     private RecyclerView.LayoutManager layoutManager;
     private Weather weather;
+    TextView today, forecast;
+    CardView cardView;
     private RecyclerView recyclerView;
     private List<Weather> listinit = new ArrayList<>();
     private LinearLayout linearLayout;
@@ -104,7 +108,9 @@ public class WeatherFragment extends Fragment {
         recyclerView = view.findViewById(R.id.myweatherRe);
         shimmerFrameLayout = view.findViewById(R.id.shimmerframelay);
         toolbar = view.findViewById(R.id.wthtoolbar);
-
+        cardView = view.findViewById(R.id.cardView);
+        today = view.findViewById(R.id.today);
+        forecast = view.findViewById(R.id.forecast);
         toolbar.setOnMenuItemClickListener(this::onOptionsItemSelected);
         setShimmer(true);
         return view;
@@ -120,10 +126,9 @@ public class WeatherFragment extends Fragment {
         getloc();
 
 
-
-
     }
-    public void getData(Map<String, Double> coord){
+
+    public void getData(Map<String, Double> coord) {
         forecastActivityViewModel = new ViewModelProvider(this).get(ForecastActivityViewModel.class);
         forecastActivityViewModel.init(coord);
         forecastActivityViewModel.getCurrentWeather().observe(getViewLifecycleOwner(), new Observer<Pair<List, Weather>>() {
@@ -147,25 +152,33 @@ public class WeatherFragment extends Fragment {
         fragmentWeatherBinding.setLifecycleOwner(getViewLifecycleOwner());
 
     }
+
     public void setShimmer(boolean shimmer) {
         if (shimmer) {
+            today.setVisibility(View.GONE);
+            forecast.setVisibility(View.GONE);
+            cardView.setVisibility(View.GONE);
             shimmerFrameLayout.startShimmer();
         } else {
-
+            today.setVisibility(View.VISIBLE);
+            forecast.setVisibility(View.VISIBLE);
+            cardView.setVisibility(View.VISIBLE);
             shimmerFrameLayout.stopShimmer();
             shimmerFrameLayout.setVisibility(View.GONE);
         }
 
     }
-    public void getloc(){
-        MutableLiveData< Map<String, Double>> coordi=new MutableLiveData<>();
+
+    public void getloc() {
+        MutableLiveData<Map<String, Double>> coordi = new MutableLiveData<>();
 
         getdeviceLocation(new DeviceCoord() {
             @Override
             public void getCoordinates(Map<String, Double> coord) {
-                Log.e(TAG, "getloc: "+coord );
+                Log.e(TAG, "getloc: " + coord);
                 coordi.setValue(coord);
-            getData(coord);}
+                getData(coord);
+            }
         });
 
 
@@ -189,14 +202,15 @@ public class WeatherFragment extends Fragment {
             @Override
             public void onSuccess(Location location) {
                 if (location != null) {
-                    double lat=location.getLatitude();
-                    double lon=location.getLongitude();
+                    double lat = location.getLatitude();
+                    double lon = location.getLongitude();
                     coord.put("latitude", lat);
-                    coord.put("longitude",lon);
-                    Log.e(TAG, "coordi "+coord );
+                    coord.put("longitude", lon);
+                    Log.e(TAG, "coordi " + coord);
                     deviceCoord.getCoordinates(coord);
+                }
             }
-        }});
+        });
 
 
     }
@@ -249,8 +263,6 @@ public class WeatherFragment extends Fragment {
     }
 
 
-
-
     private void search(MenuItem item) {
         SearchView searchView = (SearchView) item.getActionView();
 
@@ -278,8 +290,6 @@ public class WeatherFragment extends Fragment {
         item.getIcon().setVisible(false, false);
 
     }
-
-
 
 
     private void logout() {

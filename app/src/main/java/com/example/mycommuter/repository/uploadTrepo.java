@@ -46,6 +46,7 @@ public class uploadTrepo {
     private FragmentManager fragmentManager;
 
     private TaskAdapter adapter;
+
     public uploadTrepo(Context context, FragmentManager fragmentManager, MutableLiveData<String> title, MutableLiveData<String> description, MutableLiveData<String> due) {
         this.context = context;
         this.title = title;
@@ -70,7 +71,7 @@ public class uploadTrepo {
             @Override
             public void onSuccess(String message) {
                 String fragid = "todoFragment";
-                adapter=new TaskAdapter();
+                adapter = new TaskAdapter();
                 adapter.notifyDataSetChanged();
                 Toasty.success(context, message, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, BottomNavigationActivity.class);
@@ -100,7 +101,7 @@ public class uploadTrepo {
         LiveData<String> Livedescription = description;
         LiveData<String> livedue = due;
 
-        Call<JsonObject> call = apiService.uploadTask(livetitle.getValue(), Livedescription.getValue(), livedue.getValue(),"Bearer " + token);
+        Call<JsonObject> call = apiService.uploadTask(livetitle.getValue(), Livedescription.getValue(), livedue.getValue(), "Bearer " + token);
         call.enqueue(new Callback<JsonObject>() {
             @Override
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {

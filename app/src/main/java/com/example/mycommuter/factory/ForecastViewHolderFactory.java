@@ -17,13 +17,15 @@ public class ForecastViewHolderFactory extends ViewModelProvider.AndroidViewMode
      * @param application an application to pass in {@link AndroidViewModel}
      */
     Application application;
+
     public ForecastViewHolderFactory(@NonNull Application application) {
         super(application);
-        this.application=application;
+        this.application = application;
     }
+
     @NonNull
     @Override
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
-        return(T)new ForecastActivityViewModel(application);
+        return (T) new ForecastActivityViewModel(application);
     }
 }

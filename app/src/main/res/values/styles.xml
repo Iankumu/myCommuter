@@ -6,8 +6,11 @@
         <item name="colorSurface">#FFFFFF</item>
 
         <item name="materialCalendarStyle">@style/Widget.MaterialComponents.MaterialCalendar</item>
-        <item name="materialCalendarFullscreenTheme">@style/ThemeOverlay.MaterialComponents.MaterialCalendar.Fullscreen</item>
-        <item name="materialCalendarTheme">@style/ThemeOverlay.MaterialComponents.MaterialCalendar</item>
+        <item name="materialCalendarFullscreenTheme">
+            @style/ThemeOverlay.MaterialComponents.MaterialCalendar.Fullscreen
+        </item>
+        <item name="materialCalendarTheme">@style/ThemeOverlay.MaterialComponents.MaterialCalendar
+        </item>
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -16,6 +19,7 @@
         <item name="android:textColorHint">#ffffff</item>
 
     </style>
+
     <style name="ShapeAppearance.MyApp.MediumComponent" parent="ShapeAppearance.MaterialComponents.MediumComponent">
         <item name="cornerFamily">cut</item>
         <item name="cornerSize">8dp</item>
@@ -26,9 +30,12 @@
         <item name="colorControlActivated">#FFFFFF</item>
         <item name="colorControlHighlight">#FFFFFF</item>
     </style>
+
     <style name="Myswitch" parent="Theme.AppCompat.NoActionBar">
-        <item name="colorControlNormal">#ffffff</item>   <!-- normal border color change as you wish -->
-        <item name="colorControlActivated">#ffffff</item> <!-- activated color change as you wish -->
+        <item name="colorControlNormal">#ffffff
+        </item>   <!-- normal border color change as you wish -->
+        <item name="colorControlActivated">#ffffff
+        </item> <!-- activated color change as you wish -->
         <item name="android:textColor">#FFF</item> <!-- checkbox text color -->
     </style>
 </resources>
