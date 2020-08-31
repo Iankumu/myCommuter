@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.databinding.BindingAdapter;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -213,7 +214,11 @@ public class LoginActivityModelView extends AndroidViewModel {
                 taskupdateCallback.onError("Invalid credentials");
             }
         });
+    }
 
+    @BindingAdapter("android:visibility")
+    public static void setVisibility(View view, boolean visible) {
+        view.setVisibility(visible ? View.VISIBLE : View.GONE);
     }
 
 }

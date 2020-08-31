@@ -115,4 +115,9 @@ public class WeatherSearchActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onStop() {
+        listinit.clear();
+        super.onStop();
+    }
 }

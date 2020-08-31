@@ -55,6 +55,7 @@ public class LoginRepo {
     }
 
     public boolean getUser() {
+        MutableLiveData<Boolean> status = new MutableLiveData<>();
         checkCredentials(new LoginResultCallback() {
             @Override
             public void onSuccess(String message, String token) {
@@ -65,20 +66,24 @@ public class LoginRepo {
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
                     context.startActivity(intent);
                     Log.e(TAG, "onSuccess: Login complete");
+
                 } catch (Exception e) {
                     e.printStackTrace();
                     Log.e(TAG, "onErrormans: " + 1);
 
                 }
+                status.setValue(true);
             }
 
             @Override
             public void onError(String message) {
                 Toasty.error(context, message, Toast.LENGTH_SHORT).show();
                 Log.e(TAG, "onSuccess: Login failed");
+                status.setValue(false);
             }
         });
-        return true;
+        return status.getValue();
+
 
     }
 
