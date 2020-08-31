@@ -87,8 +87,9 @@ public class TaskDetail extends AppCompatActivity {
                             @Override
                             public void onSuccess(String message) {
                                 Toasty.success(TaskDetail.this, message, Toast.LENGTH_SHORT).show();
-                                Intent dintent = new Intent(TaskDetail.this, BottomNavigationActivity.class);
-                                startActivity(dintent);
+//                                Intent dintent = new Intent(TaskDetail.this, BottomNavigationActivity.class);
+//                                startActivity(dintent);
+                                TaskDetail.super.onBackPressed();
                             }
 
                             @Override
@@ -116,8 +117,7 @@ public class TaskDetail extends AppCompatActivity {
     public void onBackPressed() {
         Log.d("CDA", "onBackPressed Called");
 
-        Intent dintent = new Intent(TaskDetail.this, BottomNavigationActivity.class);
-        startActivity(dintent);
+        this.finish();
 
     }
 
@@ -204,8 +204,9 @@ public class TaskDetail extends AppCompatActivity {
                             @Override
                             public void onSuccess(String message) {
                                 Toasty.success(TaskDetail.this, message, Toast.LENGTH_SHORT).show();
-                                Intent dintent = new Intent(TaskDetail.this, BottomNavigationActivity.class);
-                                startActivity(dintent);
+//                                Intent dintent = new Intent(TaskDetail.this, BottomNavigationActivity.class);
+//                                startActivity(dintent);
+                                TaskDetail.super.onBackPressed();
                             }
 
                             @Override

@@ -114,7 +114,7 @@ public class TodoFragment extends Fragment {
                                 Intent dintent = new Intent(getActivity(), TaskDetail.class);
 
                                 dintent.putExtra("task", tasks);
-                                dintent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+//                                dintent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
                                 startActivity(dintent);
 
 
