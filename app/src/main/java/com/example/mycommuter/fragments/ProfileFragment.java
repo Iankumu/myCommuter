@@ -109,12 +109,14 @@ public class ProfileFragment extends Fragment {
             view2.setVisibility(View.GONE);
             appBarLayout.setVisibility(View.GONE);
             button.setVisibility(View.GONE);
+            floatingActionButton.setVisibility(View.GONE);
 
         } else {
             button.setVisibility(View.VISIBLE);
             view1.setVisibility(View.VISIBLE);
             view3.setVisibility(View.VISIBLE);
             view2.setVisibility(View.VISIBLE);
+            floatingActionButton.setVisibility(View.VISIBLE);
             appBarLayout.setVisibility(View.VISIBLE);
             shimmerFrameLayout.stopShimmer();
             shimmerFrameLayout.setVisibility(View.GONE);

@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import es.dmoral.toasty.Toasty;
 
@@ -96,18 +97,24 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> 
 
         holder.setIsRecyclable(false);
         Date myDate = null;
+        String myDate2 = null;
+        Date myDate3=null;
         final Tasks current_task = tasks.get(position);
 
         holder.materialCardView.setAnimation(AnimationUtils.loadAnimation(context, R.anim.fade_scale_animation));
         holder.title.setText(current_task.getTitle());
         holder.description.setText(current_task.getDescritpion());
-        SimpleDateFormat myFormat = new SimpleDateFormat("MM-dd-yyyy");
+        SimpleDateFormat myFormat = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat myFormat2 = new SimpleDateFormat("EEE, MM , YYYY");
         try {
             myDate = myFormat.parse(current_task.getDue());
+            myDate2=myFormat2.format(myDate);
+            myDate3=myFormat.parse(myDate2);
+            Log.e(TAG, "onBindViewHolder: " +current_task.getDue() );
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        holder.due.setText(myDate.toString());
+        holder.due.setText(myDate2.toString());
 
 
     }

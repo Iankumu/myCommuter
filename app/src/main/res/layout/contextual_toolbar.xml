@@ -8,14 +8,5 @@
     android:background="?attr/colorPrimary"
     app:menu="@menu/contextual_menu">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text=") items selected"
-            android:id="@+id/itemCounter" />
-    </RelativeLayout>
 </androidx.appcompat.widget.Toolbar>

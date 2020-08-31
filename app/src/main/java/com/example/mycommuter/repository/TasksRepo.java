@@ -98,9 +98,9 @@ public class TasksRepo {
                             task.setId(jo2.getInt("id"));
                             task.setTitle(jo2.getString("title"));
                             task.setDescritpion(jo2.getString("descritpion"));
-                            task.setDue(jo2.getString("created_at"));
-//                            Log.e("dataT", "" + jo2.getString("title"));
-//                            Log.e("dataD", "" + task.getDescritpion());
+                            task.setDue(jo2.getString("due"));
+                            Log.e("log due", "" +task.getDue());
+
                             arrayofTask.add(task);
 
                         } catch (JSONException ex) {
