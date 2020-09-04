@@ -38,7 +38,7 @@ public interface theCommuterApiendpoints {
 
     })
     @FormUrlEncoded
-    @POST("api/tasks")
+    @POST("api/v1/tasks")
     Call<JsonObject> uploadTask(@Field("title") String title,
                                 @Field("descritpion") String descritpion,
                                 @Field("due") String due,
@@ -79,7 +79,7 @@ public interface theCommuterApiendpoints {
             "Accept: application/json",
 
     })
-    @GET("api/tasks")
+    @GET("api/v1/tasks")
     Call<Tasks> getTasks(
             @Header("Authorization") String authorization);
 
@@ -89,14 +89,14 @@ public interface theCommuterApiendpoints {
 
     )
     @FormUrlEncoded
-    @POST("api/forecastWeather")
+    @POST("api/v1/forecastWeather")
     Call<JsonObject> getWeather(
             @Field("longitude") String longitude,
             @Field("latitude") String latitude,
             @Header("Authorization") String authorization);
 
     @FormUrlEncoded
-    @POST("api/currentWeather")
+    @POST("api/v1/currentWeather")
     Call<JsonObject> getCurrentWeather(
             @Field("longitude") double longitude,
             @Field("latitude") double latitude,
@@ -107,7 +107,7 @@ public interface theCommuterApiendpoints {
 
     )
     @FormUrlEncoded
-    @POST("api/searchWeather")
+    @POST("api/v1/searchWeather")
     Call<JsonObject> getsearchWeather(
             @Field("location") String location,
 
@@ -117,7 +117,7 @@ public interface theCommuterApiendpoints {
             "Accept: application/json"
 
     )
-    @GET("api/profile")
+    @GET("api/v1/profile")
     Call<JsonObject> getProfile(
 
             @Header("Authorization") String authorization);
@@ -127,7 +127,7 @@ public interface theCommuterApiendpoints {
 
     )
     @FormUrlEncoded
-    @POST("api/profile")
+    @POST("api/v1/profile")
     Call<User> setProfile(
             @Field("name") String name,
             @Header("Authorization") String authorization);
@@ -145,7 +145,7 @@ public interface theCommuterApiendpoints {
 
     )
 
-    @DELETE("/api/tasks/{id}")
+    @DELETE("/api/v1/tasks/{id}")
     Call<JsonObject> deleteTask(@Path("id") int taskid, @Header("Authorization") String authorization);
 
     @Headers(
@@ -153,7 +153,7 @@ public interface theCommuterApiendpoints {
 
     )
     @FormUrlEncoded
-    @PUT("/api/tasks/{id}")
+    @PUT("/api/v1/tasks/{id}")
     Call<JsonObject> updateTask(@Path("id") int taskid,
                                 @Field("title") String title,
                                 @Field("descritpion") String descritpion,

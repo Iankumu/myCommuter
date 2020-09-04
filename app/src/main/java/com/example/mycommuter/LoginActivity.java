@@ -44,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     private LoginActivityModelView loginActivityModelView;
 
     ActivityLoginBinding binding;
-    LinearLayout login;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,10 +56,7 @@ public class LoginActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_login);
 
-        login = findViewById(R.id.loginlay);
-        Bitmap originalBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.background);
-        Bitmap blurredBitmap = BlurBuilder.blur(this, originalBitmap);
-        login.setBackground(new BitmapDrawable(getResources(), blurredBitmap));
+
 
 
         loginActivityModelView = new ViewModelProvider(this, new LoginViewHolderModelFactory(getApplication()))
