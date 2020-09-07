@@ -124,9 +124,9 @@ public class MapFragment extends Fragment implements PermissionsListener {
     private static final String LOG_TAG_Code = "Hashcode";
 
     public static String Base_URL = "https://radiant-lowlands-66469.herokuapp.com/";
-    public static String URL = Base_URL + "api/location";
-    public static String Navigation_url = Base_URL + "api/navigation";
-    public static String coordinates = Base_URL + "api/coordinates";
+    public static String URL = Base_URL + "api/v1/location";
+    public static String Navigation_url = Base_URL + "api/v1/navigation";
+    public static String coordinates = Base_URL + "api/v1/coordinates";
     private FeatureCollection dashedLineDirectionsFeatureCollection;
 
     //for route 1
