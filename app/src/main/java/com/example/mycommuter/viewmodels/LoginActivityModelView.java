@@ -4,7 +4,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -13,11 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.databinding.BindingAdapter;
 import androidx.lifecycle.AndroidViewModel;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.ViewModel;
 
-import com.example.mycommuter.BottomNavigationActivity;
 import com.example.mycommuter.LoginActivity;
 import com.example.mycommuter.MainActivity;
 import com.example.mycommuter.PasswordResetActivity;
@@ -26,13 +22,8 @@ import com.example.mycommuter.RestApi.theCommuterApiendpoints;
 import com.example.mycommuter.interfaces.LoginResultCallback;
 import com.example.mycommuter.interfaces.TaskupdateCallback;
 import com.example.mycommuter.model.LoginUser;
-import com.example.mycommuter.model.Tasks;
-import com.example.mycommuter.model.User;
 import com.example.mycommuter.repository.LoginRepo;
-import com.example.mycommuter.repository.TasksRepo;
 import com.google.gson.JsonObject;
-
-import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import retrofit2.Call;

@@ -14,7 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".WeatherSearchActivity"></activity>
+        <activity android:name=".IntroActivity">
+
+        </activity>
+        <activity android:name=".WeatherSearchActivity" />
         <activity android:name=".SplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -28,7 +31,7 @@
         <activity
             android:name=".EditProfile"
             android:parentActivityName=".BottomNavigationActivity" />
-        <activity android:name=".BottomNavigationActivity"></activity>
+        <activity android:name=".BottomNavigationActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".MainActivity" />
     </application>

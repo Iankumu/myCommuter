@@ -69,7 +69,7 @@ public class TasksRepo {
     //data retrieval from api
     public void setTasks(TaskInterface taskscallback) {
         String token = saveSharedPref.getToken(context);
-        Log.e(TAG, "setTasks: " + token);
+
         final theCommuterApiendpoints apiService = ApiClient.getClient().create(theCommuterApiendpoints.class);
 
 
@@ -99,7 +99,7 @@ public class TasksRepo {
                             task.setTitle(jo2.getString("title"));
                             task.setDescritpion(jo2.getString("descritpion"));
                             task.setDue(jo2.getString("due"));
-                            Log.e("log due", "" +task.getDue());
+
 
                             arrayofTask.add(task);
 
@@ -112,7 +112,7 @@ public class TasksRepo {
 
 
                 } else {
-                    System.out.println("log in body empty");
+
 
                 }
             }
@@ -121,7 +121,7 @@ public class TasksRepo {
             public void onFailure(Call<Tasks> call, Throwable t) {
 
 
-                Log.d(TAG, "login failed");
+
                 t.printStackTrace();
             }
         });

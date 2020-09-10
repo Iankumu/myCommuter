@@ -114,8 +114,10 @@ public class TodoFragment extends Fragment {
                                 Intent dintent = new Intent(getActivity(), TaskDetail.class);
 
                                 dintent.putExtra("task", tasks);
-//                                dintent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+                                dintent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
+
                                 startActivity(dintent);
+
 
 
                             }
@@ -125,7 +127,7 @@ public class TodoFragment extends Fragment {
 
     public void initRecyclerView() {
         listinit = new ArrayList<>();
-        Log.e(TAG, "initRecyclerView: " + listinit);
+
         staggeredGridLayoutManager = new StaggeredGridLayoutManager(1, LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(staggeredGridLayoutManager);
 
@@ -164,7 +166,7 @@ public class TodoFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         listinit = new ArrayList<>();
 
-        Log.e(TAG, "onViewCreated: " + listinit);
+
         if (listinit.isEmpty()) {
             listinit.clear();
         }
@@ -180,7 +182,7 @@ public class TodoFragment extends Fragment {
                 listinit = tasks;
                 adapter = new TaskAdapter(getContext(), listinit);
                 adapter.setTasks(tasks);
-                Log.e("mainact", "" + tasks.toString());
+
                 recyclerView.setAdapter(adapter);
                 setShimmer(false);
 
@@ -221,12 +223,14 @@ public class TodoFragment extends Fragment {
 
     @Override
     public void onResume() {
+
         super.onResume();
 
     }
 
     @Override
     public void onStart() {
+        listinit.clear();
         super.onStart();
         shimmerFrameLayout.startShimmer();
         setShimmer(true);
@@ -235,6 +239,7 @@ public class TodoFragment extends Fragment {
 
     @Override
     public void onStop() {
+        listinit.clear();
         setShimmer(false);
 
         super.onStop();
@@ -286,6 +291,7 @@ public class TodoFragment extends Fragment {
     private void additem() {
 
         Intent dintent = new Intent(getActivity(), NewTaskActivity.class);
+        dintent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(dintent);
 
     }

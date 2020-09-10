@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -25,6 +26,8 @@ import com.google.android.material.datepicker.MaterialDatePicker;
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener;
 
 import es.dmoral.toasty.Toasty;
+
+import static android.content.ContentValues.TAG;
 
 public class NewTaskViewModel extends AndroidViewModel {
     FragmentManager fragmentManager;
@@ -70,6 +73,7 @@ public class NewTaskViewModel extends AndroidViewModel {
             public void afterTextChanged(Editable s) {
 
                 tasksM.setTitle(s.toString());
+                Log.e(TAG, "afterTextChanged: "+s.toString() );
             }
         };
     }
@@ -137,7 +141,14 @@ public class NewTaskViewModel extends AndroidViewModel {
     private void setTask() {
 
         uploadtrepo = uploadTrepo.getInstance(context, fragmentManager, title, description, due);
+        Log.e(TAG, "setTask: title is"+title.getValue() );
         uploadtrepo.postTask();
+        destroy();
+    }
+    public void destroy(){
+        title=new MutableLiveData<>();
+        description=new MutableLiveData<>();
+        due=new MutableLiveData<>();
     }
 
 //    @Override

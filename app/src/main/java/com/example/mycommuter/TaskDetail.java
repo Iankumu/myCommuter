@@ -5,6 +5,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.widget.TextViewCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -19,6 +22,7 @@ import android.widget.Toast;
 
 import com.example.mycommuter.RestApi.ApiClient;
 import com.example.mycommuter.RestApi.theCommuterApiendpoints;
+import com.example.mycommuter.fragments.TodoFragment;
 import com.example.mycommuter.interfaces.ProfileUpdateCallback;
 import com.example.mycommuter.model.Tasks;
 import com.example.mycommuter.model.User;
@@ -87,9 +91,10 @@ public class TaskDetail extends AppCompatActivity {
                             @Override
                             public void onSuccess(String message) {
                                 Toasty.success(TaskDetail.this, message, Toast.LENGTH_SHORT).show();
-//                                Intent dintent = new Intent(TaskDetail.this, BottomNavigationActivity.class);
-//                                startActivity(dintent);
-                                TaskDetail.super.onBackPressed();
+                                Intent dintent = new Intent(TaskDetail.this, BottomNavigationActivity.class);
+                                dintent.putExtra("fragmentId","todo_id");
+                                startActivity(dintent);
+
                             }
 
                             @Override
@@ -115,9 +120,9 @@ public class TaskDetail extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Log.d("CDA", "onBackPressed Called");
-
-        this.finish();
+        Intent dintent = new Intent(TaskDetail.this, BottomNavigationActivity.class);
+        dintent.putExtra("fragmentId","todo_id");
+        startActivity(dintent);
 
     }
 
@@ -131,24 +136,24 @@ public class TaskDetail extends AppCompatActivity {
             public void onResponse(Call<JsonObject> call, Response<JsonObject> response) {
 
 
-                if (response.body() != null) {
-                    Log.e(TAG, "onResponsesuccessdelete: " + response.body());
-                    String data = new Gson().toJson(response.body());
+
 
                     JSONObject jo2 = null;
                     try {
-                        profileUpdateCallback.onSuccess(response.body().toString());
+
+
+//                        myfragmentManager.beginTransaction().add(R.id.frag_container, new TodoFragment()).commit();
+                        finish();
+                        profileUpdateCallback.onSuccess("successful delete");
                         JsonObject object = response.body();
                         Log.e(TAG, "onResponsesuccess: " + response.message());
 
                     } catch (Exception e) {
+                        profileUpdateCallback.onSuccess("issues delete");
                         e.printStackTrace();
                     }
 
-                } else {
-                    Log.e(TAG, "onResponseerror: " + response.errorBody());
-                    profileUpdateCallback.onError(response.message());
-                }
+
             }
 
 
@@ -204,9 +209,10 @@ public class TaskDetail extends AppCompatActivity {
                             @Override
                             public void onSuccess(String message) {
                                 Toasty.success(TaskDetail.this, message, Toast.LENGTH_SHORT).show();
-//                                Intent dintent = new Intent(TaskDetail.this, BottomNavigationActivity.class);
-//                                startActivity(dintent);
-                                TaskDetail.super.onBackPressed();
+
+                                Intent dintent = new Intent(TaskDetail.this, BottomNavigationActivity.class);
+                                dintent.putExtra("fragmentId","todo_id");
+                                startActivity(dintent);
                             }
 
                             @Override
@@ -244,27 +250,27 @@ public class TaskDetail extends AppCompatActivity {
 
                 if (response.body() != null) {
                     String data = new Gson().toJson(response.body());
-                    Log.e(TAG, "onResponsesuccessupdate: " + response.body());
+
                     JSONObject jo2 = null;
                     try {
-                        profileUpdateCallback.onSuccess(response.body().toString());
+                        profileUpdateCallback.onSuccess("Task successfully updated");
                         JsonObject object = response.body();
-                        Log.e(TAG, "onResponsesuccess: " + response.message());
+
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 
                 } else {
-                    Log.e(TAG, "onResponseerror: " + response.errorBody());
-                    profileUpdateCallback.onError(response.message());
+
+                    profileUpdateCallback.onError("Task update failed");
                 }
             }
 
 
             @Override
             public void onFailure(Call<JsonObject> call, Throwable t) {
-                Log.d(TAG, "Registration failed");
+
                 System.out.println(t);
             }
         });

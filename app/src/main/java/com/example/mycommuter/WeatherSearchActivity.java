@@ -102,6 +102,14 @@ public class WeatherSearchActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent dintent = new Intent(WeatherSearchActivity.this, BottomNavigationActivity.class);
+        dintent.putExtra("fragmentId","weather_id");
+        startActivity(dintent);
+    }
+
     public void initRecyclerView(List<Weather> weather) {
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         recyclerView.setLayoutManager(layoutManager);

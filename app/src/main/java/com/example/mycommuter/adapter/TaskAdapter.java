@@ -109,7 +109,7 @@ public class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.MyViewHolder> 
         try {
             myDate = myFormat.parse(current_task.getDue());
             myDate2=myFormat2.format(myDate);
-            myDate3=myFormat.parse(myDate2);
+//            myDate3=myFormat.parse(myDate2);
             Log.e(TAG, "onBindViewHolder: " +current_task.getDue() );
         } catch (ParseException e) {
             e.printStackTrace();

@@ -33,61 +33,76 @@
                 android:textColor="@color/colorPrimary"
                 android:textSize="24sp" />
 
-            <EditText
+
+
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/newTitle"
                 android:layout_width="match_parent"
-
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="60dp"
-                android:layout_marginRight="20dp"
-                android:fontFamily="@font/lato_lightitalic"
                 android:hint="Title"
-                android:inputType="text"
-
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="32dp"
                 android:textColor="#fff"
-                android:theme="@style/MyEditTextTheme"
+                android:backgroundTint="@color/colorPrimary"
+                android:textColorHint="@color/colorPrimary"
+                style="@style/LoginTextInputLayoutStyle">
 
-                app:addTextChangedListener="@{NewTaskViewModel.getTitleOnTextChangeListener}" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:textColor="#fff"
+                    android:fontFamily="@font/lato_lightitalic"
+                    android:textColorHint="@color/colorPrimary"
+                    textAppearance="?android:attr/textAppearanceLarge"
+                    android:inputType="textCapSentences|textMultiLine"
+                    app:addTextChangedListener="@{NewTaskViewModel.getTitleOnTextChangeListener}"
+                    />
 
-
-            <EditText
-                android:id="@+id/newDesc"
+            </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/outlinedTextField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="30dp"
-                android:layout_marginRight="20dp"
-                android:fontFamily="@font/lato_lightitalic"
                 android:hint="Description"
-                android:inputType="textCapSentences|textMultiLine"
-
-                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="32dp"
                 android:textColor="#fff"
-                android:theme="@style/MyEditTextTheme"
-                app:addTextChangedListener="@{NewTaskViewModel.getdescriptionOnTextChangeListener}"
-                app:errorEnabled="true" />
+                android:backgroundTint="@color/colorPrimary"
+                android:textColorHint="@color/colorPrimary"
+                style="@style/LoginTextInputLayoutStyle">
 
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/colorPrimary"
+                    android:textColor="#fff"
+                    android:fontFamily="@font/lato_lightitalic"
+                    android:textColorHint="@color/colorPrimary"
+                    textAppearance="?android:attr/textAppearanceLarge"
+                    android:inputType="textCapSentences|textMultiLine"
+                    app:addTextChangedListener="@{NewTaskViewModel.getdescriptionOnTextChangeListener}"
+                    />
 
+            </com.google.android.material.textfield.TextInputLayout>
             <Button
                 android:id="@+id/selectdate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
+
 
                 android:layout_marginTop="30dp"
 
-                android:paddingStart="70dp"
-                android:paddingEnd="70dp"
                 android:background="@drawable/btn_bg"
-                android:onClick="@{NewTaskViewModel::datePick}"
                 android:fontFamily="@font/lato_lightitalic"
-
-
+                android:onClick="@{NewTaskViewModel::datePick}"
                 android:padding="10dp"
+                android:paddingStart="70dp"
+
+
+                android:paddingEnd="70dp"
                 android:text="Pick Date"
 
                 android:textAppearance="?android:attr/textAppearanceLarge" />
@@ -98,15 +113,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:paddingStart="70dp"
-                android:paddingEnd="70dp"
                 android:layout_marginTop="40dp"
                 android:background="@drawable/btn_bg"
-
                 android:fontFamily="@font/lato_lightitalic"
-
                 android:onClick="@{NewTaskViewModel::onPost}"
+
                 android:padding="10dp"
+
+                android:paddingStart="70dp"
+                android:paddingEnd="70dp"
                 android:text="Submit"
 
                 android:textAppearance="?android:attr/textAppearanceLarge" />

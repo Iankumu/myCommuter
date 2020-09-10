@@ -603,10 +603,10 @@ public class MapFragment extends Fragment implements PermissionsListener {
                             public void onResponse(Call<DirectionsResponse> call, retrofit2.Response<DirectionsResponse> response) {
                                 Log.wtf(LOG_TAG_Code + " for Simulation", "Response code: " + response.code());
                                 if (response.body() == null) {
-                                    Log.e(LOG_TAG_Code, "No routes found, make sure you set the right user and access token.");
+
                                     return;
                                 } else if (response.body().routes().size() < 1) {
-                                    Log.e(LOG_TAG_Code, "No routes found");
+
                                     return;
                                 }
 

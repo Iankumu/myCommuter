@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.example.mycommuter.databinding.ActivityNewTaskBinding;
@@ -31,5 +32,12 @@ public class NewTaskActivity extends AppCompatActivity {
 
         binding.setNewTaskViewModel(newTaskViewModel);
 
+    }
+    @Override
+    public void onBackPressed()
+    {
+        Intent dintent = new Intent(NewTaskActivity.this, BottomNavigationActivity.class);
+        dintent.putExtra("fragmentId","todo_id");
+        startActivity(dintent);
     }
 }

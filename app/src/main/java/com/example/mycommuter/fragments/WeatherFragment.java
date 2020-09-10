@@ -141,7 +141,7 @@ public class WeatherFragment extends Fragment {
                 forecastActivityViewModel.description.setValue(weather1.getDescription());
                 forecastActivityViewModel.temp.setValue(weather1.getTemp() + "°");
                 forecastActivityViewModel.weathericon.setValue(weather1.getMain());
-                Log.e(TAG, "onChanged: " + weather1.getMain());
+
                 listinit = listWeatherPair.first;
                 initRecyclerView(listinit);
                 weatherAdapter.notifyDataSetChanged();
@@ -175,7 +175,7 @@ public class WeatherFragment extends Fragment {
         getdeviceLocation(new DeviceCoord() {
             @Override
             public void getCoordinates(Map<String, Double> coord) {
-                Log.e(TAG, "getloc: " + coord);
+
                 coordi.setValue(coord);
                 getData(coord);
             }
@@ -206,7 +206,7 @@ public class WeatherFragment extends Fragment {
                     double lon = location.getLongitude();
                     coord.put("latitude", lat);
                     coord.put("longitude", lon);
-                    Log.e(TAG, "coordi " + coord);
+
                     deviceCoord.getCoordinates(coord);
                 }
             }
@@ -251,7 +251,7 @@ public class WeatherFragment extends Fragment {
         int id = item.getItemId();
         switch (id) {
             case R.id.search1:
-                Log.e(TAG, "onOptionsItemSelected: clicked");
+
                 search(item);
                 break;
             case R.id.logout_frag:

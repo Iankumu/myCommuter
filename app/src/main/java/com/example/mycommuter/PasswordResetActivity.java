@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 
@@ -32,5 +33,12 @@ public class PasswordResetActivity extends AppCompatActivity {
         binding.setLifecycleOwner(this);
 
         binding.setLoginViewModel(loginActivityModelView);
+    }
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent dintent = new Intent(PasswordResetActivity.this, LoginActivity.class);
+
+        startActivity(dintent);
     }
 }

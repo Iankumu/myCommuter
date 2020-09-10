@@ -21,4 +21,10 @@
     <string name="notify_permission_required">To be able to use map, you need to allow the application to access to device location</string>
     <string name="permission_explanation">Please grant permission to the application to access device location</string>
     <string name="simulate_route">Simulate Route</string>
+    <string name="new_user_register_now">New User?Register Now</string>
+    <string name="forgot_password">Forgot Password</string>
+    <string name="login">Login</string>
+    <string name="email">example@gmail.com</string>
+    <string name="top_icon">top icon</string>
+    <string name="already_have_an_account">Already Have an Account?</string>
 </resources>

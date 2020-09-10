@@ -15,6 +15,7 @@ import com.example.mycommuter.BottomNavigationActivity;
 import com.example.mycommuter.MainActivity;
 import com.example.mycommuter.RestApi.ApiClient;
 import com.example.mycommuter.RestApi.theCommuterApiendpoints;
+import com.example.mycommuter.TaskDetail;
 import com.example.mycommuter.adapter.TaskAdapter;
 import com.example.mycommuter.fragments.TodoFragment;
 import com.example.mycommuter.interfaces.LoginResultCallback;
@@ -70,18 +71,21 @@ public class uploadTrepo {
         settask(new TaskupdateCallback() {
             @Override
             public void onSuccess(String message) {
-                String fragid = "todoFragment";
+
                 adapter = new TaskAdapter();
                 adapter.notifyDataSetChanged();
+                instance=null;
                 Toasty.success(context, message, Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, BottomNavigationActivity.class);
-                intent.putExtra("frgToLoad", fragid);
+
+                intent.putExtra("fragmentId","todo_id");
+
 
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK);
                 context.startActivity(intent);
 
 
-                Log.e(TAG, "onSuccess: Login complete");
+
             }
 
             @Override
@@ -97,9 +101,10 @@ public class uploadTrepo {
     private void settask(TaskupdateCallback taskupdateCallback) {
         final theCommuterApiendpoints apiService = ApiClient.getClient().create(theCommuterApiendpoints.class);
         String token = saveSharedPref.getToken(context);
-        LiveData<String> livetitle = title;
-        LiveData<String> Livedescription = description;
-        LiveData<String> livedue = due;
+        MutableLiveData<String> livetitle = title;
+        MutableLiveData<String> Livedescription = description;
+        MutableLiveData<String> livedue = due;
+        Log.i(TAG, "settask: "+title);
 
         Call<JsonObject> call = apiService.uploadTask(livetitle.getValue(), Livedescription.getValue(), livedue.getValue(), "Bearer " + token);
         call.enqueue(new Callback<JsonObject>() {
